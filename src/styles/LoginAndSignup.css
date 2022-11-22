@@ -1,0 +1,107 @@
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-family: Roboto;
+}
+
+#root {
+    flex: 1;
+    display: flex;
+}
+
+.login-page {
+    flex: 1;
+    display: flex;
+}
+
+aside {
+    flex: 0.23;
+    background: url("https://www.redditstatic.com/accountmanager/bbb584033aa89e39bad69436c504c9bd.png") repeat;
+    background-size: cover;
+}
+
+main {
+    flex: 2;
+    margin-left: 1.5em;
+    margin-top: 1.5em;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    gap: 1em;
+}
+
+.login-form>input {
+    padding: 10px;
+    border: 1px solid #d7d7d6;
+    border-radius: 5px;
+}
+
+.login-form button {
+    padding: 6px;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.login-form a {
+    color: #0079d3;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.submit-btn {
+    background-color: #0079d3;
+    color: #eee;
+    border: none;
+    height: 35px;
+}
+
+.submit-btn:hover {
+    background-color: #3394dc;
+}
+
+.login-provider-btn-container {
+    position: relative;
+}
+
+.provider-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 2px;
+    left: 3px;
+    background-color: #ffffff;
+    height: 45px;
+    width: 50px;
+    border-radius: 5px;
+}
+
+.login-provider-btn {
+    background-color: #ffffff;
+    border: 1px solid #0079d3;
+    padding: 10px;
+    min-height: 50px;
+    min-width: 100%;
+    color: #0079d3;
+}
+
+.login-provider-btn:hover {
+    background-color: #3394dc;
+    color: #eee;
+}
+
+.user-agreement {
+    padding-bottom: 50px;
+}
+
+.smaller {
+    font-size: smaller;
+}
