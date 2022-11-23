@@ -35,10 +35,14 @@ main {
     gap: 1em;
 }
 
-.login-form>input {
+.login-form input {
     padding: 10px;
     border: 1px solid #d7d7d6;
     border-radius: 5px;
+}
+
+button {
+    cursor: pointer;
 }
 
 .login-form button {
@@ -46,7 +50,6 @@ main {
     font-weight: bold;
     text-transform: uppercase;
     border-radius: 5px;
-    cursor: pointer;
 }
 
 .login-form a {
