@@ -2,7 +2,7 @@ import AppleButton from "./AppleButton";
 import GoogleButton from "./GoogleButton";
 import LoginAndSignUpLayout from "./LoginAndSignUpLayout";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createAccountUsingEmail, usernameAvailable, emailNotRegistered } from "../firebase";
 import randomWords from "random-words";
 import "../styles/SignupForm.css";
@@ -25,6 +25,7 @@ const SignupForm = () => {
         emailAlreadyRegistered: false
     });
     const [suggestedUsername, setSuggestedUsernames] = useState(generateUsernames());
+    const [loading, setLoading] = useState(false);
 
     const handleInput = (e) => {
         setData({
@@ -41,6 +42,7 @@ const SignupForm = () => {
 
     const handleFormSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
         if (!(Object.values(error).some(error => error))) {
             if (data.password < 8 && !(await usernameAvailable(data.username))) {
                 setError({
@@ -62,13 +64,15 @@ const SignupForm = () => {
                 })
             }
             else {
-                createAccountUsingEmail(data);
+                await createAccountUsingEmail(data);
             }
+            setLoading(false);
         }
     };
 
     const handleContinue = async (e) => {
         e.preventDefault();
+        setLoading(true);
         if (await emailNotRegistered(e.target.email.value)) {
             setContinueClicked(true);
         }
@@ -77,6 +81,7 @@ const SignupForm = () => {
                 ...error,
                 emailAlreadyRegistered: true,
             })
+            setLoading(false);
         }
     };
 
@@ -116,11 +121,17 @@ const SignupForm = () => {
 
     const submitBtnDisabled = (Object.values(error).some(error => error));
 
+    useEffect(() => {
+        if (continueClicked) {
+            setLoading(false);
+        }
+    }, [continueClicked])
+
     if (!continueClicked) {
         return (
             <LoginAndSignUpLayout>
                 <h4>Sign up</h4>
-                <form className="login-form" onSubmit={!error.emailAlreadyRegistered ? handleContinue : null}>
+                <form className="login-form" onSubmit={!(error.emailAlreadyRegistered || loading) ? handleContinue : (e) => { e.preventDefault() }}>
                     <p className="user-agreement smaller">
                         By continuing, you are setting up a Reddit account and agree to our
                         User Agreement and Privacy Policy.
@@ -129,10 +140,18 @@ const SignupForm = () => {
                     <AppleButton />
                     <input className={`form-input ${error.emailAlreadyRegistered ? "form-input__error" : ""}`} name="email" type="email" placeholder="Email" value={data.email} onChange={handleInput} />
                     {error.emailAlreadyRegistered && <div className="error-message">This email is already taken</div>}
-                    <button className="submit-btn" disabled={error.emailAlreadyRegistered}>Continue</button>
+                    <button className={`submit-btn ${loading ? "btn__loading" : ""}`} disabled={error.emailAlreadyRegistered}>{
+                        !loading ? "Continue" : (
+                            <svg xmlns="http://www.w3.org/2000/svg" width="40px" height="40px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
+                                <circle cx="50" cy="50" fill="none" stroke="#ffffff" strokeWidth="5" r="24" strokeDasharray="113.09733552923255 39.69911184307752">
+                                    <animateTransform attributeName="transform" type="rotate" repeatCount="indefinite" dur="1s" values="0 50 50;360 50 50" keyTimes="0;1"></animateTransform>
+                                </circle>
+
+                            </svg>)
+                    }</button>
                     <p className="smaller">Already a redditor? <Link to="/login">Log in</Link> </p>
                 </form>
-            </LoginAndSignUpLayout>
+            </LoginAndSignUpLayout >
         );
     }
 
@@ -159,7 +178,15 @@ const SignupForm = () => {
             </main >
             <footer className="sign-up-form__footer">
                 <Link to="/signup" className="back-link" onClick={handleBack}>Back</Link>
-                <button className="primary-btn" type="submit" onClick={!submitBtnDisabled ? handleFormSubmit : null} disabled={submitBtnDisabled}>Sign up</button>
+                <button className={`primary-btn ${loading ? "btn__loading" : ""}`} type="submit" onClick={!(submitBtnDisabled || loading) ? handleFormSubmit : null} disabled={submitBtnDisabled}>{
+                    !loading ? "Sign up" : (
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40px" height="40px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
+                            <circle cx="50" cy="50" fill="none" stroke="#ffffff" strokeWidth="5" r="24" strokeDasharray="113.09733552923255 39.69911184307752">
+                                <animateTransform attributeName="transform" type="rotate" repeatCount="indefinite" dur="1s" values="0 50 50;360 50 50" keyTimes="0;1"></animateTransform>
+                            </circle>
+
+                        </svg>)
+                }</button>
             </footer>
         </div >
     )

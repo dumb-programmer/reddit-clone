@@ -107,7 +107,9 @@
     color: #fff;
     padding: 10px;
     font-weight: bolder;
-    width: 150px;
+    height: 35px;
+    width: 155px;
+    margin-right: 5px;
     text-transform: uppercase;
 }
 
@@ -122,6 +124,13 @@
 
 .primary-btn:active, .submit-btn:active {
     background-color: #0061a9;
+}
+
+.btn__loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: not-allowed;
 }
 
 #generate-usernames-btn {
