@@ -3,6 +3,7 @@
     flex-direction: column;
     width: 100%;
     background-color: #ffffff;
+    flex: 1;
 }
 
 .sign-up-form__main {
