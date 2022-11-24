@@ -11,6 +11,7 @@
     justify-content: space-between;
     height: 100px;
     width: 350px;
+    gap: 1em;
 }
 
 .form-input {
@@ -20,6 +21,12 @@
     border-radius: 5px;
 }
 
+.error-message {
+    color: #ea072c;
+    font-size: small;
+    font-weight: bold;
+}
+
 .form-input:hover, .form-input:active {
     background-color: #ffffff;
 }
@@ -27,6 +34,10 @@
 .form-input:active, .form-input:focus {
     border-color: #cccccc;
     outline: none;
+}
+
+.form-input__error, .form-input__error:focus {
+    border: 1px solid #ea0027;
 }
 
 .sign-up-form__header {
@@ -70,4 +81,13 @@
 
 .primary-btn:hover {
     background-color: #3394dc;
+}
+
+.primary-btn:disabled, .submit-btn:disabled {
+    cursor: not-allowed;
+    background-color: #3394dc;
+}
+
+.primary-btn:active, .submit-btn:active {
+    background-color: #0061a9;
 }
