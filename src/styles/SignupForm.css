@@ -5,6 +5,38 @@
     background-color: #ffffff;
 }
 
+.sign-up-form__main {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+.username-suggestions {
+    margin-top: -18px;
+    margin-right: 14px;
+}
+
+.username-suggestions>p {
+    margin-right: 50px;
+}
+
+.username-suggestion {
+    color: #0079d3;
+    font-size: 14px;
+    margin-right: 20px;
+    font-weight: bold;
+}
+
+.username-suggestion:hover {
+    color: #3394dc;
+    cursor: pointer;
+}
+
+.username-suggestion:active {
+    color: #0061a9;
+}
+
 .sign-up-form {
     display: flex;
     flex-direction: column;
@@ -90,4 +122,11 @@
 
 .primary-btn:active, .submit-btn:active {
     background-color: #0061a9;
+}
+
+#generate-usernames-btn {
+    all: unset;
+    cursor: pointer;
+    float: right;
+    margin-left: 10px;
 }

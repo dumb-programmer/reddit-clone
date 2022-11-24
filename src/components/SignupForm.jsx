@@ -4,7 +4,12 @@ import LoginAndSignUpLayout from "./LoginAndSignUpLayout";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { createAccountUsingEmail, usernameAvailable, emailNotRegistered } from "../firebase";
+import randomWords from "random-words";
 import "../styles/SignupForm.css";
+
+const generateUsernames = () => {
+    return Array.from({ length: 5 }).map(() => randomWords() + "_" + randomWords() + Math.ceil(Math.random() * 1000));
+};
 
 const SignupForm = () => {
     const [data, setData] = useState({
@@ -19,6 +24,7 @@ const SignupForm = () => {
         passwordTooShort: false,
         emailAlreadyRegistered: false
     });
+    const [suggestedUsername, setSuggestedUsernames] = useState(generateUsernames());
 
     const handleInput = (e) => {
         setData({
@@ -143,12 +149,19 @@ const SignupForm = () => {
                     <input className={`form-input ${error.passwordTooShort ? "form-input__error" : ""}`} name="password" type="password" placeholder="Password" value={data.password} onChange={handleInput} onBlur={handlePasswordBlur} />
                     {error.passwordTooShort && <div className="error-message">Password must be at least 8 characters long</div>}
                 </form>
-            </main>
+                <div className="username-suggestions">
+                    <p>Here are some username suggestions <button id="generate-usernames-btn" onClick={() => { setSuggestedUsernames(generateUsernames()) }}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0079d3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-refresh-cw"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg></button></p>
+                    {
+                        suggestedUsername.map((suggestion, idx) => <p key={idx} className="username-suggestion" onClick={() => setData({ ...data, username: suggestion })}>{suggestion}</p>)
+                    }
+                </div>
+            </main >
             <footer className="sign-up-form__footer">
                 <Link to="/signup" className="back-link" onClick={handleBack}>Back</Link>
                 <button className="primary-btn" type="submit" onClick={!submitBtnDisabled ? handleFormSubmit : null} disabled={submitBtnDisabled}>Sign up</button>
             </footer>
-        </div>
+        </div >
     )
 }
 
