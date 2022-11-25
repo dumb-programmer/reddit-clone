@@ -3,9 +3,12 @@ import GoogleButton from "./GoogleButton";
 import LoginAndSignUpLayout from "./LoginAndSignUpLayout";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { createAccountUsingEmail, usernameAvailable, emailNotRegistered } from "../firebase";
+import { isLoggedIn, createAccountUsingEmail, usernameAvailable, emailNotRegistered } from "../firebase";
 import randomWords from "random-words";
+import LoadingSVG from "./LoadingSVG";
+import { useNavigate } from "react-router-dom";
 import "../styles/SignupForm.css";
+import AlreadyLoggedInMessage from "./AlreadyLoggedInMessage";
 
 const generateUsernames = () => {
     return Array.from({ length: 5 }).map(() => randomWords() + "_" + randomWords() + Math.ceil(Math.random() * 1000));
@@ -26,6 +29,7 @@ const SignupForm = () => {
     });
     const [suggestedUsername, setSuggestedUsernames] = useState(generateUsernames());
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     const handleInput = (e) => {
         setData({
@@ -125,7 +129,17 @@ const SignupForm = () => {
         if (continueClicked) {
             setLoading(false);
         }
-    }, [continueClicked])
+    }, [continueClicked]);
+
+    useEffect(() => {
+        if (isLoggedIn()) {
+            setTimeout(() => navigate("/"), 1000);
+        }
+    }, []);
+
+    if (isLoggedIn()) {
+        return <LoginAndSignUpLayout><AlreadyLoggedInMessage /></LoginAndSignUpLayout>;
+    }
 
     if (!continueClicked) {
         return (
@@ -141,13 +155,7 @@ const SignupForm = () => {
                     <input className={`form-input ${error.emailAlreadyRegistered ? "form-input__error" : ""}`} name="email" type="email" placeholder="Email" value={data.email} onChange={handleInput} />
                     {error.emailAlreadyRegistered && <div className="error-message">This email is already taken</div>}
                     <button className={`submit-btn ${loading ? "btn__loading" : ""}`} disabled={error.emailAlreadyRegistered}>{
-                        !loading ? "Continue" : (
-                            <svg xmlns="http://www.w3.org/2000/svg" width="40px" height="40px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
-                                <circle cx="50" cy="50" fill="none" stroke="#ffffff" strokeWidth="5" r="24" strokeDasharray="113.09733552923255 39.69911184307752">
-                                    <animateTransform attributeName="transform" type="rotate" repeatCount="indefinite" dur="1s" values="0 50 50;360 50 50" keyTimes="0;1"></animateTransform>
-                                </circle>
-
-                            </svg>)
+                        !loading ? "Continue" : <LoadingSVG />
                     }</button>
                     <p className="smaller">Already a redditor? <Link to="/login">Log in</Link> </p>
                 </form>
@@ -179,13 +187,7 @@ const SignupForm = () => {
             <footer className="sign-up-form__footer">
                 <Link to="/signup" className="back-link" onClick={handleBack}>Back</Link>
                 <button className={`primary-btn ${loading ? "btn__loading" : ""}`} type="submit" onClick={!(submitBtnDisabled || loading) ? handleFormSubmit : null} disabled={submitBtnDisabled}>{
-                    !loading ? "Sign up" : (
-                        <svg xmlns="http://www.w3.org/2000/svg" width="40px" height="40px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
-                            <circle cx="50" cy="50" fill="none" stroke="#ffffff" strokeWidth="5" r="24" strokeDasharray="113.09733552923255 39.69911184307752">
-                                <animateTransform attributeName="transform" type="rotate" repeatCount="indefinite" dur="1s" values="0 50 50;360 50 50" keyTimes="0;1"></animateTransform>
-                            </circle>
-
-                        </svg>)
+                    !loading ? "Sign up" : (<LoadingSVG />)
                 }</button>
             </footer>
         </div >

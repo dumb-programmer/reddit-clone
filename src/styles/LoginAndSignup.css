@@ -109,3 +109,8 @@ button {
 .smaller {
     font-size: smaller;
 }
+
+.link {
+    color: #3394dc;
+    text-decoration: none;
+}

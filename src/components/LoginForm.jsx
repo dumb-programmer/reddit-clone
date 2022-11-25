@@ -1,10 +1,11 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import AppleButton from "./AppleButton";
 import GoogleButton from "./GoogleButton";
 import LoadingSVG from "./LoadingSVG";
 import LoginAndSignUpLayout from "./LoginAndSignUpLayout";
-import { loginUsingUsernameAndPassword } from "../firebase";
+import { isLoggedIn, loginUsingUsernameAndPassword } from "../firebase";
+import AlreadyLoggedInMessage from "./AlreadyLoggedInMessage";
 
 const LoginForm = () => {
     const [data, setData] = useState({
@@ -17,6 +18,7 @@ const LoginForm = () => {
         usernameNotFound: false,
         incorrectPassword: false
     });
+    const navigate = useNavigate();
 
     const handleInput = (e) => {
         setData({
@@ -28,16 +30,15 @@ const LoginForm = () => {
     const handleFormSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        console.log("Hello");
         try {
             const val = await loginUsingUsernameAndPassword(data);
-            console.log(val);
             if (val === -1) {
                 setError({
                     ...error,
                     usernameNotFound: true,
                 });
             }
+            navigate("/");
         }
         catch (error) {
             setError({
@@ -61,27 +62,39 @@ const LoginForm = () => {
         })
     };
 
+    useEffect(() => {
+        if (isLoggedIn()) {
+            setTimeout(() => navigate("/"), 1000);
+        }
+    }, []);
+
     const disableLoginBtn = Object.values(error).some(error => error);
 
     return (
         <LoginAndSignUpLayout>
-            <h4>Log in</h4>
-            <p className="user-agreement smaller">
-                By continuing, you agree to our User Agreement and Privacy Policy.
-            </p>
-            <form className="login-form" onSubmit={!(loading || disableLoginBtn) ? handleFormSubmit : (e) => { e.preventDefault(); }}>
-                <GoogleButton />
-                <AppleButton />
-                <input className={`form-input ${error.usernameNotFound ? "form-input__error" : ""}`} type="text" name="username" placeholder="Username" value={data.username} onChange={handleInput} onBlur={handleUsernameBlur} />
-                {error.usernameNotFound && <div className="error-message">Incorrect username</div>}
-                <input className={`form-input ${error.incorrectPassword ? "form-input__error" : ""}`} type="password" name="password" placeholder="Password" value={data.password} onChange={handleInput} onBlur={handlePasswordBlur} />
-                {error.incorrectPassword && <div className="error-message">Incorrect password</div>}
-                <button className={`submit-btn ${loading ? "btn__loading" : ""}`} disabled={error.emailAlreadyRegistered}>{
-                    !loading ? "Log In" : <LoadingSVG />
-                }</button>
-                <p className="smaller">Forgot your username or password ?</p>
-                <p className="smaller">New to Reddit? <Link to="/signup">Sign up</Link></p>
-            </form>
+            {
+                !isLoggedIn() ?
+                    <>
+                        <h4>Log in</h4>
+                        <p className="user-agreement smaller">
+                            By continuing, you agree to our User Agreement and Privacy Policy.
+                        </p>
+                        <form className="login-form" onSubmit={!(loading || disableLoginBtn) ? handleFormSubmit : (e) => { e.preventDefault(); }}>
+                            <GoogleButton />
+                            <AppleButton />
+                            <input className={`form-input ${error.usernameNotFound ? "form-input__error" : ""}`} type="text" name="username" placeholder="Username" value={data.username} onChange={handleInput} onBlur={handleUsernameBlur} />
+                            {error.usernameNotFound && <div className="error-message">Incorrect username</div>}
+                            <input className={`form-input ${error.incorrectPassword ? "form-input__error" : ""}`} type="password" name="password" placeholder="Password" value={data.password} onChange={handleInput} onBlur={handlePasswordBlur} />
+                            {error.incorrectPassword && <div className="error-message">Incorrect password</div>}
+                            <button className={`submit-btn ${loading ? "btn__loading" : ""}`} disabled={error.emailAlreadyRegistered}>{
+                                !loading ? "Log In" : <LoadingSVG />
+                            }</button>
+                            <p className="smaller">Forgot your username or password ?</p>
+                            <p className="smaller">New to Reddit? <Link to="/signup">Sign up</Link></p>
+                        </form>
+                    </>
+                    : <AlreadyLoggedInMessage />
+            }
         </LoginAndSignUpLayout >
     );
 }
