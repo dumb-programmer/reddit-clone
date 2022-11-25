@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
-import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
-import { addDoc, collection, getDocs, getFirestore, query, where } from "firebase/firestore";
+import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { addDoc, collection, getDocs, getDoc, getFirestore, query, where } from "firebase/firestore";
 
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -37,6 +37,34 @@ const emailNotRegistered = async (email) => {
     const q = query(usersRef, where("email", "==", email));
     const snapshot = await getDocs(q);
     return snapshot.empty || false;
+};
+
+const loginUsingUsernameAndPassword = async ({ username, password }) => {
+    const usersRef = collection(db, "Users");
+    const q = query(usersRef, where("username", "==", username));
+    const snapshot = await getDocs(q);
+    if (snapshot.empty) {
+        return -1;
+    }
+
+    let email;
+    snapshot.forEach(snap => {
+        email = snap.data().email;
+    });
+    try {
+        await signInWithEmailAndPassword(auth, email, password);
+    }
+    catch (error) {
+        throw error;
+    }
+};
+
+const isLoggedIn = () => {
+    return auth.currentUser || false;
+};
+
+const logout = async () => {
+    await signOut(auth);
 }
 
-export { createAccountUsingEmail, usernameAvailable, emailNotRegistered };
+export { createAccountUsingEmail, usernameAvailable, emailNotRegistered, loginUsingUsernameAndPassword, isLoggedIn, logout };
