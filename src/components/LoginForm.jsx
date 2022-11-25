@@ -7,7 +7,7 @@ import LoginAndSignUpLayout from "./LoginAndSignUpLayout";
 import { isLoggedIn, loginUsingUsernameAndPassword } from "../firebase";
 import AlreadyLoggedInMessage from "./AlreadyLoggedInMessage";
 
-const LoginForm = () => {
+const LoginForm = ({ setUser }) => {
     const [data, setData] = useState({
         username: "",
         password: ""
@@ -38,6 +38,7 @@ const LoginForm = () => {
                     usernameNotFound: true,
                 });
             }
+            setUser({ username: data.username });
             navigate("/");
         }
         catch (error) {

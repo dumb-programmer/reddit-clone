@@ -17,13 +17,13 @@ body {
     display: flex;
 }
 
-aside {
+.artwork {
     flex: 0.23;
     background: url("https://www.redditstatic.com/accountmanager/bbb584033aa89e39bad69436c504c9bd.png") repeat;
     background-size: cover;
 }
 
-main {
+.login-and-signup {
     flex: 2;
     margin-left: 1.5em;
     margin-top: 1.5em;

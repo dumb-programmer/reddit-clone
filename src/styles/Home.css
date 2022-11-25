@@ -4,6 +4,10 @@
     align-items: center;
     padding: 8px;
     border-bottom: 1px solid #edeff1;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: #fff;
 }
 
 #search-bar {
@@ -52,6 +56,93 @@
     padding: 7px;
 }
 
-#login-btn:hover {
-    background-color: #1483d6;
+.user-dropdown {
+    margin-right: 30px;
+    cursor: pointer;
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+}
+
+.user-dropdown:hover {
+    outline: 1px solid #edeff1;
+}
+
+.dropdown {
+    position: absolute;
+    border: 1px solid #edeff1;
+    border-radius: 5px;
+    width: 100px;
+    top: 55px;
+    right: 45px;
+    background-color: #fff;
+}
+
+.dropdown>ul {
+    padding: 0;
+}
+
+.dropdown-link {
+    list-style: none;
+    padding: 5px;
+    padding-left: 40px;
+    cursor: pointer;
+}
+
+.dropdown-link:hover {
+    background-color: #f5f5f5;
+}
+
+.dropdown-link:active {
+    background-color: #ebebeb;
+}
+
+.feather-log-out {
+    position: absolute;
+    top: 49px;
+    right: 70px;
+}
+
+.posts-container {
+    flex: 1;
+    background-color: #dae0e6;
+    display: flex;
+    justify-content: center;
+}
+
+.posts {
+    width: 800px;
+    margin-top: 80px;
+}
+
+.post {
+    background-color: #ffffff;
+    display: flex;
+    margin-bottom: 15px;
+    cursor: pointer;
+}
+
+.post:hover {
+    outline: 2px solid #cccccc;
+}
+
+.post-sidebar {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding: 5px;
+}
+
+.upvote-btn, .downvote-btn {
+    all: unset;
+    cursor: pointer;
+}
+
+.post-main {
+    padding-left: 15px;
+}
+
+.post-header {
+    font-size: 11px;
 }
