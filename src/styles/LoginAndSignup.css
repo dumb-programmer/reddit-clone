@@ -60,17 +60,6 @@ button {
     font-weight: bold;
 }
 
-.submit-btn {
-    background-color: #0079d3;
-    color: #eee;
-    border: none;
-    height: 35px;
-}
-
-.submit-btn:hover {
-    background-color: #3394dc;
-}
-
 .login-provider-btn-container {
     position: relative;
 }

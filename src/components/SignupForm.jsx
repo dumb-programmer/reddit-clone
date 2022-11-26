@@ -186,7 +186,7 @@ const SignupForm = () => {
             </main >
             <footer className="sign-up-form__footer">
                 <Link to="/signup" className="back-link" onClick={handleBack}>Back</Link>
-                <button className={`primary-btn ${loading ? "btn__loading" : ""}`} type="submit" onClick={!(submitBtnDisabled || loading) ? handleFormSubmit : null} disabled={submitBtnDisabled}>{
+                <button className={`submit-btn ${loading ? "btn__loading" : ""}`} type="submit" onClick={!(submitBtnDisabled || loading) ? handleFormSubmit : null} disabled={submitBtnDisabled}>{
                     !loading ? "Sign up" : (<LoadingSVG />)
                 }</button>
             </footer>

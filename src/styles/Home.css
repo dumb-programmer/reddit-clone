@@ -34,9 +34,7 @@
     border: none;
     padding: 5px;
     font-weight: bolder;
-    cursor: pointer;
-    margin-left: 10px;
-
+    margin-right: 15px;
 }
 
 #sign-up-btn {
@@ -145,4 +143,56 @@
 
 .post-header {
     font-size: 11px;
+}
+
+.main-btns {
+    margin-top: 80px;
+    margin-left: 50px;
+    background-color: #fff;
+    height: 280px;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 5px;
+}
+
+#reddit-avatar {
+    margin-left: 10px;
+    margin-top: -22px;
+}
+
+.primary-btn, .secondary-btn {
+    all: unset;
+    cursor: pointer;
+    border-radius: 15px;
+    font-weight: bolder;
+    text-align: center;
+}
+
+.primary-btn {
+    background-color: #0079d3;
+    color: #fff;
+    padding: 6px;
+}
+
+.primary-btn:hover {
+    background-color: #1483d6;
+}
+
+.primary-btn:active {
+    background-color: #3d99dd;
+}
+
+.secondary-btn {
+    border: 1px solid #0079d3;
+    color: #0079d3;
+    padding: 5px;
+}
+
+.secondary-btn:hover {
+    background-color: #f4f9fd;
+}
+
+.secondary-btn:active {
+    background-color: #d5e9f7;
 }
