@@ -1,6 +1,7 @@
+import { uuidv4 } from "@firebase/util";
 import { initializeApp } from "firebase/app";
-import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
-import { addDoc, collection, getDocs, getDoc, getFirestore, query, where } from "firebase/firestore";
+import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { addDoc, collection,  getDocs, getFirestore, query, serverTimestamp, where } from "firebase/firestore";
 
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -65,6 +66,16 @@ const isLoggedIn = () => {
 
 const logout = async () => {
     await signOut(auth);
-}
+};
 
-export { createAccountUsingEmail, usernameAvailable, emailNotRegistered, loginUsingUsernameAndPassword, isLoggedIn, logout };
+const registerAuthObserver = (cb) => {
+    return onAuthStateChanged(auth, cb);
+};
+
+const createCommunity = async ({ communityName, communityType, userId }) => {
+    console.log(communityName, communityType, userId);
+    const communityRef = collection(db, "Communities", communityType, "communities");
+    await addDoc(communityRef, { id: uuidv4(), title: communityName, moderatorId: userId, createdOn: serverTimestamp() });
+};
+
+export { createAccountUsingEmail, usernameAvailable, emailNotRegistered, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity };

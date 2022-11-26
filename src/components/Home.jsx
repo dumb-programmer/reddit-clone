@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { isLoggedIn, logout } from "../firebase";
+import { isLoggedIn, logout, registerAuthObserver } from "../firebase";
 import "../styles/Home.css";
+import CreateCommunityModal from "./CreateCommunityModal";
 
-const Home = ({ user }) => {
+const Home = ({ user, setUser }) => {
     const [logoutDisabled, setLogoutDisabled] = useState(false);
     const [showDropdown, setShowDropdown] = useState(false);
+    const [showModal, setShowModal] = useState(false);
     const navigate = useNavigate();
 
     const handleLogout = async (e) => {
@@ -20,7 +22,13 @@ const Home = ({ user }) => {
             if (showDropdown) {
                 setShowDropdown(false);
             }
-        })
+        });
+
+        const unsub = registerAuthObserver((user) => {
+            setUser(user);
+        });
+
+        return () => unsub();
     });
 
     return (
@@ -62,6 +70,9 @@ const Home = ({ user }) => {
                 </div>
             </header>
             <main className="posts-container">
+                {
+                    showModal && <CreateCommunityModal user={user} onExit={() => setShowModal(false)} />
+                }
                 <div className="posts">
                     {Array.from({ length: 10 }).map((idx) => (
                         <div key={idx} className="post">
@@ -82,19 +93,21 @@ const Home = ({ user }) => {
                             </div>
                         </div>))}
                 </div>
-                <aside class="main-btns">
-                    <img src="https://www.redditstatic.com/desktop2x/img/id-cards/home-banner@2x.png" alt="banner art" />
-                    <div style={{ display: "flex" }}>
-                        <img id="reddit-avatar" src="https://www.redditstatic.com/desktop2x/img/id-cards/snoo-home@2x.png" height="68px" width="40px" alt="reddit avatar" />
-                        <span><h3 style={{ marginLeft: 10 }}>Home</h3></span>
-                    </div>
-                    <p style={{ marginLeft: 10, borderBottom: "1px solid #eeeeef", paddingBottom: 10 }}>Your personal Reddit frontpage. Come here to check in with your favorite communities.</p>
-                    <div style={{ padding: "0 10px", display: "flex", flexDirection: "column", gap: "10px" }}>
-                        <button className="primary-btn">Create Post</button>
-                        <button className="secondary-btn">Create Community</button>
-                    </div>
-                </aside>
-            </main>
+                {
+                    isLoggedIn() && <aside className="main-btns">
+                        <img src="https://www.redditstatic.com/desktop2x/img/id-cards/home-banner@2x.png" alt="banner art" />
+                        <div style={{ display: "flex" }}>
+                            <img id="reddit-avatar" src="https://www.redditstatic.com/desktop2x/img/id-cards/snoo-home@2x.png" height="68px" width="40px" alt="reddit avatar" />
+                            <span><h3 style={{ marginLeft: 10 }}>Home</h3></span>
+                        </div>
+                        <p style={{ marginLeft: 10, borderBottom: "1px solid #eeeeef", paddingBottom: 10 }}>Your personal Reddit frontpage. Come here to check in with your favorite communities.</p>
+                        <div style={{ padding: "0 10px", display: "flex", flexDirection: "column", gap: "10px" }}>
+                            <button className="primary-btn">Create Post</button>
+                            <button className="secondary-btn" onClick={() => setShowModal(true)}>Create Community</button>
+                        </div>
+                    </aside>
+                }
+            </main >
         </>
     );
 };

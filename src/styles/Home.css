@@ -167,6 +167,7 @@
     border-radius: 15px;
     font-weight: bolder;
     text-align: center;
+    font-size: 14px;
 }
 
 .primary-btn {
@@ -195,4 +196,52 @@
 
 .secondary-btn:active {
     background-color: #d5e9f7;
+}
+
+.modal-container {
+    position: fixed;
+    top: 50px;
+    background-color: rgba(28, 28, 28, 0.9);
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: #fff;
+    min-width: 500px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    position: relative;
+    top: -50px;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eeeeef;
+}
+
+.close-modal-btn {
+    all: unset;
+    cursor: pointer;
+}
+
+.modal-body {
+    position: relative;
+    top: -15px;
+}
+
+.modal-footer {
+    display: flex;
+    flex-direction: row-reverse;
+    background-color: #edeff1;
+    gap: 7px;
+    padding: 10px;
 }
