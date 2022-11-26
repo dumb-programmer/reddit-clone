@@ -11,6 +11,8 @@
     justify-content: space-between;
     align-items: flex-start;
     flex-wrap: wrap;
+    flex: 1;
+    padding: 15px;
 }
 
 .username-suggestions {
@@ -100,7 +102,7 @@
     color: #3394dc;
 }
 
-.primary-btn {
+.submit-btn {
     background: none;
     border: none;
     border-radius: 5px;
@@ -109,21 +111,21 @@
     padding: 10px;
     font-weight: bolder;
     height: 35px;
-    width: 155px;
+    min-width: 155px;
     margin-right: 5px;
     text-transform: uppercase;
 }
 
-.primary-btn:hover {
+.submit-btn:hover {
     background-color: #3394dc;
 }
 
-.primary-btn:disabled, .submit-btn:disabled {
+.submit-btn:disabled, .submit-btn:disabled {
     cursor: not-allowed;
     background-color: #3394dc;
 }
 
-.primary-btn:active, .submit-btn:active {
+.submit-btn:active, .submit-btn:active {
     background-color: #0061a9;
 }
 
