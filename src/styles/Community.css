@@ -1,0 +1,31 @@
+.community-banner {
+    background-color: #33a8ff;
+    height: 150px;
+}
+
+.community-info {
+    display: flex;
+    margin-left: 250px;
+    padding-bottom: 20px;
+    align-items: center;
+    gap: 15px;
+    position: relative;
+}
+
+.community-sidebar {
+    margin-left: 35px;
+    margin-top: 15px;
+    background-color: #ffff;
+    height: 300px;
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+}
+
+.community-sidebar__header {
+    text-align: center;
+    background-color: #33a8ff;
+    color: #fff;
+}
+
+.community-description {}

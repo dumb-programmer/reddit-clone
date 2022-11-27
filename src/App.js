@@ -4,16 +4,19 @@ import LoginForm from './components/LoginForm';
 import SignupForm from "./components/SignupForm";
 import Home from './components/Home';
 import './App.css';
+import Community from './components/Community';
 
 function App() {
   const [user, setUser] = useState({});
+  const [username, setUsername] = useState("");
 
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home user={user} setUser={setUser} />} />
-        <Route path="/login" element={<LoginForm setUser={setUser} />} />
+        <Route path="/" element={<Home user={user} username={username} setUser={setUser} setUsername={setUsername} />} />
+        <Route path="/login" element={<LoginForm setUsername={setUsername} />} />
         <Route path="/signup" element={<SignupForm />} />
+        <Route path="/r/:communityName" element={<Community user={user} username={username} />} />
       </Routes>
     </BrowserRouter>
   );
