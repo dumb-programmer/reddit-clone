@@ -1,7 +1,7 @@
 import { uuidv4 } from "@firebase/util";
 import { initializeApp } from "firebase/app";
 import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "firebase/auth";
-import { addDoc, collection,  getDocs, getFirestore, query, serverTimestamp, where } from "firebase/firestore";
+import { addDoc, collection, getDocs, getFirestore, query, serverTimestamp, where } from "firebase/firestore";
 
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -72,10 +72,30 @@ const registerAuthObserver = (cb) => {
     return onAuthStateChanged(auth, cb);
 };
 
-const createCommunity = async ({ communityName, communityType, userId }) => {
-    console.log(communityName, communityType, userId);
+const createCommunity = async ({ communityName, communityType, username }) => {
+    console.log(communityName, communityType, username);
     const communityRef = collection(db, "Communities", communityType, "communities");
-    await addDoc(communityRef, { id: uuidv4(), title: communityName, moderatorId: userId, createdOn: serverTimestamp() });
+    await addDoc(communityRef, { name: communityName, moderator: username, createdOn: serverTimestamp() });
 };
 
-export { createAccountUsingEmail, usernameAvailable, emailNotRegistered, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity };
+const communityNameAvailable = async ({ communityName, communityType }) => {
+    const communityRef = collection(db, "Communities", communityType, "communities");
+    const q = query(communityRef, where("name", "==", communityName));
+    const snapshot = await getDocs(q);
+    return snapshot.empty;
+};
+
+const getUsername = async (email) => {
+    const usersRef = collection(db, "Users");
+    const q = query(usersRef, where("email", "==", email));
+    const snapshot = await getDocs(q);
+    let username;
+    if (!snapshot.empty) {
+        snapshot.forEach(doc => {
+            username = doc.data().username;
+        })
+    };
+    return username;
+}
+
+export { createAccountUsingEmail, usernameAvailable, emailNotRegistered, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername };

@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { createCommunity } from "../firebase";
+import { communityNameAvailable, createCommunity } from "../firebase";
 
-const CreateCommunityModal = ({ user, onExit }) => {
+const CreateCommunityModal = ({ user, username, onExit }) => {
     const [data, setData] = useState({
         communityName: "",
         communityType: "public"
     });
+    const [communityNameNotAvailable, setCommunityNameNotAvailable] = useState(false);
 
     const remainingCharacters = 21 - data.communityName.length;
 
@@ -22,11 +23,19 @@ const CreateCommunityModal = ({ user, onExit }) => {
                 communityType: e.target.value
             });
         }
+        if (communityNameNotAvailable) {
+            setCommunityNameNotAvailable(false);
+        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        await createCommunity({ ...data, userId: user.uid })
+        if (await communityNameAvailable(data)) {
+            await createCommunity({ ...data, username: username });
+        }
+        else {
+            setCommunityNameNotAvailable(true);
+        }
     };
 
     return (
@@ -43,6 +52,7 @@ const CreateCommunityModal = ({ user, onExit }) => {
                         <div style={{ position: "relative" }}>
                             <span style={{ position: "absolute", top: "10px", left: "10px", color: "#afafaf" }}>r/</span>
                             <input type="text" name="communityName" className="form-input" style={{ width: "93%", padding: 8, paddingLeft: 22 }} maxLength="21" value={data.communityName} onChange={handleInput} />
+                            {communityNameNotAvailable && <div className="error-message" style={{ marginTop: 5 }}>Sorry, r/{data.communityName} is taken. Try another.</div>}
                         </div>
                         <p style={{ color: `${remainingCharacters !== 0 ? "#afafaf" : "#ea072c"} `, fontSize: "12px" }}>{remainingCharacters} characters remaining</p>
                         <h4>Community type</h4>
