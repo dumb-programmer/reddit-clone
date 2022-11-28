@@ -6,6 +6,7 @@ import "../styles/Community.css";
 
 const Community = ({ username }) => {
     const [data, setData] = useState(null);
+    const [communityNotFound, setCommunityNotFound] = useState(false);
     const { communityName } = useParams();
 
     useEffect(() => {
@@ -15,6 +16,9 @@ const Community = ({ username }) => {
                 if (snapshot) {
                     setData(snapshot);
                 }
+                else {
+                    setCommunityNotFound(true);
+                }
             }
         });
 
@@ -22,6 +26,17 @@ const Community = ({ username }) => {
             ignore = true;
         }
     }, [communityName]);
+
+    if (communityNotFound) {
+        return (
+            <>
+                <Header />
+                <main style={{ backgroundColor: "#dae0e6", height: "100%", display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column" }}>
+                    <h2>Sorry, there aren't any communities with that name.</h2>
+                    <h5>This community may have been banned or the community name is incorrect</h5>
+                </main>
+            </>);
+    }
 
     if (data) {
         return (
