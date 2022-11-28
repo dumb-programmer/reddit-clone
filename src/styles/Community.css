@@ -16,8 +16,8 @@
     margin-left: 35px;
     margin-top: 15px;
     background-color: #ffff;
-    height: 300px;
-    width: 200px;
+    height: 250px;
+    width: 250px;
     display: flex;
     flex-direction: column;
 }
@@ -26,6 +26,9 @@
     text-align: center;
     background-color: #33a8ff;
     color: #fff;
+    padding: 10px;
 }
 
-.community-description {}
+.community-description {
+    padding: 10px;
+}

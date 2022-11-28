@@ -96,6 +96,22 @@ const getUsername = async (email) => {
         })
     };
     return username;
-}
+};
 
-export { createAccountUsingEmail, usernameAvailable, emailNotRegistered, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername };
+const getCommunity = async (communityName) => {
+    const communityRef = collection(db, "Communities", "public", "communities");
+    const q = query(communityRef, where("name", "==", communityName));
+    const snapshot = await getDocs(q);
+    let community;
+    if (!snapshot.empty) {
+        snapshot.forEach(doc => {
+            community = doc.data();
+        })
+    }
+    else {
+        return false;
+    }
+    return community;
+};
+
+export { createAccountUsingEmail, usernameAvailable, emailNotRegistered, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunity };
