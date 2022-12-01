@@ -1,13 +1,14 @@
 import Header from "./Header";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getCommunity } from "../firebase";
 import "../styles/Community.css";
 
 const Community = ({ username }) => {
-    const [data, setData] = useState(null);
+    const [data, setData] = useState({});
     const [communityNotFound, setCommunityNotFound] = useState(false);
     const { communityName } = useParams();
+    const navigate = useNavigate();
 
     useEffect(() => {
         let ignore = false;
@@ -38,7 +39,8 @@ const Community = ({ username }) => {
             </>);
     }
 
-    if (data) {
+
+    if (Object.keys(data).length !== 0) {
         return (
             <>
                 <Header username={username} />
@@ -80,7 +82,7 @@ const Community = ({ username }) => {
                             <p style={{ fontSize: 16, wordWrap: "break-word" }}>{data.description}</p>
                             <span style={{ color: "#818589" }}>Created {new Intl.DateTimeFormat('en-US', { dateStyle: 'medium' }).format(new Date(data.createdOn.toMillis()))}</span>
                             <p>{new Intl.NumberFormat("en-US", { notation: "compact" }).format(data.members)} Members</p>
-                            <button className="primary-btn" style={{ width: "100%", marginLeft: -5 }}>Create Post</button>
+                            <button className="primary-btn" style={{ width: "100%", marginLeft: -5 }} onClick={() => navigate(`/r/${communityName}/submit`)}>Create Post</button>
                         </div>
                     </aside>
                 </main>
