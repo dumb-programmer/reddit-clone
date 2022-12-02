@@ -73,9 +73,8 @@ const registerAuthObserver = (cb) => {
 };
 
 const createCommunity = async ({ communityName, communityType, username }) => {
-    console.log(communityName, communityType, username);
     const communityRef = collection(db, "Communities", communityType, "communities");
-    await addDoc(communityRef, { name: communityName, moderator: username, createdOn: serverTimestamp() });
+    await addDoc(communityRef, { name: communityName, members: 0, moderator: username, createdOn: serverTimestamp() });
 };
 
 const communityNameAvailable = async ({ communityName, communityType }) => {
@@ -111,7 +110,23 @@ const getCommunity = async (communityName) => {
     else {
         return false;
     }
+    const posts = await getPostsByCommunity(communityName);
+    community.posts = posts;
     return community;
 };
 
-export { createAccountUsingEmail, usernameAvailable, emailNotRegistered, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunity };
+const createPost = async ({ username, communityName, title, content }) => {
+    const postsRef = collection(db, "Posts");
+    await addDoc(postsRef, { id: uuidv4(), title: title, content: content, votes: 0, createdOn: serverTimestamp(), author: username, communityName: communityName });
+};
+
+const getPostsByCommunity = async (communityName) => {
+    const postsRef = collection(db, "Posts");
+    const q = query(postsRef, where("communityName", "==", communityName));
+    const snapshot = await getDocs(q);
+    const data = [];
+    snapshot.forEach(doc => data.push(doc.data()));
+    return data;
+}
+
+export { createAccountUsingEmail, usernameAvailable, emailNotRegistered, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunity, createPost, getPostsByCommunity };
