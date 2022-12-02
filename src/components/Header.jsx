@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { logout, isLoggedIn } from "../firebase";
 
-const Header = ({ username }) => {
+const Header = ({ setRefreshHome }) => {
     const [logoutDisabled, setLogoutDisabled] = useState(false);
     const [showDropdown, setShowDropdown] = useState(false);
 
@@ -12,6 +12,7 @@ const Header = ({ username }) => {
         e.stopPropagation();
         setLogoutDisabled(true);
         await logout();
+        localStorage.removeItem("username");
         navigate("/");
     };
 
@@ -21,7 +22,7 @@ const Header = ({ username }) => {
                 setShowDropdown(false);
             }
         });
-    }, []);
+    }, [showDropdown]);
 
     return (
         <header className="nav-bar">
@@ -36,11 +37,11 @@ const Header = ({ username }) => {
             <input type="text" id="search-bar" placeholder="Search Reddit" />
             <div className="header-btns">
                 {
-                    isLoggedIn() ? (
+                    localStorage.getItem("username") ? (
                         <>
                             <div className="user-dropdown" styles={{ marginRight: "5px" }} onClick={(e) => { e.stopPropagation(); setShowDropdown(prev => !prev) }}>
                                 <img src="https://preview.redd.it/j6n0dp5c5bu71.png?width=256&format=png&auto=webp&s=e6ce31875458e6f094b997ea4fbf32e93dc4af81" height="30px" width="30px" alt="user-avatar" />
-                                <span>{username}</span>
+                                <span>{localStorage.getItem("username")}</span>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#888b8d" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" className="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
                             </div>
                             {

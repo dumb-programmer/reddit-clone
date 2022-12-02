@@ -1,34 +1,18 @@
-import { useEffect, useState } from "react";
-import { getUsername, isLoggedIn, registerAuthObserver } from "../firebase";
-import "../styles/Home.css";
+import { useState } from "react";
 import CreateCommunityModal from "./CreateCommunityModal";
 import Header from "./Header";
+import "../styles/Home.css";
 
-const Home = ({ user, username, setUser, setUsername }) => {
+const Home = () => {
     const [showModal, setShowModal] = useState(false);
-
-    const setState = async (user) => {
-        const username = await getUsername(user.email);
-        setUsername(username);
-        setUser(user);
-    }
-
-    useEffect(() => {
-        const unsub = registerAuthObserver((user) => {
-            if (user) {
-                setState(user);
-            }
-        });
-
-        return () => unsub();
-    });
+    const username = localStorage.getItem("username");
 
     return (
         <>
-            <Header username={username} />
+            <Header />
             <main className="posts-container">
                 {
-                    showModal && <CreateCommunityModal user={user} username={username} onExit={() => setShowModal(false)} />
+                    showModal && <CreateCommunityModal username={username} onExit={() => setShowModal(false)} />
                 }
                 <div className="posts">
                     {Array.from({ length: 10 }).map((idx) => (
@@ -51,7 +35,7 @@ const Home = ({ user, username, setUser, setUsername }) => {
                         </div>))}
                 </div>
                 {
-                    isLoggedIn() && <aside className="main-btns">
+                    username && <aside className="main-btns">
                         <img src="https://www.redditstatic.com/desktop2x/img/id-cards/home-banner@2x.png" alt="banner art" />
                         <div style={{ display: "flex" }}>
                             <img id="reddit-avatar" src="https://www.redditstatic.com/desktop2x/img/id-cards/snoo-home@2x.png" height="68px" width="40px" alt="reddit avatar" />

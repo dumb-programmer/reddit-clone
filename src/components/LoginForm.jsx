@@ -7,7 +7,7 @@ import LoginAndSignUpLayout from "./LoginAndSignUpLayout";
 import { isLoggedIn, loginUsingUsernameAndPassword } from "../firebase";
 import AlreadyLoggedInMessage from "./AlreadyLoggedInMessage";
 
-const LoginForm = ({ setUsername }) => {
+const LoginForm = () => {
     const [data, setData] = useState({
         username: "",
         password: ""
@@ -39,7 +39,7 @@ const LoginForm = ({ setUsername }) => {
                 });
             }
             else {
-                setUsername(data.username);
+                localStorage.setItem("username", data.username);
                 navigate("/");
             }
         }
@@ -69,7 +69,7 @@ const LoginForm = ({ setUsername }) => {
         if (isLoggedIn()) {
             setTimeout(() => navigate("/"), 1000);
         }
-    }, []);
+    }, [navigate]);
 
     const disableLoginBtn = Object.values(error).some(error => error);
 
