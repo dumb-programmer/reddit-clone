@@ -32,3 +32,11 @@
 .community-description {
     padding: 10px;
 }
+
+.upvote-btn__clicked svg {
+    stroke: #ff4500;
+}
+
+.downvote-btn__clicked svg {
+    stroke: #7193ff;
+}
