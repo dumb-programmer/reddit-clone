@@ -1,12 +1,20 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CreateCommunityModal from "./CreateCommunityModal";
 import Header from "./Header";
 import "../styles/Home.css";
+import { getAllPosts } from "../firebase";
 
 const Home = () => {
     const [showModal, setShowModal] = useState(false);
     const username = localStorage.getItem("username");
+    const [data, setData] = useState([]);
 
+    useEffect(() => {
+        getAllPosts().then(snapshot => setData(snapshot));
+    }, []);
+
+    const loading = Object.keys(data).length === 0;
+    console.log(data);
     return (
         <>
             <Header />
@@ -15,24 +23,28 @@ const Home = () => {
                     showModal && <CreateCommunityModal username={username} onExit={() => setShowModal(false)} />
                 }
                 <div className="posts">
-                    {Array.from({ length: 10 }).map((idx) => (
-                        <div key={idx} className="post">
-                            <div className="post-sidebar">
-                                <button className="upvote-btn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-arrow-up"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg></button>
-                                <p>26.4k</p>
-                                <button className="downvote-btn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-arrow-down"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg></button>
-                            </div>
-                            <div className="post-main">
-                                <div className="post-header">
-                                    <p>
-                                        <b>r/AskReddit</b>
-                                        <span> Posted by u/dog_red472 15 hrs ago </span>
-                                    </p>
-                                </div>
-                                <div className="post-title"><h3>Hello There</h3></div>
-                                <div className="post-body"></div>
-                            </div>
-                        </div>))}
+                    {
+                        !loading && <div className="posts" style={{ marginTop: 15 }}>
+                            {data.map((post) => (
+                                <div key={post.id} className="post">
+                                    <div className="post-sidebar">
+                                        <button className="upvote-btn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-arrow-up"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg></button>
+                                        <p>{post.votes}</p>
+                                        <button className="downvote-btn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-arrow-down"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg></button>
+                                    </div>
+                                    <div className="post-main">
+                                        <div className="post-header">
+                                            <p>
+                                                <b>r/{post.communityName}</b>
+                                                <span> Posted by u/{post.author} {new Date() - new Date(post.createdOn.toMillis())} ago </span>
+                                            </p>
+                                        </div>
+                                        <div className="post-title"><h3>{post.title}</h3></div>
+                                        <div className="post-body">{post.content}</div>
+                                    </div>
+                                </div>))}
+                        </div>
+                    }
                 </div>
                 {
                     username && <aside className="main-btns">
