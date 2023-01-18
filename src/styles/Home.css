@@ -104,7 +104,6 @@
 
 .posts-container {
     flex: 1;
-    background-color: #dae0e6;
     display: flex;
     justify-content: center;
 }

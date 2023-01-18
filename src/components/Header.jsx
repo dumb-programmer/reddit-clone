@@ -13,6 +13,7 @@ const Header = ({ setRefreshHome }) => {
         setLogoutDisabled(true);
         await logout();
         localStorage.removeItem("username");
+        localStorage.removeItem("user");
         navigate("/");
     };
 

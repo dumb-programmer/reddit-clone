@@ -65,7 +65,7 @@ const CreateCommunityModal = ({ user, username, onExit }) => {
                 </div>
                 <footer className="modal-footer">
                     <button className="primary-btn" onClick={handleSubmit}>Create Community</button>
-                    <button className="secondary-btn">Cancel</button>
+                    <button className="secondary-btn" onClick={onExit}>Cancel</button>
                 </footer>
             </div>
         </div>

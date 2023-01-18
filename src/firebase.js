@@ -1,7 +1,7 @@
 import { uuidv4 } from "@firebase/util";
 import { initializeApp } from "firebase/app";
 import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "firebase/auth";
-import { addDoc, collection, getDocs, getFirestore, query, serverTimestamp, where } from "firebase/firestore";
+import { addDoc, collection, doc, getDocs, getFirestore, orderBy, query, serverTimestamp, updateDoc, where } from "firebase/firestore";
 
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -129,4 +129,39 @@ const getPostsByCommunity = async (communityName) => {
     return data;
 }
 
-export { createAccountUsingEmail, usernameAvailable, emailNotRegistered, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunity, createPost, getPostsByCommunity };
+const getAllPosts = async () => {
+    const postsRef = collection(db, "Posts");
+    const q = query(postsRef, orderBy("createdOn"));
+    const snapshot = await getDocs(q);
+    const data = [];
+    snapshot.forEach(doc => data.push(doc.data()));
+    return data.reverse();
+};
+
+const upvote = async (postId) => {
+    const postsRef = collection(db, "Posts");
+    const q = query(postsRef, where("id", "==", postId));
+    const snapshot = await getDocs(q);
+    const data = [];
+    snapshot.forEach(doc => data.push(doc.data()));
+    console.log(data);
+
+    await updateDoc(snapshot, { votes: ++data.votes });
+};
+
+const downvote = async (postId) => {
+    const postsRef = collection(db, "Posts");
+    const q = query(postsRef, where("id", "==", postId));
+    const snapshot = await getDocs(q);
+    const data = [];
+    let docRef;
+    snapshot.forEach(doc => {
+        docRef = doc;
+        data.push(doc.data())
+    });
+    console.log(docRef.data());
+    --data[0].votes
+    console.log(await updateDoc(docRef, data[0]));
+};
+
+export { createAccountUsingEmail, usernameAvailable, emailNotRegistered, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunity, createPost, getPostsByCommunity, getAllPosts, upvote, downvote };
