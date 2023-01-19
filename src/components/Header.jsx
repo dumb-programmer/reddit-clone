@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { logout, isLoggedIn } from "../firebase";
+import { logout } from "../firebase";
 
 const Header = ({ setRefreshHome }) => {
     const [logoutDisabled, setLogoutDisabled] = useState(false);

@@ -1,21 +1,34 @@
 import Header from "./Header";
 import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { getCommunity } from "../firebase";
+import { useContext, useEffect, useState } from "react";
+import { getCommunity, joinCommunity, leaveCommunity } from "../firebase";
 import "../styles/Community.css";
 import Post from "./Post";
+import AuthContext from "../context/AuthContext";
 
 const Community = ({ username }) => {
   const [data, setData] = useState({});
   const [communityNotFound, setCommunityNotFound] = useState(false);
   const { communityName } = useParams();
   const navigate = useNavigate();
+  const user = useContext(AuthContext);
+  const [joined, setJoined] = useState(false);
+
+  const handleJoin = () => {
+    if (!joined) {
+      joinCommunity(user.uid, communityName, data.type);
+    } else {
+      leaveCommunity(user.uid, communityName, data.type);
+    }
+    setJoined((prev) => !prev);
+  };
 
   useEffect(() => {
     let ignore = false;
-    getCommunity(communityName).then((snapshot) => {
+    getCommunity(user.uid, communityName).then((snapshot) => {
       if (!ignore) {
         if (snapshot) {
+          setJoined(snapshot.joined);
           setData(snapshot);
         } else {
           setCommunityNotFound(true);
@@ -26,7 +39,7 @@ const Community = ({ username }) => {
     return () => {
       ignore = true;
     };
-  }, [communityName]);
+  }, [communityName, user]);
 
   if (communityNotFound) {
     return (
@@ -88,8 +101,12 @@ const Community = ({ username }) => {
             >
               r/{data.name}
             </span>
-            <button className="primary-btn" style={{ width: 80 }}>
-              Join
+            <button
+              className={`${joined ? "secondary-btn" : "primary-btn"}`}
+              style={{ width: 80 }}
+              onClick={handleJoin}
+            >
+              {joined ? "Joined" : "Join"}
             </button>
           </div>
         </div>

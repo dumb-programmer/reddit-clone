@@ -1,7 +1,7 @@
 import { uuidv4 } from "@firebase/util";
 import { initializeApp } from "firebase/app";
 import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "firebase/auth";
-import { addDoc, collection, getDocs, getFirestore, orderBy, query, serverTimestamp, updateDoc, where } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, getDocs, getFirestore, orderBy, query, serverTimestamp, setDoc, updateDoc, where } from "firebase/firestore";
 
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -19,7 +19,7 @@ const db = getFirestore(app);
 const createAccountUsingEmail = async ({ email, password, username }) => {
     try {
         const userCreds = await createUserWithEmailAndPassword(auth, email, password);
-        await addDoc(collection(db, "Users"), { username: username, email: userCreds.user.email })
+        await setDoc(doc(db, "Users", userCreds.uid), { username: username, email: userCreds.user.email })
     }
     catch (error) {
         console.log(error);
@@ -84,6 +84,36 @@ const communityNameAvailable = async ({ communityName, communityType }) => {
     return snapshot.empty;
 };
 
+const joinCommunity = async (userId, communityName, communityType) => {
+    const docRef = doc(db, "Users", userId);
+    const docSnap = (await getDoc(docRef)).data();
+    await updateDoc(docRef, { joined_communities: Array.from(new Set([...docSnap.joined_communities, communityName])) });
+    const communityRef = collection(db, "Communities", communityType, "communities");
+    const q = query(communityRef, where("name", "==", communityName));
+    const snapshot = await getDocs(q);
+    snapshot.forEach(async (doc) => {
+        await updateDoc(doc.ref, { members: ++doc.data().members });
+    });
+};
+
+const leaveCommunity = async (userId, communityName, communityType) => {
+    const docRef = doc(db, "Users", userId);
+    const data = (await getDoc(docRef)).data();
+    await updateDoc(docRef, { joined_communities: Array.from(new Set(data.joined_communities.filter(name => name !== communityName))) });
+    const communityRef = collection(db, "Communities", communityType, "communities");
+    const q = query(communityRef, where("name", "==", communityName));
+    const snapshot = await getDocs(q);
+    snapshot.forEach(async (doc) => {
+        await updateDoc(doc.ref, { members: --doc.data().members });
+    });
+};
+
+const hasJoinedCommunity = async (userId, communityName) => {
+    const docRef = doc(db, "Users", userId);
+    const docSnap = (await getDoc(docRef)).data();
+    return docSnap.joined_communities.includes(communityName);
+};
+
 const getUsername = async (email) => {
     const usersRef = collection(db, "Users");
     const q = query(usersRef, where("email", "==", email));
@@ -97,7 +127,7 @@ const getUsername = async (email) => {
     return username;
 };
 
-const getCommunity = async (communityName) => {
+const getCommunity = async (userId, communityName) => {
     const communityRef = collection(db, "Communities", "public", "communities");
     const q = query(communityRef, where("name", "==", communityName));
     const snapshot = await getDocs(q);
@@ -105,13 +135,18 @@ const getCommunity = async (communityName) => {
     if (!snapshot.empty) {
         snapshot.forEach(doc => {
             community = doc.data();
-        })
+        });
     }
     else {
         return false;
     }
     const posts = await getPostsByCommunity(communityName);
     community.posts = posts;
+
+    if (userId) {
+        community.joined = await hasJoinedCommunity(userId, communityName);
+    }
+
     return community;
 };
 
@@ -190,4 +225,4 @@ const removeDownvote = async (postId, userId) => {
     await updateDoc(doc.ref, { downvotes: downvotes.filter(uid => uid !== userId) });
 };
 
-export { createAccountUsingEmail, usernameAvailable, emailNotRegistered, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunity, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote };
+export { createAccountUsingEmail, usernameAvailable, emailNotRegistered, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunity, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, leaveCommunity };
