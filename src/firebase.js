@@ -1,7 +1,7 @@
 import { uuidv4 } from "@firebase/util";
 import { initializeApp } from "firebase/app";
 import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "firebase/auth";
-import { addDoc, collection, doc, getDocs, getFirestore, orderBy, query, serverTimestamp, updateDoc, where } from "firebase/firestore";
+import { addDoc, collection, getDocs, getFirestore, orderBy, query, serverTimestamp, updateDoc, where } from "firebase/firestore";
 
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -117,7 +117,7 @@ const getCommunity = async (communityName) => {
 
 const createPost = async ({ username, communityName, title, content }) => {
     const postsRef = collection(db, "Posts");
-    await addDoc(postsRef, { id: uuidv4(), title: title, content: content, votes: 0, createdOn: serverTimestamp(), author: username, communityName: communityName });
+    await addDoc(postsRef, { id: uuidv4(), title: title, content: content, votes: 0, createdOn: serverTimestamp(), author: username, communityName: communityName, upvotes: [], downvotes: [] });
 };
 
 const getPostsByCommunity = async (communityName) => {
@@ -138,30 +138,56 @@ const getAllPosts = async () => {
     return data.reverse();
 };
 
-const upvote = async (postId) => {
+const getPostById = async (postId) => {
     const postsRef = collection(db, "Posts");
     const q = query(postsRef, where("id", "==", postId));
     const snapshot = await getDocs(q);
-    const data = [];
-    snapshot.forEach(doc => data.push(doc.data()));
-    console.log(data);
-
-    await updateDoc(snapshot, { votes: ++data.votes });
-};
-
-const downvote = async (postId) => {
-    const postsRef = collection(db, "Posts");
-    const q = query(postsRef, where("id", "==", postId));
-    const snapshot = await getDocs(q);
-    const data = [];
-    let docRef;
-    snapshot.forEach(doc => {
-        docRef = doc;
-        data.push(doc.data())
+    let doc = null;
+    snapshot.forEach((document) => {
+        doc = document;
     });
-    console.log(docRef.data());
-    --data[0].votes
-    console.log(await updateDoc(docRef, data[0]));
+    return doc;
 };
 
-export { createAccountUsingEmail, usernameAvailable, emailNotRegistered, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunity, createPost, getPostsByCommunity, getAllPosts, upvote, downvote };
+const upvote = async (postId, userId) => {
+    const doc = await getPostById(postId);
+    const data = doc.data();
+    const upvotes = data?.upvotes;
+    const downvotes = data?.downvotes;
+
+    await updateDoc(doc.ref, { votes: ++data.votes });
+    await updateDoc(doc.ref, { upvotes: [...upvotes, userId] });
+    await updateDoc(doc.ref, { downvotes: downvotes.filter(uid => uid !== userId) });
+};
+
+const removeUpvote = async (postId, userId) => {
+    const doc = await getPostById(postId);
+    const data = doc.data();
+    const upvotes = data?.upvotes;
+
+    await updateDoc(doc.ref, { votes: --data.votes });
+    await updateDoc(doc.ref, { upvotes: upvotes.filter(uid => uid !== userId) });
+};
+
+const downvote = async (postId, userId) => {
+    const doc = await getPostById(postId);
+    const data = doc.data();
+    const downvotes = data?.downvotes;
+    const upvotes = data?.upvotes;
+
+    await updateDoc(doc.ref, { votes: --data.votes });
+    await updateDoc(doc.ref, { downvotes: [...downvotes, userId] });
+    await updateDoc(doc.ref, { upvotes: upvotes.filter(uid => uid !== userId) });
+};
+
+
+const removeDownvote = async (postId, userId) => {
+    const doc = await getPostById(postId);
+    const data = doc.data();
+    const downvotes = data?.downvotes;
+
+    await updateDoc(doc.ref, { votes: --data.votes });
+    await updateDoc(doc.ref, { downvotes: downvotes.filter(uid => uid !== userId) });
+};
+
+export { createAccountUsingEmail, usernameAvailable, emailNotRegistered, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunity, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote };
