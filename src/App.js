@@ -9,6 +9,7 @@ import MainLayout from './components/MainLayout';
 import AuthContext from './context/AuthContext';
 import { registerAuthObserver } from './firebase';
 import './App.css';
+import Profile from './components/Profile';
 
 function App() {
   const [user, setUser] = useState(localStorage.getItem("user") || null);
@@ -30,6 +31,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/" element={<MainLayout />}>
             <Route path="/" element={<Home />} />
+            <Route path="/profile" element={<Profile />} />
             <Route path="/r/:communityName" element={<Community />} />
             <Route path="/r/:communityName/submit" element={<CreatePost />} />
           </Route>

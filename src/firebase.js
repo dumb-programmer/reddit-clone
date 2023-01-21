@@ -225,4 +225,23 @@ const removeDownvote = async (postId, userId) => {
     await updateDoc(doc.ref, { downvotes: downvotes.filter(uid => uid !== userId) });
 };
 
-export { createAccountUsingEmail, usernameAvailable, emailNotRegistered, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunity, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, leaveCommunity };
+const getUserPosts = async (username) => {
+    const postsRef = collection(db, "Posts");
+    const q = query(postsRef, where("author", "==", username));
+    const snapshot = await getDocs(q);
+    let docs = [];
+    snapshot.forEach((doc) => {
+        docs.push(doc);
+    });
+    return docs.map(doc => doc.data());
+};
+
+const getProfile = async (userId, username) => {
+    const docRef = doc(db, "Users", userId);
+    const profile = (await getDoc(docRef)).data();
+    const posts = await getUserPosts(username);
+    profile.posts = posts;
+    return profile;
+};
+
+export { createAccountUsingEmail, usernameAvailable, emailNotRegistered, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunity, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, leaveCommunity, getProfile };

@@ -27,22 +27,20 @@ const Home = () => {
   const loading = Object.keys(data).length === 0;
 
   return (
-    <div className="posts-container">
+    <div style={{ display: "flex", justifyContent: "center", gap: "1rem" }}>
       {showModal && (
         <CreateCommunityModal
           username={username}
           onExit={() => setShowModal(false)}
         />
       )}
-      <div className="posts">
-        {!loading && (
-          <div className="posts" style={{ marginTop: 15 }}>
-            {data.map((post) => (
-              <Post key={post.id} data={post} />
-            ))}
-          </div>
-        )}
-      </div>
+      {!loading && (
+        <div style={{ minWidth: 800 }}>
+          {data.map((post) => (
+            <Post key={post.id} data={post} />
+          ))}
+        </div>
+      )}
       {authenticated && (
         <aside className="main-btns">
           <img
