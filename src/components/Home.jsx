@@ -27,7 +27,14 @@ const Home = () => {
   const loading = Object.keys(data).length === 0;
 
   return (
-    <div style={{ display: "flex", justifyContent: "center", gap: "1rem" }}>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        gap: "1rem",
+        paddingTop: 100,
+      }}
+    >
       {showModal && (
         <CreateCommunityModal
           username={username}

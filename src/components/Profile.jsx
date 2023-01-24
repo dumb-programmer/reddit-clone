@@ -30,6 +30,7 @@ const Profile = () => {
         display: "flex",
         justifyContent: "center",
         gap: "1rem",
+        paddingTop: 100,
       }}
     >
       <div style={{ width: 800 }}>
