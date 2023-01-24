@@ -1,8 +1,10 @@
+import { useNavigate } from "react-router-dom";
 import Vote from "./Vote";
 
 const Post = ({ data }) => {
+  const navigate = useNavigate();
   return (
-    <div className="post">
+    <div className="post" onClick={() => navigate(`/post/${data.id}`)}>
       <div className="post-sidebar">
         <Vote data={data} />
       </div>
