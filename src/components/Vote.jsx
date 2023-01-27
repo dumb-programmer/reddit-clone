@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { downvote, removeDownvote, removeUpvote, upvote } from "../firebase";
 import AuthContext from "../context/AuthContext";
 
@@ -7,39 +7,66 @@ const Vote = ({ data }) => {
   const isUpvoted = data?.upvotes.includes(user?.uid) || false;
   const isDownvoted = data?.downvotes.includes(user?.uid) || false;
 
-  const [vote, setVote] = useState(() => {
-    if (isUpvoted) {
-      return 1;
-    } else if (isDownvoted) {
-      return -1;
-    }
-    return 0;
-  });
+  const [userVote, setUserVote] = useState("");
+
+  const [votes, setVotes] = useState("");
 
   const handleUpvote = async () => {
-    if (isUpvoted || vote === 1) {
+    if (isUpvoted || userVote === 1) {
       await removeUpvote(data.id, user.uid);
-      setVote((prevState) => --prevState);
+      setVotes((prev) => --prev);
+      setUserVote(0);
     } else {
-      await upvote(data.id, user.uid);
-      setVote((prevState) => ++prevState);
+      if (userVote === -1) {
+        // The post is already downvoted
+        await upvote(data.id, user.uid, true);
+        setVotes((prev) => prev + 2);
+      } else {
+        // The post is in neutral state
+        await upvote(data.id, user.uid, false);
+        setVotes((prev) => ++prev);
+      }
+      setUserVote(1);
     }
   };
 
   const handleDownvote = async () => {
-    if (isDownvoted || vote === -1) {
+    if (isDownvoted || userVote === -1) {
       await removeDownvote(data.id, user.uid);
-      setVote((prevState) => ++prevState);
+      setVotes((prev) => ++prev);
+      setUserVote(0);
     } else {
-      await downvote(data.id, user.uid);
-      setVote((prevState) => --prevState);
+      if (userVote === 1) {
+        // The post is already upvoted
+        await downvote(data.id, user.uid, true);
+        setVotes((prev) => prev - 2);
+      } else {
+        // The post is in neutral state
+        await downvote(data.id, user.uid, false);
+        setVotes((prev) => --prev);
+      }
+      setUserVote(-1);
     }
   };
+
+  useEffect(() => {
+    if (data) {
+      setVotes(data?.votes);
+      setUserVote(() => {
+        if (isUpvoted) {
+          return 1;
+        } else if (isDownvoted) {
+          return -1;
+        }
+        return 0;
+      });
+    }
+  }, [data, isDownvoted, isUpvoted]);
 
   return (
     <>
       <button
-        className={`upvote-btn ${vote === 1 ? "upvote-btn__clicked" : ""}`}
+        className={`upvote-btn ${userVote === 1 ? "upvote-btn__clicked" : ""}`}
         onClick={handleUpvote}
       >
         <svg
@@ -60,15 +87,17 @@ const Vote = ({ data }) => {
       </button>
       <p
         style={
-          vote === 1 || vote === -1
-            ? { color: vote === 1 ? "#ff4500" : "#7193ff" }
+          userVote !== 0
+            ? { color: userVote === 1 ? "#ff4500" : "#7193ff" }
             : null
         }
       >
-        {vote}
+        {votes}
       </p>
       <button
-        className={`downvote-btn ${vote === -1 ? "downvote-btn__clicked" : ""}`}
+        className={`downvote-btn ${
+          userVote === -1 ? "downvote-btn__clicked" : ""
+        }`}
         onClick={handleDownvote}
       >
         <svg

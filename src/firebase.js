@@ -184,13 +184,13 @@ const getPostById = async (postId) => {
     return doc;
 };
 
-const upvote = async (postId, userId) => {
+const upvote = async (postId, userId, isDownvoted) => {
     const doc = await getPostById(postId);
     const data = doc.data();
     const upvotes = data?.upvotes;
     const downvotes = data?.downvotes;
 
-    await updateDoc(doc.ref, { votes: ++data.votes });
+    await updateDoc(doc.ref, { votes: isDownvoted ? data.votes + 2 : ++data.votes });
     await updateDoc(doc.ref, { upvotes: [...upvotes, userId] });
     await updateDoc(doc.ref, { downvotes: downvotes.filter(uid => uid !== userId) });
 };
@@ -204,13 +204,13 @@ const removeUpvote = async (postId, userId) => {
     await updateDoc(doc.ref, { upvotes: upvotes.filter(uid => uid !== userId) });
 };
 
-const downvote = async (postId, userId) => {
+const downvote = async (postId, userId, isUpvoted) => {
     const doc = await getPostById(postId);
     const data = doc.data();
     const downvotes = data?.downvotes;
     const upvotes = data?.upvotes;
 
-    await updateDoc(doc.ref, { votes: --data.votes });
+    await updateDoc(doc.ref, { votes: isUpvoted ? data.votes - 2 : --data.votes });
     await updateDoc(doc.ref, { downvotes: [...downvotes, userId] });
     await updateDoc(doc.ref, { upvotes: upvotes.filter(uid => uid !== userId) });
 };
@@ -221,7 +221,7 @@ const removeDownvote = async (postId, userId) => {
     const data = doc.data();
     const downvotes = data?.downvotes;
 
-    await updateDoc(doc.ref, { votes: --data.votes });
+    await updateDoc(doc.ref, { votes: ++data.votes });
     await updateDoc(doc.ref, { downvotes: downvotes.filter(uid => uid !== userId) });
 };
 
@@ -244,4 +244,4 @@ const getProfile = async (userId, username) => {
     return profile;
 };
 
-export { createAccountUsingEmail, usernameAvailable, emailNotRegistered, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunity, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, leaveCommunity, getProfile };
+export { createAccountUsingEmail, usernameAvailable, emailNotRegistered, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunity, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, leaveCommunity, getProfile, getPostById };
