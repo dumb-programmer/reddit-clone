@@ -1,7 +1,8 @@
 import { useState } from "react";
+import { createComment } from "../firebase";
 import LoadingSVG from "./LoadingSVG";
 
-const CommentBox = () => {
+const CommentBox = ({ postId }) => {
   const [comment, setComment] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -9,6 +10,9 @@ const CommentBox = () => {
     e.preventDefault();
     if (comment) {
       setLoading(true);
+      await createComment(comment, localStorage.getItem("username"), postId);
+      setComment("");
+      setLoading(false);
     }
   };
 

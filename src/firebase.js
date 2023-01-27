@@ -1,7 +1,7 @@
 import { uuidv4 } from "@firebase/util";
 import { initializeApp } from "firebase/app";
 import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "firebase/auth";
-import { addDoc, collection, doc, getDoc, getDocs, getFirestore, orderBy, query, serverTimestamp, setDoc, updateDoc, where } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, getDocs, getFirestore, onSnapshot, orderBy, query, serverTimestamp, setDoc, updateDoc, where } from "firebase/firestore";
 
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -244,4 +244,26 @@ const getProfile = async (userId, username) => {
     return profile;
 };
 
-export { createAccountUsingEmail, usernameAvailable, emailNotRegistered, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunity, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, leaveCommunity, getProfile, getPostById };
+const createComment = async (comment, username, postId) => {
+    const commentsRef = collection(db, "Comments");
+    await addDoc(commentsRef, { id: uuidv4(), comment: comment, votes: 0, createdOn: serverTimestamp(), author: username, upvotes: [], downvotes: [], postId });
+};
+
+const getCommentsForPost = async (postId) => {
+    const commentsRef = collection(db, "Comments");
+    const q = query(commentsRef, where("postId", "==", postId), orderBy("createdOn", "desc"));
+    const snap = await getDocs(q);
+    const data = [];
+    snap.forEach((snap) => {
+        data.push(snap.data());
+    })
+    return data;
+};
+
+const subscribeToComments = (postId, cb) => {
+    const commentsRef = collection(db, "Comments");
+    const q = query(commentsRef, where("postId", "==", postId), orderBy("createdOn", "desc"));
+    return onSnapshot(q, cb);
+}
+
+export { createAccountUsingEmail, usernameAvailable, emailNotRegistered, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunity, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, leaveCommunity, getProfile, getPostById, createComment, getCommentsForPost, subscribeToComments };

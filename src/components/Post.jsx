@@ -1,11 +1,12 @@
 import { useNavigate } from "react-router-dom";
+import getRelativeDateTime from "../utils/getRelativeDateTime";
 import Vote from "./Vote";
 
 const Post = ({ data }) => {
   const navigate = useNavigate();
   return (
     <div className="post" onClick={() => navigate(`/post/${data.id}`)}>
-      <div className="post-sidebar">
+      <div className="post-sidebar" onClick={(e) => e.stopPropagation()}>
         <Vote data={data} />
       </div>
       <div className="post-main">
@@ -15,7 +16,7 @@ const Post = ({ data }) => {
             <span>
               {" "}
               Posted by u/{data.author}{" "}
-              {new Date() - new Date(data.createdOn.toMillis())} ago{" "}
+              {getRelativeDateTime(data.createdOn.toMillis())}{" "}
             </span>
           </p>
         </div>
