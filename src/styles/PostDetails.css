@@ -7,13 +7,13 @@
 
 .content {
     background-color: #fff;
-    height: 800px;
-    width: 700px;
+    min-width: 700px;
     border-radius: 5px;
-    padding: 20px;
+    padding: 30px;
 }
 
 .post-container {
+    width: 100%;
     border-bottom: 1px solid #edeff1;
     padding-bottom: 20;
 }
@@ -34,4 +34,17 @@
 
 .comment-box:focus {
     outline: 1px solid black;
+}
+
+.comment-btn {
+    width: 100px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.comment-btn:disabled {
+    background-color: #838383;
+    cursor: not-allowed;
 }

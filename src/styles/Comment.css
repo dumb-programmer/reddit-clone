@@ -1,0 +1,40 @@
+.comment-container {
+    padding: 10px 0;
+}
+
+.comment {
+    display: flex;
+}
+
+.avatar {
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+}
+
+.comment-header {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.comment-footer {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin-left: 30px;
+}
+
+.reply-btn {
+    all: unset;
+    padding: 10px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: 10px;
+}
+
+.reply-btn:hover {
+    background-color: #e7e7e7;
+    cursor: pointer;
+}
