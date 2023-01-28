@@ -1,29 +1,46 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { subscribeToPost } from "../firebase";
 import getRelativeDateTime from "../utils/getRelativeDateTime";
 import Vote from "./Vote";
 
-const Post = ({ data }) => {
+const Post = ({ data, id }) => {
+  const [post, setPost] = useState(data);
+
+  useEffect(() => {
+    let ignore = false;
+    const unsub = subscribeToPost(id, (doc) => {
+      if (!ignore) {
+        setPost(doc.data());
+      }
+    });
+
+    return () => {
+      unsub();
+    };
+  }, [id]);
+
   const navigate = useNavigate();
   return (
-    <div className="post" onClick={() => navigate(`/post/${data.id}`)}>
+    <div className="post" onClick={() => navigate(`/post/${post.id}`)}>
       <div className="post-sidebar" onClick={(e) => e.stopPropagation()}>
-        <Vote data={data} />
+        {post && <Vote data={post} type="post" />}
       </div>
       <div className="post-main">
         <div className="post-header">
           <p>
-            <b>r/{data.communityName}</b>
+            <b>r/{post.communityName}</b>
             <span>
               {" "}
-              Posted by u/{data.author}{" "}
+              Posted by u/{post.author}{" "}
               {getRelativeDateTime(data.createdOn.toMillis())}{" "}
             </span>
           </p>
         </div>
         <div className="post-title">
-          <h3>{data.title}</h3>
+          <h3>{post.title}</h3>
         </div>
-        <div className="post-body">{data.content}</div>
+        <div className="post-body">{post.content}</div>
       </div>
     </div>
   );

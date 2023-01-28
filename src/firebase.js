@@ -168,9 +168,9 @@ const getAllPosts = async () => {
     const postsRef = collection(db, "Posts");
     const q = query(postsRef, orderBy("createdOn"));
     const snapshot = await getDocs(q);
-    const data = [];
-    snapshot.forEach(doc => data.push(doc.data()));
-    return data.reverse();
+    const docs = [];
+    snapshot.forEach(doc => docs.push(doc));
+    return docs.reverse();
 };
 
 const getPostById = async (postId) => {
@@ -184,8 +184,18 @@ const getPostById = async (postId) => {
     return doc;
 };
 
-const upvote = async (postId, userId, isDownvoted) => {
-    const doc = await getPostById(postId);
+const subscribeToPost = (postId, cb) => {
+    return onSnapshot(doc(db, "Posts", postId), cb);
+};
+
+const upvote = async (id, userId, isDownvoted, type) => {
+    let doc;
+    if (type === "post") {
+        doc = await getPostById(id);
+    }
+    else if (type === "comment") {
+        doc = await getCommentById(id);
+    }
     const data = doc.data();
     const upvotes = data?.upvotes;
     const downvotes = data?.downvotes;
@@ -195,8 +205,14 @@ const upvote = async (postId, userId, isDownvoted) => {
     await updateDoc(doc.ref, { downvotes: downvotes.filter(uid => uid !== userId) });
 };
 
-const removeUpvote = async (postId, userId) => {
-    const doc = await getPostById(postId);
+const removeUpvote = async (id, userId, type) => {
+    let doc;
+    if (type === "post") {
+        doc = await getPostById(id);
+    }
+    else if (type === "comment") {
+        doc = await getCommentById(id);
+    }
     const data = doc.data();
     const upvotes = data?.upvotes;
 
@@ -204,8 +220,14 @@ const removeUpvote = async (postId, userId) => {
     await updateDoc(doc.ref, { upvotes: upvotes.filter(uid => uid !== userId) });
 };
 
-const downvote = async (postId, userId, isUpvoted) => {
-    const doc = await getPostById(postId);
+const downvote = async (id, userId, isUpvoted, type) => {
+    let doc;
+    if (type === "post") {
+        doc = await getPostById(id);
+    }
+    else if (type === "comment") {
+        doc = await getCommentById(id);
+    }
     const data = doc.data();
     const downvotes = data?.downvotes;
     const upvotes = data?.upvotes;
@@ -216,8 +238,14 @@ const downvote = async (postId, userId, isUpvoted) => {
 };
 
 
-const removeDownvote = async (postId, userId) => {
-    const doc = await getPostById(postId);
+const removeDownvote = async (id, userId, type) => {
+    let doc;
+    if (type === "post") {
+        doc = await getPostById(id);
+    }
+    else if (type === "comment") {
+        doc = await getCommentById(id);
+    }
     const data = doc.data();
     const downvotes = data?.downvotes;
 
@@ -264,6 +292,17 @@ const subscribeToComments = (postId, cb) => {
     const commentsRef = collection(db, "Comments");
     const q = query(commentsRef, where("postId", "==", postId), orderBy("createdOn", "desc"));
     return onSnapshot(q, cb);
-}
+};
 
-export { createAccountUsingEmail, usernameAvailable, emailNotRegistered, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunity, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, leaveCommunity, getProfile, getPostById, createComment, getCommentsForPost, subscribeToComments };
+const getCommentById = async (commentId) => {
+    const commentsRef = collection(db, "Comments");
+    const q = query(commentsRef, where("id", "==", commentId));
+    const snapshot = await getDocs(q);
+    let doc = null;
+    snapshot.forEach((document) => {
+        doc = document;
+    });
+    return doc;
+};
+
+export { createAccountUsingEmail, usernameAvailable, emailNotRegistered, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunity, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, leaveCommunity, getProfile, getPostById, createComment, getCommentsForPost, subscribeToComments, subscribeToPost };

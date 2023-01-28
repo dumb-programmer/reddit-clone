@@ -44,7 +44,7 @@ const Home = () => {
       {!loading && (
         <div style={{ minWidth: 800 }}>
           {data.map((post) => (
-            <Post key={post.id} data={post} />
+            <Post key={post.id} data={post.data()} id={post.id} />
           ))}
         </div>
       )}

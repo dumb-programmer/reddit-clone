@@ -5,6 +5,7 @@ import {
   getCommentsForPost,
   getPostById,
   subscribeToComments,
+  subscribeToPost,
 } from "../firebase";
 import getRelativeDateTime from "../utils/getRelativeDateTime";
 import Comment from "./Comment";
@@ -18,15 +19,23 @@ const PostDetails = () => {
 
   useEffect(() => {
     let ignore = false;
+    let docId;
+    let unsubPost;
     getPostById(postId).then((snap) => {
       if (!ignore) {
+        docId = snap.id;
+        unsubPost = subscribeToPost(docId, (doc) => setData(doc.data()));
         setData(snap.data());
       }
     });
 
-    getCommentsForPost(postId).then((data) => setComments(data));
+    getCommentsForPost(postId).then((data) => {
+      if (!ignore) {
+        setComments(data);
+      }
+    });
 
-    const unsub = subscribeToComments(postId, (doc) => {
+    const unsubComments = subscribeToComments(postId, (doc) => {
       const items = [];
       doc.forEach((snap) => items.push(snap.data()));
       setComments(items);
@@ -34,11 +43,12 @@ const PostDetails = () => {
 
     return () => {
       ignore = true;
-      unsub();
+      unsubComments();
+      if (unsubPost) {
+        unsubPost();
+      }
     };
   }, [postId]);
-
-  console.log(comments);
 
   return (
     <div className="content-container">
@@ -50,7 +60,7 @@ const PostDetails = () => {
           }}
         >
           <div className="post-sidebar">
-            <Vote data={data} />
+            {data && <Vote data={data} type="post" />}
           </div>
           <div className="post-container">
             <div className="post-header">
@@ -65,7 +75,10 @@ const PostDetails = () => {
           </div>
         </div>
         <div style={{ marginTop: 20 }}>
-          {comments && comments.map((comment) => <Comment data={comment} />)}
+          {comments &&
+            comments.map((comment) => (
+              <Comment key={comment.id} data={comment} />
+            ))}
         </div>
       </div>
     </div>
