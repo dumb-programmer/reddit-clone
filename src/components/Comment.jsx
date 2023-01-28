@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import MessageIcon from "./MessageIcon";
 import Vote from "./Vote";
 import "../styles/Comment.css";
 import getRelativeDateTime from "../utils/getRelativeDateTime";
+import ShowMore from "./ShowMore";
 
 const Comment = ({ data }) => {
   return (
@@ -42,6 +43,7 @@ const Comment = ({ data }) => {
           <MessageIcon height={24} width={24} stroke="black" />
           <span>Reply</span>
         </button>
+        <ShowMore id={data.id} />
       </div>
     </div>
   );

@@ -32,9 +32,45 @@
     align-items: center;
     gap: 0.5rem;
     margin-left: 10px;
+    cursor: pointer;
 }
 
-.reply-btn:hover {
+.reply-btn:hover, .show-more:hover {
     background-color: #e7e7e7;
+}
+
+.show-more {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     cursor: pointer;
+    padding: 10px;
+    position: relative;
+}
+
+.comment-dropdown {
+    background-color: #fff;
+    position: absolute;
+    list-style: none;
+    top: 20px;
+    text-align: center;
+    padding: 0;
+    border-radius: 5px;
+    box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.comment-dropdown-link {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    gap: 0.5rem;
+}
+
+.comment-dropdown-link:not(:last-child) {
+    border-bottom: 1px solid #edeff1;
+}
+
+.comment-dropdown-link:hover {
+    background-color: #e9f5fd;
 }
