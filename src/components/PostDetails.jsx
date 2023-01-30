@@ -37,7 +37,7 @@ const PostDetails = () => {
 
     const unsubComments = subscribeToComments(postId, (doc) => {
       const items = [];
-      doc.forEach((snap) => items.push(snap.data()));
+      doc.forEach((snap) => items.push(snap));
       setComments(items);
     });
 
@@ -71,13 +71,16 @@ const PostDetails = () => {
             </div>
             <h1>{data?.title}</h1>
             <p>{data?.content}</p>
-            <CommentBox postId={postId} setComments={setComments} />
+            <p style={{ fontSize: 12 }}>
+              Comment as {localStorage.getItem("username")}
+            </p>
+            <CommentBox postId={postId} />
           </div>
         </div>
         <div style={{ marginTop: 20 }}>
           {comments &&
             comments.map((comment) => (
-              <Comment key={comment.id} data={comment} />
+              <Comment key={comment.id} comment={comment} />
             ))}
         </div>
       </div>

@@ -39,7 +39,7 @@ const DeleteCommentConfirmation = ({ setShowModal, id }) => {
           </p>
         </div>
         <footer className="modal-footer">
-          <button className="primary-btn" onClick={handleDelete}>
+          <button className="primary-btn danger-btn" onClick={handleDelete}>
             Delete
           </button>
           <button className="secondary-btn" onClick={() => setShowModal(false)}>

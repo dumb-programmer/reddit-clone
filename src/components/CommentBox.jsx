@@ -1,16 +1,23 @@
 import { useState } from "react";
-import { createComment } from "../firebase";
+import { createComment, editComment } from "../firebase";
 import LoadingSVG from "./LoadingSVG";
 
-const CommentBox = ({ postId }) => {
-  const [comment, setComment] = useState("");
+const CommentBox = ({ postId, commentSnap, type, onCancel = null }) => {
+  const [comment, setComment] = useState(
+    (commentSnap && commentSnap.data().comment) || ""
+  );
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (comment) {
       setLoading(true);
-      await createComment(comment, localStorage.getItem("username"), postId);
+      if (type === "edit") {
+        editComment(commentSnap.ref, comment);
+        onCancel();
+      } else {
+        await createComment(comment, localStorage.getItem("username"), postId);
+      }
       setComment("");
       setLoading(false);
     }
@@ -18,9 +25,6 @@ const CommentBox = ({ postId }) => {
 
   return (
     <div style={{ paddingBottom: 10 }}>
-      <p style={{ fontSize: 12 }}>
-        Comment as {localStorage.getItem("username")}
-      </p>
       <form onSubmit={handleSubmit}>
         <textarea
           className="comment-box"
@@ -32,14 +36,28 @@ const CommentBox = ({ postId }) => {
           style={{
             display: "flex",
             justifyContent: "flex-end",
+            gap: "1rem",
             marginTop: 10,
           }}
         >
+          {onCancel && (
+            <button className="secondary-btn comment-btn" onClick={onCancel}>
+              Cancel
+            </button>
+          )}
           <button
             className="primary-btn comment-btn"
             disabled={comment.length === 0}
           >
-            {!loading ? "Comment" : <LoadingSVG height={35} width={35} />}
+            {!loading ? (
+              !type ? (
+                "Comment"
+              ) : (
+                "Save Edits"
+              )
+            ) : (
+              <LoadingSVG height={35} width={35} />
+            )}
           </button>
         </div>
       </form>

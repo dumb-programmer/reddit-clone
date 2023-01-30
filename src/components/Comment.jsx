@@ -1,11 +1,16 @@
 import React, { useState } from "react";
 import MessageIcon from "./MessageIcon";
 import Vote from "./Vote";
-import "../styles/Comment.css";
 import getRelativeDateTime from "../utils/getRelativeDateTime";
 import ShowMore from "./ShowMore";
+import CommentBox from "./CommentBox";
+import "../styles/Comment.css";
 
-const Comment = ({ data }) => {
+const Comment = ({ comment }) => {
+  const [edit, setEdit] = useState(false);
+
+  const data = comment.data();
+
   return (
     <div className="comment-container">
       <div className="comment">
@@ -19,6 +24,7 @@ const Comment = ({ data }) => {
             display: "flex",
             flexDirection: "column",
             paddingLeft: 10,
+            flex: 2,
           }}
         >
           <div className="comment-header">
@@ -33,18 +39,52 @@ const Comment = ({ data }) => {
                 ? getRelativeDateTime(data.createdOn.toMillis())
                 : "Just Now"}
             </span>
+            {data.editedOn && (
+              <>
+                <span
+                  style={{
+                    color: "#a4a7a8",
+                    marginLeft: 10,
+                  }}
+                >
+                  .{" "}
+                </span>
+
+                <span
+                  style={{
+                    color: "#a4a7a8",
+                    marginLeft: 10,
+                  }}
+                >
+                  edited{" "}
+                  {data.editedOn > 0
+                    ? getRelativeDateTime(data.editedOn.toMillis())
+                    : "Just Now"}
+                </span>
+              </>
+            )}
           </div>
-          <p>{data.comment}</p>
+          {!edit ? (
+            <p>{data.comment}</p>
+          ) : (
+            <CommentBox
+              type="edit"
+              commentSnap={comment}
+              onCancel={() => setEdit(false)}
+            />
+          )}
         </div>
       </div>
-      <div className="comment-footer">
-        <Vote data={data} type="comment" />
-        <button className="reply-btn">
-          <MessageIcon height={24} width={24} stroke="black" />
-          <span>Reply</span>
-        </button>
-        <ShowMore id={data.id} />
-      </div>
+      {!edit && (
+        <div className="comment-footer">
+          <Vote data={data} type="comment" />
+          <button className="reply-btn">
+            <MessageIcon height={24} width={24} stroke="black" />
+            <span>Reply</span>
+          </button>
+          <ShowMore id={data.id} onEdit={() => setEdit(true)} />
+        </div>
+      )}
     </div>
   );
 };

@@ -283,7 +283,7 @@ const getCommentsForPost = async (postId) => {
     const snap = await getDocs(q);
     const data = [];
     snap.forEach((snap) => {
-        data.push(snap.data());
+        data.push(snap);
     })
     return data;
 };
@@ -310,4 +310,8 @@ const deleteComment = async (commentId) => {
     await deleteDoc(comment.ref);
 }
 
-export { createAccountUsingEmail, usernameAvailable, emailNotRegistered, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunity, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, leaveCommunity, getProfile, getPostById, createComment, getCommentsForPost, subscribeToComments, subscribeToPost, deleteComment };
+const editComment = async (commentRef, comment) => {
+    await updateDoc(commentRef, { comment, editedOn: serverTimestamp() });
+}
+
+export { createAccountUsingEmail, usernameAvailable, emailNotRegistered, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunity, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, leaveCommunity, getProfile, getPostById, createComment, getCommentsForPost, subscribeToComments, subscribeToPost, deleteComment, editComment };
