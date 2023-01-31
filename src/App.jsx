@@ -1,19 +1,21 @@
-import { useEffect, useState } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Login from './components/Login';
+import { useEffect, useState } from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Login from "./components/Login";
 import Signup from "./components/Signup";
-import Home from './components/Home';
-import Community from './components/Community';
-import CreatePost from './components/CreatePost';
-import MainLayout from './components/MainLayout';
-import AuthContext from './context/AuthContext';
-import { registerAuthObserver } from './firebase';
-import './App.css';
-import Profile from './components/Profile';
-import PostDetails from './components/PostDetails';
+import Home from "./components/Home";
+import Community from "./components/Community";
+import CreatePost from "./components/CreatePost";
+import MainLayout from "./components/MainLayout";
+import AuthContext from "./context/AuthContext";
+import { registerAuthObserver } from "./firebase";
+import Profile from "./components/Profile";
+import PostDetails from "./components/PostDetails";
+import "./App.css";
 
 function App() {
-  const [user, setUser] = useState(localStorage.getItem("user") || null);
+  const [user, setUser] = useState(
+    JSON.parse(localStorage.getItem("user")) || null
+  );
 
   useEffect(() => {
     const unsub = registerAuthObserver((authUser) => {
@@ -21,7 +23,9 @@ function App() {
       localStorage.setItem("user", JSON.stringify(authUser));
     });
 
-    return () => { unsub(); }
+    return () => {
+      unsub();
+    };
   }, []);
 
   return (

@@ -1,13 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import AuthContext from "../context/AuthContext";
+import { saveContent, unsaveContent } from "../firebase";
 import DeleteCommentConfirmation from "./DeleteCommentConfirmation";
 import EditIcon from "./EditIcon";
 import SaveIcon from "./SaveIcon";
 import ShowMoreIcon from "./ShowMoreIcon";
 import TrashIcon from "./TrashIcon";
 
-const ShowMore = ({ id, onEdit }) => {
+const ShowMore = ({ id, onEdit, isSaved }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const auth = useContext(AuthContext);
+
+  const handleSave = async () => {
+    if (!isSaved) {
+      await saveContent(auth.uid, id);
+    } else {
+      await unsaveContent(auth.uid, id);
+    }
+  };
 
   useEffect(() => {
     document.body.addEventListener("click", () => setShowDropdown(false));
@@ -25,9 +36,9 @@ const ShowMore = ({ id, onEdit }) => {
         <ShowMoreIcon height={25} width={25} />
         {showDropdown && (
           <ul className="comment-dropdown">
-            <li className="comment-dropdown-link">
+            <li className="comment-dropdown-link" onClick={handleSave}>
               <SaveIcon height={30} width={30} />
-              <span>Save</span>
+              <span>{isSaved ? "Unsave" : "Save"}</span>
             </li>
             <li
               className="comment-dropdown-link"

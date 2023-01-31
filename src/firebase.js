@@ -277,6 +277,7 @@ const createComment = async (comment, username, postId) => {
     await addDoc(commentsRef, { id: uuidv4(), comment: comment, votes: 0, createdOn: serverTimestamp(), author: username, upvotes: [], downvotes: [], postId });
 };
 
+
 const getCommentsForPost = async (postId) => {
     const commentsRef = collection(db, "Comments");
     const q = query(commentsRef, where("postId", "==", postId), orderBy("createdOn", "desc"));
@@ -308,10 +309,26 @@ const getCommentById = async (commentId) => {
 const deleteComment = async (commentId) => {
     const comment = await getCommentById(commentId);
     await deleteDoc(comment.ref);
-}
+};
 
 const editComment = async (commentRef, comment) => {
     await updateDoc(commentRef, { comment, editedOn: serverTimestamp() });
+};
+
+const subscribeToUserDoc = (userId, cb) => {
+    return onSnapshot(doc(db, "Users", userId), cb);
+};
+
+const saveContent = async (userId, contentId) => {
+    const userRef = doc(db, "Users", userId);
+    const user = await getDoc(userRef);
+    return updateDoc(userRef, { saved: [...user.data().saved, contentId] });
+};
+
+const unsaveContent = async (userId, contentId) => {
+    const userRef = doc(db, "Users", userId);
+    const user = await getDoc(userRef);
+    return updateDoc(userRef, { saved: user.data().saved.filter(id => id !== contentId) });
 }
 
-export { createAccountUsingEmail, usernameAvailable, emailNotRegistered, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunity, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, leaveCommunity, getProfile, getPostById, createComment, getCommentsForPost, subscribeToComments, subscribeToPost, deleteComment, editComment };
+export { createAccountUsingEmail, usernameAvailable, emailNotRegistered, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunity, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, leaveCommunity, getProfile, getPostById, createComment, getCommentsForPost, subscribeToComments, subscribeToPost, deleteComment, editComment, subscribeToUserDoc, saveContent, unsaveContent };

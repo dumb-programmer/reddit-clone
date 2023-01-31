@@ -6,7 +6,7 @@ import ShowMore from "./ShowMore";
 import CommentBox from "./CommentBox";
 import "../styles/Comment.css";
 
-const Comment = ({ comment }) => {
+const Comment = ({ comment, isSaved }) => {
   const [edit, setEdit] = useState(false);
 
   const data = comment.data();
@@ -82,7 +82,11 @@ const Comment = ({ comment }) => {
             <MessageIcon height={24} width={24} stroke="black" />
             <span>Reply</span>
           </button>
-          <ShowMore id={data.id} onEdit={() => setEdit(true)} />
+          <ShowMore
+            id={data.id}
+            onEdit={() => setEdit(true)}
+            isSaved={isSaved}
+          />
         </div>
       )}
     </div>
