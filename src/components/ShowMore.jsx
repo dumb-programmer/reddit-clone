@@ -7,7 +7,14 @@ import SaveIcon from "./SaveIcon";
 import ShowMoreIcon from "./ShowMoreIcon";
 import TrashIcon from "./TrashIcon";
 
-const ShowMore = ({ id, onEdit, isSaved }) => {
+const ShowMore = ({
+  id,
+  onEdit,
+  isSaved,
+  context,
+  showToast,
+  setToastText,
+}) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const auth = useContext(AuthContext);
@@ -15,9 +22,20 @@ const ShowMore = ({ id, onEdit, isSaved }) => {
   const handleSave = async () => {
     if (!isSaved) {
       await saveContent(auth.uid, id);
+      if (context === "comment") {
+        setToastText("Comment saved successfully");
+      } else if (context === "post") {
+        setToastText("Post saved successfully");
+      }
     } else {
       await unsaveContent(auth.uid, id);
+      if (context === "comment") {
+        setToastText("Comment unsaved successfully");
+      } else if (context === "post") {
+        setToastText("Post unsaved successfully");
+      }
     }
+    showToast();
   };
 
   useEffect(() => {

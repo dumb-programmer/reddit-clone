@@ -1,0 +1,38 @@
+.notification-container {
+    position: fixed;
+    bottom: 10px;
+    background-color: #fff;
+    min-width: 600px;
+    border: 1px solid #8a8d8f;
+    display: flex;
+    border-radius: 5px;
+    box-shadow: -1px 4px 17px -3px rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: -1px 4px 17px -3px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: -1px 4px 17px -3px rgba(0, 0, 0, 0.3);
+}
+
+.notification-side {
+    width: 10px;
+    background-color: #24a0ed;
+}
+
+.notification-content {
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex: 2;
+}
+
+.undo-btn {
+    all: unset;
+    color: #24a0ed;
+    padding: 5px 20px;
+    font-weight: bold;
+}
+
+.undo-btn:hover {
+    background-color: #ececec;
+    border-radius: 15px;
+    cursor: pointer;
+}

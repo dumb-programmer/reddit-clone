@@ -6,7 +6,7 @@ import ShowMore from "./ShowMore";
 import CommentBox from "./CommentBox";
 import "../styles/Comment.css";
 
-const Comment = ({ comment, isSaved }) => {
+const Comment = ({ comment, isSaved, setToastText, showToast }) => {
   const [edit, setEdit] = useState(false);
 
   const data = comment.data();
@@ -86,6 +86,9 @@ const Comment = ({ comment, isSaved }) => {
             id={data.id}
             onEdit={() => setEdit(true)}
             isSaved={isSaved}
+            context="comment"
+            showToast={showToast}
+            setToastText={setToastText}
           />
         </div>
       )}

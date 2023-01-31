@@ -16,11 +16,14 @@ import AuthContext from "../context/AuthContext";
 import MessageIcon from "./MessageIcon";
 import ShareArrowIcon from "./ShareArrowIcon";
 import ShowMore from "./ShowMore";
+import ToastNotification from "./ToastNotification";
 
 const PostDetails = () => {
   const [data, setData] = useState(null);
   const [comments, setComments] = useState(null);
   const [saved, setSaved] = useState(null);
+  const [showToast, setShowToast] = useState(false);
+  const [toastText, setToastText] = useState("");
   const auth = useContext(AuthContext);
   const { postId } = useParams();
 
@@ -116,6 +119,9 @@ const PostDetails = () => {
                   <ShowMore
                     id={data?.id}
                     isSaved={saved && saved.includes(data?.id)}
+                    context="post"
+                    showToast={() => setShowToast(true)}
+                    setToastText={setToastText}
                   />
                 </div>
               </div>
@@ -133,10 +139,15 @@ const PostDetails = () => {
                 key={comment.data().id}
                 comment={comment}
                 isSaved={saved && saved.includes(comment.data().id)}
+                showToast={() => setShowToast(true)}
+                setToastText={setToastText}
               />
             ))}
         </div>
       </div>
+      {showToast && (
+        <ToastNotification text={toastText} setDisplay={setShowToast} />
+      )}
     </div>
   );
 };
