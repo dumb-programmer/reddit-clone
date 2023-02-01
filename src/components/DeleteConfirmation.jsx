@@ -1,17 +1,9 @@
-import React from "react";
-import { deleteComment } from "../firebase";
-
-const DeleteCommentConfirmation = ({ setShowModal, id }) => {
-  const handleDelete = async () => {
-    await deleteComment(id);
-    setShowModal(false);
-  };
-
+const DeleteConfirmation = ({ header, text, setShowModal, handleDelete }) => {
   return (
     <div className="modal-container">
       <div className="modal">
         <header className="modal-header">
-          <h4>Delete Comment</h4>
+          <h4>{header}</h4>
           <button
             className="close-modal-btn"
             onClick={() => setShowModal(false)}
@@ -34,12 +26,16 @@ const DeleteCommentConfirmation = ({ setShowModal, id }) => {
           </button>
         </header>
         <div className="modal-body">
-          <p style={{ color: "#454545" }}>
-            Are you sure you want to delete your comment?
-          </p>
+          <p style={{ color: "#454545" }}>{text}</p>
         </div>
         <footer className="modal-footer">
-          <button className="primary-btn danger-btn" onClick={handleDelete}>
+          <button
+            className="primary-btn danger-btn"
+            onClick={async () => {
+              await handleDelete();
+              setShowModal(false);
+            }}
+          >
             Delete
           </button>
           <button className="secondary-btn" onClick={() => setShowModal(false)}>
@@ -51,4 +47,4 @@ const DeleteCommentConfirmation = ({ setShowModal, id }) => {
   );
 };
 
-export default DeleteCommentConfirmation;
+export default DeleteConfirmation;

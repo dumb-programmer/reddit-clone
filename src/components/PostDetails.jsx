@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import Vote from "./Vote";
 import { useParams } from "react-router-dom";
 import {
+  deletePost,
   getCommentsForPost,
   getPostById,
   subscribeToComments,
@@ -120,6 +121,11 @@ const PostDetails = () => {
                     id={data?.id}
                     isSaved={saved && saved.includes(data?.id)}
                     context="post"
+                    confirmationText="Are you sure you want to delete your post? You can't undo this."
+                    confirmationHeader="Delete post?"
+                    handleDelete={async () => {
+                      await deletePost(data.id);
+                    }}
                     showToast={() => setShowToast(true)}
                     setToastText={setToastText}
                   />

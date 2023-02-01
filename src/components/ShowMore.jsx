@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import AuthContext from "../context/AuthContext";
 import { saveContent, unsaveContent } from "../firebase";
-import DeleteCommentConfirmation from "./DeleteCommentConfirmation";
+import DeleteConfirmation from "./DeleteConfirmation";
 import EditIcon from "./EditIcon";
 import SaveIcon from "./SaveIcon";
 import ShowMoreIcon from "./ShowMoreIcon";
@@ -12,6 +12,9 @@ const ShowMore = ({
   onEdit,
   isSaved,
   context,
+  confirmationText,
+  confirmationHeader,
+  handleDelete,
   showToast,
   setToastText,
 }) => {
@@ -60,7 +63,8 @@ const ShowMore = ({
             </li>
             <li
               className="comment-dropdown-link"
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 onEdit();
                 setShowDropdown(false);
               }}
@@ -70,7 +74,11 @@ const ShowMore = ({
             </li>
             <li
               className="comment-dropdown-link"
-              onClick={() => setShowModal(true)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowDropdown(false);
+                setShowModal(true);
+              }}
             >
               <TrashIcon height={25} width={25} />
               <span>Delete</span>
@@ -79,7 +87,12 @@ const ShowMore = ({
         )}
       </div>
       {showModal && (
-        <DeleteCommentConfirmation id={id} setShowModal={setShowModal} />
+        <DeleteConfirmation
+          text={confirmationText}
+          header={confirmationHeader}
+          handleDelete={handleDelete}
+          setShowModal={setShowModal}
+        />
       )}
     </>
   );

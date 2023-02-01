@@ -155,6 +155,11 @@ const createPost = async ({ username, communityName, title, content }) => {
     await addDoc(postsRef, { id: uuidv4(), title: title, content: content, votes: 0, createdOn: serverTimestamp(), author: username, communityName: communityName, upvotes: [], downvotes: [] });
 };
 
+const deletePost = async (postId) => {
+    const post = await getPostById(postId);
+    await deleteDoc(post.ref);
+};
+
 const getPostsByCommunity = async (communityName) => {
     const postsRef = collection(db, "Posts");
     const q = query(postsRef, where("communityName", "==", communityName));
@@ -331,4 +336,4 @@ const unsaveContent = async (userId, contentId) => {
     return updateDoc(userRef, { saved: user.data().saved.filter(id => id !== contentId) });
 }
 
-export { createAccountUsingEmail, usernameAvailable, emailNotRegistered, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunity, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, leaveCommunity, getProfile, getPostById, createComment, getCommentsForPost, subscribeToComments, subscribeToPost, deleteComment, editComment, subscribeToUserDoc, saveContent, unsaveContent };
+export { createAccountUsingEmail, usernameAvailable, emailNotRegistered, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunity, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, leaveCommunity, getProfile, getPostById, createComment, getCommentsForPost, subscribeToComments, subscribeToPost, deleteComment, editComment, subscribeToUserDoc, saveContent, unsaveContent, deletePost };

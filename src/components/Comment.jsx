@@ -5,6 +5,7 @@ import getRelativeDateTime from "../utils/getRelativeDateTime";
 import ShowMore from "./ShowMore";
 import CommentBox from "./CommentBox";
 import "../styles/Comment.css";
+import { deleteComment } from "../firebase";
 
 const Comment = ({ comment, isSaved, setToastText, showToast }) => {
   const [edit, setEdit] = useState(false);
@@ -85,6 +86,11 @@ const Comment = ({ comment, isSaved, setToastText, showToast }) => {
           <ShowMore
             id={data.id}
             onEdit={() => setEdit(true)}
+            confirmationText="Are you sure you want to delete your comment?"
+            confirmationHeader="Delete comment"
+            handleDelete={async () => {
+              await deleteComment(data.id);
+            }}
             isSaved={isSaved}
             context="comment"
             showToast={showToast}
