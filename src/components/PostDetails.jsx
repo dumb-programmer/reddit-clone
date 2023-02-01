@@ -20,7 +20,7 @@ import ShowMore from "./ShowMore";
 import ToastNotification from "./ToastNotification";
 
 const PostDetails = () => {
-  const [data, setData] = useState(null);
+  const [post, setPost] = useState(null);
   const [comments, setComments] = useState(null);
   const [saved, setSaved] = useState(null);
   const [showToast, setShowToast] = useState(false);
@@ -40,8 +40,8 @@ const PostDetails = () => {
     getPostById(postId).then((snap) => {
       if (!ignore) {
         docId = snap.id;
-        unsubPost = subscribeToPost(docId, (doc) => setData(doc.data()));
-        setData(snap.data());
+        unsubPost = subscribeToPost(docId, (doc) => setPost(doc));
+        setPost(snap);
       }
     });
 
@@ -66,6 +66,8 @@ const PostDetails = () => {
       }
     };
   }, [postId, auth]);
+
+  const data = post?.data();
 
   return (
     <div className="content-container">
@@ -124,7 +126,7 @@ const PostDetails = () => {
                     confirmationText="Are you sure you want to delete your post? You can't undo this."
                     confirmationHeader="Delete post?"
                     handleDelete={async () => {
-                      await deletePost(data.id);
+                      await deletePost(post.ref);
                     }}
                     showToast={() => setShowToast(true)}
                     setToastText={setToastText}

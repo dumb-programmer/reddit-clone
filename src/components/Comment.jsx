@@ -89,7 +89,7 @@ const Comment = ({ comment, isSaved, setToastText, showToast }) => {
             confirmationText="Are you sure you want to delete your comment?"
             confirmationHeader="Delete comment"
             handleDelete={async () => {
-              await deleteComment(data.id);
+              await deleteComment(comment.ref);
             }}
             isSaved={isSaved}
             context="comment"
