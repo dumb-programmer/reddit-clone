@@ -18,6 +18,7 @@ import MessageIcon from "./MessageIcon";
 import ShareArrowIcon from "./ShareArrowIcon";
 import ShowMore from "./ShowMore";
 import ToastNotification from "./ToastNotification";
+import EditContent from "./EditContent";
 
 const PostDetails = () => {
   const [post, setPost] = useState(null);
@@ -25,6 +26,7 @@ const PostDetails = () => {
   const [saved, setSaved] = useState(null);
   const [showToast, setShowToast] = useState(false);
   const [toastText, setToastText] = useState("");
+  const [editPost, setEditPost] = useState(false);
   const auth = useContext(AuthContext);
   const { postId } = useParams();
 
@@ -89,7 +91,14 @@ const PostDetails = () => {
               </p>
             </div>
             <h1>{data?.title}</h1>
-            <p>{data?.content}</p>
+            {!editPost ? (
+              <p>{data?.content}</p>
+            ) : (
+              <EditContent
+                contentRef={post}
+                onCancel={() => setEditPost(false)}
+              />
+            )}
             {data && (
               <div
                 style={{
@@ -128,6 +137,7 @@ const PostDetails = () => {
                     handleDelete={async () => {
                       await deletePost(post.ref);
                     }}
+                    onEdit={() => setEditPost(true)}
                     showToast={() => setShowToast(true)}
                     setToastText={setToastText}
                   />

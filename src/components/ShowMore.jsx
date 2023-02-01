@@ -9,11 +9,11 @@ import TrashIcon from "./TrashIcon";
 
 const ShowMore = ({
   id,
-  onEdit,
   isSaved,
   context,
   confirmationText,
   confirmationHeader,
+  onEdit,
   handleDelete,
   showToast,
   setToastText,
