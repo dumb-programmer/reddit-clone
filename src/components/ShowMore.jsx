@@ -16,6 +16,7 @@ const ShowMore = ({
   onEdit,
   handleDelete,
   showToast,
+  isOwner,
   setToastText,
 }) => {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -61,28 +62,32 @@ const ShowMore = ({
               <SaveIcon height={30} width={30} />
               <span>{isSaved ? "Unsave" : "Save"}</span>
             </li>
-            <li
-              className="comment-dropdown-link"
-              onClick={(e) => {
-                e.stopPropagation();
-                onEdit();
-                setShowDropdown(false);
-              }}
-            >
-              <EditIcon height={25} width={25} />
-              <span>Edit</span>
-            </li>
-            <li
-              className="comment-dropdown-link"
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowDropdown(false);
-                setShowModal(true);
-              }}
-            >
-              <TrashIcon height={25} width={25} />
-              <span>Delete</span>
-            </li>
+            {isOwner && (
+              <>
+                <li
+                  className="comment-dropdown-link"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onEdit();
+                    setShowDropdown(false);
+                  }}
+                >
+                  <EditIcon height={25} width={25} />
+                  <span>Edit</span>
+                </li>
+                <li
+                  className="comment-dropdown-link"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowDropdown(false);
+                    setShowModal(true);
+                  }}
+                >
+                  <TrashIcon height={25} width={25} />
+                  <span>Delete</span>
+                </li>
+              </>
+            )}
           </ul>
         )}
       </div>

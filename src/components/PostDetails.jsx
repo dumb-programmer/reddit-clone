@@ -19,6 +19,8 @@ import ShareArrowIcon from "./ShareArrowIcon";
 import ShowMore from "./ShowMore";
 import ToastNotification from "./ToastNotification";
 import EditContent from "./EditContent";
+import CommentSkeleton from "./CommentSkeleton";
+import ContentLoader from "react-content-loader";
 
 const PostDetails = () => {
   const [post, setPost] = useState(null);
@@ -85,14 +87,60 @@ const PostDetails = () => {
           </div>
           <div className="post-container">
             <div className="post-header">
-              <p>
-                Posted by u/{data?.author}{" "}
-                {data && getRelativeDateTime(data.createdOn?.toMillis())}
-              </p>
+              {data ? (
+                <p>
+                  Posted by u/{data?.author}{" "}
+                  {data && getRelativeDateTime(data.createdOn?.toMillis())}
+                </p>
+              ) : (
+                <ContentLoader
+                  speed={2}
+                  width={278}
+                  height={38}
+                  viewBox="0 0 278 38"
+                  backgroundColor="#f3f3f3"
+                  foregroundColor="#ecebeb"
+                >
+                  <rect x="20" y="27" rx="0" ry="0" width="247" height="9" />
+                </ContentLoader>
+              )}
             </div>
-            <h1>{data?.title}</h1>
+            <h1>
+              {data ? (
+                data?.title
+              ) : (
+                <ContentLoader
+                  speed={2}
+                  width={387}
+                  height={38}
+                  viewBox="0 0 387 38"
+                  backgroundColor="#f3f3f3"
+                  foregroundColor="#ecebeb"
+                >
+                  <rect x="17" y="-1" rx="0" ry="0" width="321" height="32" />
+                </ContentLoader>
+              )}
+            </h1>
             {!editPost ? (
-              <p>{data?.content}</p>
+              <p>
+                {data ? (
+                  data?.content
+                ) : (
+                  <ContentLoader
+                    speed={2}
+                    width={421}
+                    height={76}
+                    viewBox="0 0 421 76"
+                    backgroundColor="#f3f3f3"
+                    foregroundColor="#ecebeb"
+                  >
+                    <rect x="19" y="0" rx="0" ry="0" width="401" height="8" />
+                    <rect x="19" y="17" rx="0" ry="0" width="346" height="8" />
+                    <rect x="20" y="35" rx="0" ry="0" width="374" height="8" />
+                    <rect x="20" y="53" rx="0" ry="0" width="279" height="8" />
+                  </ContentLoader>
+                )}
+              </p>
             ) : (
               <EditContent
                 contentRef={post}
@@ -140,6 +188,7 @@ const PostDetails = () => {
                     onEdit={() => setEditPost(true)}
                     showToast={() => setShowToast(true)}
                     setToastText={setToastText}
+                    isOwner={auth.uid === data.id}
                   />
                 </div>
               </div>
@@ -160,6 +209,10 @@ const PostDetails = () => {
                 showToast={() => setShowToast(true)}
                 setToastText={setToastText}
               />
+            ))}
+          {!comments &&
+            Array.from({ length: 5 }).map((item, idx) => (
+              <CommentSkeleton id={idx} />
             ))}
         </div>
       </div>
