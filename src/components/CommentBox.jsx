@@ -1,8 +1,12 @@
 import { useState } from "react";
-import { createComment, editComment } from "../firebase";
 import LoadingSVG from "./LoadingSVG";
 
-const CommentBox = ({ postId, commentSnap, type, onCancel = null }) => {
+const CommentBox = ({
+  commentSnap,
+  primaryCaption,
+  onSubmit,
+  onCancel = null,
+}) => {
   const [comment, setComment] = useState(
     (commentSnap && commentSnap.data().comment) || ""
   );
@@ -12,12 +16,8 @@ const CommentBox = ({ postId, commentSnap, type, onCancel = null }) => {
     e.preventDefault();
     if (comment) {
       setLoading(true);
-      if (type === "edit") {
-        editComment(commentSnap.ref, comment);
-        onCancel();
-      } else {
-        await createComment(comment, localStorage.getItem("username"), postId);
-      }
+      onSubmit(comment);
+      onCancel && onCancel();
       setComment("");
       setLoading(false);
     }
@@ -49,15 +49,7 @@ const CommentBox = ({ postId, commentSnap, type, onCancel = null }) => {
             className="primary-btn comment-btn"
             disabled={comment.length === 0}
           >
-            {!loading ? (
-              !type ? (
-                "Comment"
-              ) : (
-                "Save Edits"
-              )
-            ) : (
-              <LoadingSVG height={35} width={35} />
-            )}
+            {!loading ? primaryCaption : <LoadingSVG height={35} width={35} />}
           </button>
         </div>
       </form>

@@ -5,10 +5,11 @@ import getRelativeDateTime from "../utils/getRelativeDateTime";
 import ShowMore from "./ShowMore";
 import CommentBox from "./CommentBox";
 import "../styles/Comment.css";
-import { deleteComment } from "../firebase";
+import { deleteComment, editComment } from "../firebase";
 
 const Comment = ({ comment, isSaved, setToastText, showToast }) => {
   const [edit, setEdit] = useState(false);
+  const [reply, setReply] = useState(false);
 
   const data = comment.data();
 
@@ -69,7 +70,10 @@ const Comment = ({ comment, isSaved, setToastText, showToast }) => {
             <p>{data.comment}</p>
           ) : (
             <CommentBox
-              type="edit"
+              primaryCaption="Save Edits"
+              onSubmit={async (comment) => {
+                editComment(comment.ref, comment);
+              }}
               commentSnap={comment}
               onCancel={() => setEdit(false)}
             />
@@ -79,25 +83,34 @@ const Comment = ({ comment, isSaved, setToastText, showToast }) => {
       {!edit && (
         <div className="comment-footer">
           <Vote data={data} type="comment" />
-          <button className="reply-btn">
+          <button
+            className="reply-btn"
+            onClick={() => setReply((prev) => !prev)}
+          >
             <MessageIcon height={24} width={24} stroke="black" />
             <span>Reply</span>
           </button>
           <ShowMore
             id={data.id}
-            onEdit={() => setEdit(true)}
             confirmationText="Are you sure you want to delete your comment?"
             confirmationHeader="Delete comment"
+            onEdit={() => setEdit(true)}
+            isSaved={isSaved}
+            isOwner={localStorage.getItem("username") === data?.author}
             handleDelete={async () => {
               await deleteComment(comment.ref);
             }}
-            isSaved={isSaved}
             context="comment"
             showToast={showToast}
             setToastText={setToastText}
           />
         </div>
       )}
+      <div style={{ marginLeft: 60, paddingRight: 10 }}>
+        {reply && (
+          <CommentBox primaryCaption="Reply" onCancel={() => setReply(false)} />
+        )}
+      </div>
     </div>
   );
 };

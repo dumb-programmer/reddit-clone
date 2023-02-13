@@ -33,6 +33,8 @@ const Home = () => {
         justifyContent: "center",
         gap: "1rem",
         paddingTop: 100,
+        paddingLeft: 100,
+        paddingRight: 100,
       }}
     >
       {showModal && (

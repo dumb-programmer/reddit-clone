@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import Vote from "./Vote";
 import { useParams } from "react-router-dom";
 import {
+  createComment,
   deletePost,
   getCommentsForPost,
   getPostById,
@@ -188,7 +189,7 @@ const PostDetails = () => {
                     onEdit={() => setEditPost(true)}
                     showToast={() => setShowToast(true)}
                     setToastText={setToastText}
-                    isOwner={auth.uid === data.id}
+                    isOwner={localStorage.getItem("username") === data?.author}
                   />
                 </div>
               </div>
@@ -196,7 +197,16 @@ const PostDetails = () => {
             <p style={{ fontSize: 12 }}>
               Comment as {localStorage.getItem("username")}
             </p>
-            <CommentBox postId={postId} />
+            <CommentBox
+              primaryCaption="Comment"
+              onSubmit={async (comment) => {
+                await createComment(
+                  comment,
+                  localStorage.getItem("username"),
+                  postId
+                );
+              }}
+            />
           </div>
         </div>
         <div style={{ marginTop: 20 }}>

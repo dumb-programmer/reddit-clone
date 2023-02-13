@@ -131,7 +131,7 @@ const Login = () => {
           className={`submit-btn ${loading ? "btn__loading" : ""}`}
           disabled={error.emailAlreadyRegistered}
         >
-          {!loading ? "Log In" : <LoadingSVG />}
+          {!loading ? "Log In" : <LoadingSVG height={35} width={35} />}
         </button>
         <p className="smaller">Forgot your username or password ?</p>
         <p className="smaller">

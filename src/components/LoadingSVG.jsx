@@ -1,4 +1,4 @@
-const LoadingSVG = ({ height, width }) => {
+const LoadingSVG = ({ height = 25, width = 25 }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

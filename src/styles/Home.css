@@ -119,6 +119,8 @@
     display: flex;
     margin-bottom: 15px;
     cursor: pointer;
+    padding: 0 10px;
+    padding-bottom: 10px;
 }
 
 .post:hover {

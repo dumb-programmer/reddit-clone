@@ -168,7 +168,7 @@ const getPostsByCommunity = async (communityName) => {
     const q = query(postsRef, where("communityName", "==", communityName));
     const snapshot = await getDocs(q);
     const data = [];
-    snapshot.forEach(doc => data.push(doc.data()));
+    snapshot.forEach(doc => data.push(doc));
     return data;
 }
 

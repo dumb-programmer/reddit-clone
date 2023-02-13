@@ -4,7 +4,6 @@ import LoginAndSignUpLayout from "./LoginAndSignUpLayout";
 import { Link } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import {
-  isLoggedIn,
   createAccountUsingEmail,
   usernameAvailable,
   emailNotRegistered,
@@ -12,9 +11,9 @@ import {
 import randomWords from "random-words";
 import LoadingSVG from "./LoadingSVG";
 import { useNavigate } from "react-router-dom";
-import "../styles/SignupForm.css";
 import AlreadyLoggedInMessage from "./AlreadyLoggedInMessage";
 import AuthContext from "../context/AuthContext";
+import "../styles/SignupForm.css";
 
 const generateUsernames = () => {
   return Array.from({ length: 5 }).map(
@@ -187,7 +186,7 @@ const Signup = () => {
             className={`submit-btn ${loading ? "btn__loading" : ""}`}
             disabled={error.emailAlreadyRegistered}
           >
-            {!loading ? "Continue" : <LoadingSVG />}
+            {!loading ? "Continue" : <LoadingSVG height={35} width={35} />}
           </button>
           <p className="smaller">
             Already a redditor? <Link to="/login">Log in</Link>{" "}
@@ -289,7 +288,7 @@ const Signup = () => {
           onClick={!(submitBtnDisabled || loading) ? handleFormSubmit : null}
           disabled={submitBtnDisabled}
         >
-          {!loading ? "Sign up" : <LoadingSVG />}
+          {!loading ? "Sign up" : <LoadingSVG height={35} width={35} />}
         </button>
       </footer>
     </div>
