@@ -1,17 +1,44 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import MessageIcon from "./MessageIcon";
 import Vote from "./Vote";
 import getRelativeDateTime from "../utils/getRelativeDateTime";
 import ShowMore from "./ShowMore";
 import CommentBox from "./CommentBox";
 import "../styles/Comment.css";
-import { deleteComment, editComment } from "../firebase";
+import {
+  createComment,
+  deleteComment,
+  editComment,
+  getComments,
+  subscribeToComments,
+} from "../firebase";
 
-const Comment = ({ comment, isSaved, setToastText, showToast }) => {
+const Comment = ({ comment, saved, setToastText, showToast }) => {
   const [edit, setEdit] = useState(false);
   const [reply, setReply] = useState(false);
+  const [replies, setReplies] = useState(null);
 
   const data = comment.data();
+
+  useEffect(() => {
+    let ignore = false;
+    getComments(data?.id).then((snap) => {
+      if (!ignore) {
+        setReplies(snap);
+      }
+    });
+
+    const unsubComments = subscribeToComments(data?.id, (doc) => {
+      const items = [];
+      doc.forEach((snap) => items.push(snap));
+      setReplies(items);
+    });
+
+    return () => {
+      ignore = true;
+      unsubComments();
+    };
+  }, [data]);
 
   return (
     <div className="comment-container">
@@ -71,8 +98,8 @@ const Comment = ({ comment, isSaved, setToastText, showToast }) => {
           ) : (
             <CommentBox
               primaryCaption="Save Edits"
-              onSubmit={async (comment) => {
-                editComment(comment.ref, comment);
+              onSubmit={async (value) => {
+                editComment(comment.ref, value);
               }}
               commentSnap={comment}
               onCancel={() => setEdit(false)}
@@ -95,7 +122,7 @@ const Comment = ({ comment, isSaved, setToastText, showToast }) => {
             confirmationText="Are you sure you want to delete your comment?"
             confirmationHeader="Delete comment"
             onEdit={() => setEdit(true)}
-            isSaved={isSaved}
+            isSaved={saved && saved.includes(comment.data().id)}
             isOwner={localStorage.getItem("username") === data?.author}
             handleDelete={async () => {
               await deleteComment(comment.ref);
@@ -108,8 +135,28 @@ const Comment = ({ comment, isSaved, setToastText, showToast }) => {
       )}
       <div style={{ marginLeft: 60, paddingRight: 10 }}>
         {reply && (
-          <CommentBox primaryCaption="Reply" onCancel={() => setReply(false)} />
+          <CommentBox
+            primaryCaption="Reply"
+            onSubmit={async (comment) => {
+              await createComment(
+                comment,
+                localStorage.getItem("username"),
+                data?.id
+              );
+            }}
+            onCancel={() => setReply(false)}
+          />
         )}
+        {replies &&
+          replies.map((replies) => (
+            <Comment
+              key={replies.data().id}
+              comment={replies}
+              saved={saved}
+              showToast={showToast}
+              setToastText={setToastText}
+            />
+          ))}
       </div>
     </div>
   );

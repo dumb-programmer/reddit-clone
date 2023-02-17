@@ -280,15 +280,15 @@ const getProfile = async (userId, username) => {
     return profile;
 };
 
-const createComment = async (comment, username, postId) => {
+const createComment = async (comment, username, contentId) => {
     const commentsRef = collection(db, "Comments");
-    await addDoc(commentsRef, { id: uuidv4(), comment: comment, votes: 0, createdOn: serverTimestamp(), author: username, upvotes: [], downvotes: [], postId });
+    await addDoc(commentsRef, { id: uuidv4(), comment: comment, votes: 0, createdOn: serverTimestamp(), author: username, upvotes: [], downvotes: [], contentId });
 };
 
 
-const getCommentsForPost = async (postId) => {
+const getComments = async (contentId) => {
     const commentsRef = collection(db, "Comments");
-    const q = query(commentsRef, where("postId", "==", postId), orderBy("createdOn", "desc"));
+    const q = query(commentsRef, where("contentId", "==", contentId), orderBy("createdOn", "desc"));
     const snap = await getDocs(q);
     const data = [];
     snap.forEach((snap) => {
@@ -319,6 +319,7 @@ const deleteComment = async (commentRef) => {
 };
 
 const editComment = async (commentRef, comment) => {
+    console.log(commentRef);
     await updateDoc(commentRef, { comment, editedOn: serverTimestamp() });
 };
 
@@ -338,4 +339,4 @@ const unsaveContent = async (userId, contentId) => {
     return updateDoc(userRef, { saved: user.data().saved.filter(id => id !== contentId) });
 }
 
-export { createAccountUsingEmail, usernameAvailable, emailNotRegistered, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunity, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, leaveCommunity, getProfile, getPostById, createComment, getCommentsForPost, subscribeToComments, subscribeToPost, deleteComment, editComment, subscribeToUserDoc, saveContent, unsaveContent, deletePost, editPost };
+export { createAccountUsingEmail, usernameAvailable, emailNotRegistered, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunity, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, leaveCommunity, getProfile, getPostById, createComment, getComments, subscribeToComments, subscribeToPost, deleteComment, editComment, subscribeToUserDoc, saveContent, unsaveContent, deletePost, editPost };

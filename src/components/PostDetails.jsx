@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import {
   createComment,
   deletePost,
-  getCommentsForPost,
+  getComments,
   getPostById,
   subscribeToComments,
   subscribeToPost,
@@ -34,6 +34,7 @@ const PostDetails = () => {
   const { postId } = useParams();
 
   useEffect(() => {
+    // Subscribe to user document to listen for saved state changes
     const unsubUser = subscribeToUserDoc(auth.uid, (doc) => {
       const user = doc.data();
       setSaved(user.saved);
@@ -50,7 +51,7 @@ const PostDetails = () => {
       }
     });
 
-    getCommentsForPost(postId).then((data) => {
+    getComments(postId).then((data) => {
       if (!ignore) {
         setComments(data);
       }
@@ -215,7 +216,7 @@ const PostDetails = () => {
               <Comment
                 key={comment.data().id}
                 comment={comment}
-                isSaved={saved && saved.includes(comment.data().id)}
+                saved={saved}
                 showToast={() => setShowToast(true)}
                 setToastText={setToastText}
               />
