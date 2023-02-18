@@ -22,6 +22,7 @@ import ToastNotification from "./ToastNotification";
 import EditContent from "./EditContent";
 import CommentSkeleton from "./CommentSkeleton";
 import ContentLoader from "react-content-loader";
+import EmptyComments from "./EmptyComments";
 
 const PostDetails = () => {
   const [post, setPost] = useState(null);
@@ -34,7 +35,7 @@ const PostDetails = () => {
   const { postId } = useParams();
 
   useEffect(() => {
-    // Subscribe to user document to listen for saved state changes
+    // Subscribe to user document to listen for post/comment saved state changes
     const unsubUser = subscribeToUserDoc(auth.uid, (doc) => {
       const user = doc.data();
       setSaved(user.saved);
@@ -211,6 +212,7 @@ const PostDetails = () => {
           </div>
         </div>
         <div style={{ marginTop: 20 }}>
+          {comments && comments.length === 0 && <EmptyComments />}
           {comments &&
             comments.map((comment) => (
               <Comment
@@ -223,7 +225,7 @@ const PostDetails = () => {
             ))}
           {!comments &&
             Array.from({ length: 5 }).map((item, idx) => (
-              <CommentSkeleton id={idx} />
+              <CommentSkeleton key={idx} />
             ))}
         </div>
       </div>

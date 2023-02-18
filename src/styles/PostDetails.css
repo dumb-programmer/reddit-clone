@@ -8,6 +8,7 @@
 .content {
     background-color: #fff;
     width: 700px;
+    min-height: 700px;
     border-radius: 5px;
     padding: 30px;
 }
