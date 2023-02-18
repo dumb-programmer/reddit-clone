@@ -208,9 +208,7 @@ const upvote = async (id, userId, isDownvoted, type) => {
     const upvotes = data?.upvotes;
     const downvotes = data?.downvotes;
 
-    await updateDoc(doc.ref, { votes: isDownvoted ? data.votes + 2 : ++data.votes });
-    await updateDoc(doc.ref, { upvotes: [...upvotes, userId] });
-    await updateDoc(doc.ref, { downvotes: downvotes.filter(uid => uid !== userId) });
+    await updateDoc(doc.ref, { votes: isDownvoted ? data.votes + 2 : ++data.votes, upvotes: [...upvotes, userId], downvotes: downvotes.filter(uid => uid !== userId) });
 };
 
 const removeUpvote = async (id, userId, type) => {
@@ -224,8 +222,7 @@ const removeUpvote = async (id, userId, type) => {
     const data = doc.data();
     const upvotes = data?.upvotes;
 
-    await updateDoc(doc.ref, { votes: --data.votes });
-    await updateDoc(doc.ref, { upvotes: upvotes.filter(uid => uid !== userId) });
+    await updateDoc(doc.ref, { votes: --data.votes, upvotes: upvotes.filter(uid => uid !== userId) });
 };
 
 const downvote = async (id, userId, isUpvoted, type) => {
@@ -240,9 +237,7 @@ const downvote = async (id, userId, isUpvoted, type) => {
     const downvotes = data?.downvotes;
     const upvotes = data?.upvotes;
 
-    await updateDoc(doc.ref, { votes: isUpvoted ? data.votes - 2 : --data.votes });
-    await updateDoc(doc.ref, { downvotes: [...downvotes, userId] });
-    await updateDoc(doc.ref, { upvotes: upvotes.filter(uid => uid !== userId) });
+    await updateDoc(doc.ref, { votes: isUpvoted ? data.votes - 2 : --data.votes, downvotes: [...downvotes, userId], upvotes: upvotes.filter(uid => uid !== userId) });
 };
 
 
@@ -257,8 +252,7 @@ const removeDownvote = async (id, userId, type) => {
     const data = doc.data();
     const downvotes = data?.downvotes;
 
-    await updateDoc(doc.ref, { votes: ++data.votes });
-    await updateDoc(doc.ref, { downvotes: downvotes.filter(uid => uid !== userId) });
+    await updateDoc(doc.ref, { votes: ++data.votes, downvotes: downvotes.filter(uid => uid !== userId) });
 };
 
 const getUserPosts = async (username) => {
@@ -297,9 +291,9 @@ const getComments = async (contentId) => {
     return data;
 };
 
-const subscribeToComments = (postId, cb) => {
+const subscribeToComments = (contentId, cb) => {
     const commentsRef = collection(db, "Comments");
-    const q = query(commentsRef, where("postId", "==", postId), orderBy("createdOn", "desc"));
+    const q = query(commentsRef, where("contentId", "==", contentId), orderBy("createdOn", "desc"));
     return onSnapshot(q, cb);
 };
 
