@@ -1,9 +1,19 @@
 .comment-container {
     padding: 10px 0;
+    position: relative;
 }
 
 .comment {
     display: flex;
+    gap: 0.6rem;
+    margin-top: 20px;
+}
+
+.comment-sidebar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .avatar {
@@ -21,7 +31,6 @@
     display: flex;
     gap: 0.5rem;
     align-items: center;
-    margin-left: 30px;
 }
 
 .reply-btn {
@@ -78,4 +87,17 @@
 
 .danger-btn:hover {
     background-color: #eb405d;
+}
+
+.thread-line {
+    top: 50px;
+    left: 15px;
+    width: 2px;
+    height: 100%;
+    background-color: #edeff1;
+    cursor: pointer;
+}
+
+.thread-line:hover {
+    background-color: #0079d3;
 }
