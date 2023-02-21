@@ -5,6 +5,7 @@ import {
   createComment,
   deletePost,
   getComments,
+  getCommunityInfo,
   getPostById,
   subscribeToComments,
   subscribeToPost,
@@ -23,8 +24,10 @@ import EditContent from "./EditContent";
 import CommentSkeleton from "./CommentSkeleton";
 import ContentLoader from "react-content-loader";
 import EmptyComments from "./EmptyComments";
+import CommunityInfo from "./CommunityInfo";
 
 const PostDetails = () => {
+  const [community, setCommunity] = useState(null);
   const [post, setPost] = useState(null);
   const [comments, setComments] = useState(null);
   const [saved, setSaved] = useState(null);
@@ -32,7 +35,7 @@ const PostDetails = () => {
   const [toastText, setToastText] = useState("");
   const [editPost, setEditPost] = useState(false);
   const auth = useContext(AuthContext);
-  const { postId } = useParams();
+  const { communityName, postId } = useParams();
 
   useEffect(() => {
     // Subscribe to user document to listen for post/comment saved state changes
@@ -64,6 +67,12 @@ const PostDetails = () => {
       setComments(items);
     });
 
+    getCommunityInfo(communityName).then((data) => {
+      if (!ignore) {
+        setCommunity(data);
+      }
+    });
+
     return () => {
       ignore = true;
       unsubComments();
@@ -72,7 +81,7 @@ const PostDetails = () => {
         unsubPost();
       }
     };
-  }, [postId, auth]);
+  }, [postId, communityName, auth]);
 
   const data = post?.data();
 
@@ -229,6 +238,7 @@ const PostDetails = () => {
             ))}
         </div>
       </div>
+      {community && <CommunityInfo data={community} />}
       {showToast && (
         <ToastNotification text={toastText} setDisplay={setShowToast} />
       )}

@@ -127,26 +127,14 @@ const getUsername = async (email) => {
     return username;
 };
 
-const getCommunity = async (userId, communityName) => {
+const getCommunityInfo = async (communityName) => {
     const communityRef = collection(db, "Communities", "public", "communities");
     const q = query(communityRef, where("name", "==", communityName));
     const snapshot = await getDocs(q);
     let community;
-    if (!snapshot.empty) {
-        snapshot.forEach(doc => {
-            community = doc.data();
-        });
-    }
-    else {
-        return false;
-    }
-    const posts = await getPostsByCommunity(communityName);
-    community.posts = posts;
-
-    if (userId) {
-        community.joined = await hasJoinedCommunity(userId, communityName);
-    }
-
+    snapshot.forEach((doc) => {
+        community = doc.data();
+    })
     return community;
 };
 
@@ -165,11 +153,11 @@ const deletePost = async (postRef) => {
 
 const getPostsByCommunity = async (communityName) => {
     const postsRef = collection(db, "Posts");
-    const q = query(postsRef, where("communityName", "==", communityName));
+    const q = query(postsRef, where("communityName", "==", communityName), orderBy("createdOn"));
     const snapshot = await getDocs(q);
     const data = [];
     snapshot.forEach(doc => data.push(doc));
-    return data;
+    return data.reverse();
 }
 
 const getAllPosts = async () => {
@@ -333,4 +321,4 @@ const unsaveContent = async (userId, contentId) => {
     return updateDoc(userRef, { saved: user.data().saved.filter(id => id !== contentId) });
 }
 
-export { createAccountUsingEmail, usernameAvailable, emailNotRegistered, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunity, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, leaveCommunity, getProfile, getPostById, createComment, getComments, subscribeToComments, subscribeToPost, deleteComment, editComment, subscribeToUserDoc, saveContent, unsaveContent, deletePost, editPost };
+export { createAccountUsingEmail, usernameAvailable, emailNotRegistered, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunityInfo, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, hasJoinedCommunity, leaveCommunity, getProfile, getPostById, createComment, getComments, subscribeToComments, subscribeToPost, deleteComment, editComment, subscribeToUserDoc, saveContent, unsaveContent, deletePost, editPost };

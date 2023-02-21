@@ -3,6 +3,8 @@
     padding-bottom: 15px;
     display: flex;
     justify-content: center;
+    gap: 1rem;
+    align-items: flex-start;
 }
 
 .content {

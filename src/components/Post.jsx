@@ -6,6 +6,7 @@ import Vote from "./Vote";
 
 const Post = ({ data, id }) => {
   const [post, setPost] = useState(data);
+  const navigate = useNavigate();
 
   useEffect(() => {
     let ignore = false;
@@ -20,9 +21,11 @@ const Post = ({ data, id }) => {
     };
   }, [id]);
 
-  const navigate = useNavigate();
   return (
-    <div className="post" onClick={() => navigate(`/post/${post.id}`)}>
+    <div
+      className="post"
+      onClick={() => navigate(`/r/${post.communityName}/${post.id}`)}
+    >
       <div className="post-sidebar" onClick={(e) => e.stopPropagation()}>
         {post && <Vote data={post} type="post" />}
       </div>
@@ -33,7 +36,7 @@ const Post = ({ data, id }) => {
             <span>
               {" "}
               Posted by u/{post.author}{" "}
-              {getRelativeDateTime(data.createdOn.toMillis())}{" "}
+              {getRelativeDateTime(post?.createdOn.toMillis())}{" "}
             </span>
           </p>
         </div>

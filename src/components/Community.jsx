@@ -1,38 +1,59 @@
 import Header from "./Header";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
-import { getCommunity, joinCommunity, leaveCommunity } from "../firebase";
+import {
+  getCommunityInfo,
+  getPostsByCommunity,
+  hasJoinedCommunity,
+  joinCommunity,
+  leaveCommunity,
+} from "../firebase";
 import "../styles/Community.css";
 import Post from "./Post";
 import AuthContext from "../context/AuthContext";
+import CommunityInfo from "./CommunityInfo";
 
-const Community = ({ username }) => {
-  const [data, setData] = useState({});
+const Community = () => {
+  const [community, setCommunity] = useState(null);
+  const [posts, setPosts] = useState(null);
   const [communityNotFound, setCommunityNotFound] = useState(false);
-  const { communityName } = useParams();
-  const navigate = useNavigate();
-  const user = useContext(AuthContext);
   const [joined, setJoined] = useState(false);
+  const user = useContext(AuthContext);
+  const { communityName } = useParams();
 
   const handleJoin = () => {
     if (!joined) {
-      joinCommunity(user.uid, communityName, data.type);
+      joinCommunity(user.uid, communityName, community.type);
     } else {
-      leaveCommunity(user.uid, communityName, data.type);
+      leaveCommunity(user.uid, communityName, community.type);
     }
     setJoined((prev) => !prev);
   };
 
   useEffect(() => {
     let ignore = false;
-    getCommunity(user.uid, communityName).then((snapshot) => {
+
+    getCommunityInfo(communityName).then((snapshot) => {
       if (!ignore) {
         if (snapshot) {
-          setJoined(snapshot.joined);
-          setData(snapshot);
+          setCommunity(snapshot);
         } else {
           setCommunityNotFound(true);
         }
+      }
+    });
+
+    if (user) {
+      hasJoinedCommunity(user.uid, communityName).then((data) => {
+        if (!ignore) {
+          setJoined(data);
+        }
+      });
+    }
+
+    getPostsByCommunity(communityName).then((snap) => {
+      if (!ignore) {
+        setPosts(snap);
       }
     });
 
@@ -65,7 +86,7 @@ const Community = ({ username }) => {
     );
   }
 
-  const loading = Object.keys(data).length === 0;
+  const loading = !community && !posts && !joined;
 
   return (
     <div>
@@ -88,7 +109,7 @@ const Community = ({ username }) => {
             >
               <path d="M16.5,2.924,11.264,15.551H9.91L15.461,2.139h.074a9.721,9.721,0,1,0,.967.785ZM8.475,8.435a1.635,1.635,0,0,0-.233.868v4.2H6.629V6.2H8.174v.93h.041a2.927,2.927,0,0,1,1.008-.745,3.384,3.384,0,0,1,1.453-.294,3.244,3.244,0,0,1,.7.068,1.931,1.931,0,0,1,.458.151l-.656,1.558a2.174,2.174,0,0,0-1.067-.246,2.159,2.159,0,0,0-.981.215A1.59,1.59,0,0,0,8.475,8.435Z"></path>
             </svg>
-            <h2>{data?.name}</h2>
+            <h2>{community?.name}</h2>
             <span
               style={{
                 position: "absolute",
@@ -99,7 +120,7 @@ const Community = ({ username }) => {
                 fontWeight: "bolder",
               }}
             >
-              r/{data.name}
+              r/{community?.name}
             </span>
             <button
               className={`${joined ? "secondary-btn" : "primary-btn"}`}
@@ -111,45 +132,22 @@ const Community = ({ username }) => {
           </div>
         </div>
       )}
-      <div className="posts-container">
-        {!loading && (
-          <div className="posts" style={{ marginTop: 15 }}>
-            {data.posts.map((post) => (
-              <Post key={post.id} data={post} />
+      <div
+        style={{
+          display: "flex",
+          alignItems: "flex-start",
+          justifyContent: "center",
+          gap: "1rem",
+          marginTop: 20,
+        }}
+      >
+        <div style={{ maxWidth: 800 }}>
+          {!loading &&
+            posts?.map((post) => (
+              <Post key={post.id} id={post.id} data={post.data()} />
             ))}
-          </div>
-        )}
-        {!loading && (
-          <aside className="community-sidebar">
-            <div className="community-sidebar__header">
-              <b>About Community</b>
-            </div>
-            <div className="community-description">
-              <p style={{ fontSize: 16, wordWrap: "break-word" }}>
-                {data.description}
-              </p>
-              <span style={{ color: "#818589" }}>
-                Created{" "}
-                {new Intl.DateTimeFormat("en-US", {
-                  dateStyle: "medium",
-                }).format(new Date(data.createdOn.toMillis()))}
-              </span>
-              <p>
-                {new Intl.NumberFormat("en-US", { notation: "compact" }).format(
-                  data.members
-                )}{" "}
-                Members
-              </p>
-              <button
-                className="primary-btn"
-                style={{ width: "100%", marginLeft: -5 }}
-                onClick={() => navigate(`/r/${communityName}/submit`)}
-              >
-                Create Post
-              </button>
-            </div>
-          </aside>
-        )}
+        </div>
+        {!loading && <CommunityInfo data={community} />}
       </div>
     </div>
   );
