@@ -14,7 +14,6 @@ import {
 import getRelativeDateTime from "../utils/getRelativeDateTime";
 import Comment from "./Comment";
 import CommentBox from "./CommentBox";
-import "../styles/PostDetails.css";
 import AuthContext from "../context/AuthContext";
 import MessageIcon from "./MessageIcon";
 import ShareArrowIcon from "./ShareArrowIcon";
@@ -25,6 +24,7 @@ import CommentSkeleton from "./CommentSkeleton";
 import ContentLoader from "react-content-loader";
 import EmptyComments from "./EmptyComments";
 import CommunityInfo from "./CommunityInfo";
+import "../styles/PostDetails.css";
 
 const PostDetails = () => {
   const [community, setCommunity] = useState(null);
@@ -238,7 +238,7 @@ const PostDetails = () => {
             ))}
         </div>
       </div>
-      {community && <CommunityInfo data={community} />}
+      <CommunityInfo data={community} showJoined />
       {showToast && (
         <ToastNotification text={toastText} setDisplay={setShowToast} />
       )}

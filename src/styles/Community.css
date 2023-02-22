@@ -33,6 +33,8 @@
 
 .community-description {
     padding: 15px;
+    display: flex;
+    flex-direction: column;
 }
 
 .upvote-btn__clicked svg {

@@ -1,34 +1,18 @@
-import Header from "./Header";
 import { useParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
-import {
-  getCommunityInfo,
-  getPostsByCommunity,
-  hasJoinedCommunity,
-  joinCommunity,
-  leaveCommunity,
-} from "../firebase";
-import "../styles/Community.css";
+import { getCommunityInfo, getPostsByCommunity } from "../firebase";
 import Post from "./Post";
 import AuthContext from "../context/AuthContext";
 import CommunityInfo from "./CommunityInfo";
+import JoinCommunityButton from "./JoinCommunityButton";
+import "../styles/Community.css";
 
 const Community = () => {
   const [community, setCommunity] = useState(null);
   const [posts, setPosts] = useState(null);
   const [communityNotFound, setCommunityNotFound] = useState(false);
-  const [joined, setJoined] = useState(false);
   const user = useContext(AuthContext);
   const { communityName } = useParams();
-
-  const handleJoin = () => {
-    if (!joined) {
-      joinCommunity(user.uid, communityName, community.type);
-    } else {
-      leaveCommunity(user.uid, communityName, community.type);
-    }
-    setJoined((prev) => !prev);
-  };
 
   useEffect(() => {
     let ignore = false;
@@ -43,14 +27,6 @@ const Community = () => {
       }
     });
 
-    if (user) {
-      hasJoinedCommunity(user.uid, communityName).then((data) => {
-        if (!ignore) {
-          setJoined(data);
-        }
-      });
-    }
-
     getPostsByCommunity(communityName).then((snap) => {
       if (!ignore) {
         setPosts(snap);
@@ -64,29 +40,24 @@ const Community = () => {
 
   if (communityNotFound) {
     return (
-      <>
-        <Header />
-        <main
-          style={{
-            backgroundColor: "#dae0e6",
-            height: "100%",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            flexDirection: "column",
-          }}
-        >
-          <h2>Sorry, there aren't any communities with that name.</h2>
-          <h5>
-            This community may have been banned or the community name is
-            incorrect
-          </h5>
-        </main>
-      </>
+      <div
+        style={{
+          height: "100%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          flexDirection: "column",
+        }}
+      >
+        <h2>Sorry, there aren't any communities with that name.</h2>
+        <h5>
+          This community may have been banned or the community name is incorrect
+        </h5>
+      </div>
     );
   }
 
-  const loading = !community && !posts && !joined;
+  const loading = !community && !posts;
 
   return (
     <div>
@@ -122,13 +93,11 @@ const Community = () => {
             >
               r/{community?.name}
             </span>
-            <button
-              className={`${joined ? "secondary-btn" : "primary-btn"}`}
+            <JoinCommunityButton
+              communityName={communityName}
+              communityType={community?.type}
               style={{ width: 80 }}
-              onClick={handleJoin}
-            >
-              {joined ? "Joined" : "Join"}
-            </button>
+            />
           </div>
         </div>
       )}
@@ -147,7 +116,7 @@ const Community = () => {
               <Post key={post.id} id={post.id} data={post.data()} />
             ))}
         </div>
-        {!loading && <CommunityInfo data={community} />}
+        {!loading && <CommunityInfo data={community} showCreatePost />}
       </div>
     </div>
   );
