@@ -2,7 +2,11 @@ import { useNavigate } from "react-router-dom";
 import ContentLoader from "react-content-loader";
 import JoinCommunityButton from "./JoinCommunityButton";
 
-const CommunityInfo = ({ data, showJoined, showCreatePost }) => {
+const CommunityInfo = ({
+  data,
+  showJoined = false,
+  showCreatePost = false,
+}) => {
   const navigate = useNavigate();
   return (
     <aside className="community-sidebar">

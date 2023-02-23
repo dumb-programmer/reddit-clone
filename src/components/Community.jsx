@@ -10,7 +10,6 @@ import "../styles/Community.css";
 const Community = () => {
   const [community, setCommunity] = useState(null);
   const [posts, setPosts] = useState(null);
-  const [communityNotFound, setCommunityNotFound] = useState(false);
   const user = useContext(AuthContext);
   const { communityName } = useParams();
 
@@ -19,11 +18,7 @@ const Community = () => {
 
     getCommunityInfo(communityName).then((snapshot) => {
       if (!ignore) {
-        if (snapshot) {
-          setCommunity(snapshot);
-        } else {
-          setCommunityNotFound(true);
-        }
+        setCommunity(snapshot);
       }
     });
 
@@ -38,7 +33,7 @@ const Community = () => {
     };
   }, [communityName, user]);
 
-  if (communityNotFound) {
+  if (community === undefined) {
     return (
       <div
         style={{

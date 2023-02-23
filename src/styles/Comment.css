@@ -17,6 +17,10 @@
     gap: 0.5rem;
 }
 
+.comment-main {
+    width: 100%;
+}
+
 .avatar {
     height: 30px;
     width: 30px;
