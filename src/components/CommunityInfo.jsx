@@ -2,6 +2,9 @@ import { useNavigate } from "react-router-dom";
 import ContentLoader from "react-content-loader";
 import JoinCommunityButton from "./JoinCommunityButton";
 import CommunityIcon from "./icons/CommunityIcon";
+import useRedirect from "../hooks/useRedirect";
+import { useContext } from "react";
+import AuthContext from "../context/AuthContext";
 
 const CommunityInfo = ({
   data,
@@ -10,6 +13,8 @@ const CommunityInfo = ({
   showAvatar = false,
 }) => {
   const navigate = useNavigate();
+  const redirectToLogin = useRedirect("/login", "You need to login first");
+  const auth = useContext(AuthContext);
   return (
     <aside className="community-sidebar">
       <div className="community-sidebar__header">
@@ -66,7 +71,9 @@ const CommunityInfo = ({
           <button
             className="primary-btn"
             style={{ width: "100%", marginLeft: -5 }}
-            onClick={() => navigate(`/r/${data?.name}/submit`)}
+            onClick={
+              auth ? () => navigate(`/r/${data?.name}/submit`) : redirectToLogin
+            }
           >
             Create Post
           </button>
