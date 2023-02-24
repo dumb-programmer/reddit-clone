@@ -54,7 +54,7 @@ const PostSkeleton = (props) => (
         <rect x="8" y="19" rx="4" ry="4" width="315" height="11" />
         <rect x="279" y="87" rx="0" ry="0" width="2" height="0" />
         <rect x="6" y="50" rx="5" ry="5" width="351" height="22" />
-        <rect x="7" y="84" rx="0" ry="0" width="770" height="306" />
+        <rect x="7" y="84" rx="0" ry="0" width="760" height="306" />
       </ContentLoader>
     </div>
   </div>

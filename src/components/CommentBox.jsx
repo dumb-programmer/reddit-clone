@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import AuthContext from "../context/AuthContext";
+import useRedirect from "../hooks/useRedirect";
 import LoadingSVG from "./LoadingSVG";
 
 const CommentBox = ({
@@ -11,6 +13,8 @@ const CommentBox = ({
     (commentSnap && commentSnap.data().comment) || ""
   );
   const [loading, setLoading] = useState(false);
+  const redirectToLogin = useRedirect("/login", "You need to login first");
+  const auth = useContext(AuthContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,7 +29,7 @@ const CommentBox = ({
 
   return (
     <div style={{ paddingBottom: 10 }}>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={auth ? handleSubmit : redirectToLogin}>
         <textarea
           className="comment-box"
           placeholder="What are your thoughts?"

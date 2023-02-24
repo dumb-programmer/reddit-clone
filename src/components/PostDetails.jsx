@@ -39,10 +39,13 @@ const PostDetails = () => {
 
   useEffect(() => {
     // Subscribe to user document to listen for post/comment saved state changes
-    const unsubUser = subscribeToUserDoc(auth.uid, (doc) => {
-      const user = doc.data();
-      setSaved(user.saved);
-    });
+    let unsubUser = null;
+    if (auth) {
+      unsubUser = subscribeToUserDoc(auth.uid, (doc) => {
+        const user = doc.data();
+        setSaved(user.saved);
+      });
+    }
 
     let ignore = false;
     let docId;
@@ -76,7 +79,9 @@ const PostDetails = () => {
     return () => {
       ignore = true;
       unsubComments();
-      unsubUser();
+      if (unsubUser) {
+        unsubUser();
+      }
       if (unsubPost) {
         unsubPost();
       }
@@ -200,7 +205,9 @@ const PostDetails = () => {
                     onEdit={() => setEditPost(true)}
                     showToast={() => setShowToast(true)}
                     setToastText={setToastText}
-                    isOwner={localStorage.getItem("username") === data?.author}
+                    isOwner={
+                      auth && localStorage.getItem("username") === data?.author
+                    }
                   />
                 </div>
               </div>

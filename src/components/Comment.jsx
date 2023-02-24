@@ -40,7 +40,7 @@ const Comment = ({ comment, saved, setToastText, showToast }) => {
       ignore = true;
       unsubComments();
     };
-  }, [data]);
+  }, [data.id]);
 
   if (minimize) {
     return (
@@ -48,7 +48,7 @@ const Comment = ({ comment, saved, setToastText, showToast }) => {
         className="comment"
         style={{ display: "flex", alignItems: "center", gap: "0.7rem" }}
       >
-        <button onClick={() => setMinimize(false)}>
+        <button style={{ all: "unset" }} onClick={() => setMinimize(false)}>
           <MaximizeIcon height={20} width={20} fill="#ffff" stroke="#0079d3" />
         </button>
         <img

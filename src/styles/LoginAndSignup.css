@@ -6,6 +6,10 @@ body {
     font-family: Roboto;
 }
 
+button {
+    cursor: pointer;
+}
+
 #root {
     flex: 1;
     display: flex;
@@ -40,11 +44,6 @@ body {
     padding: 10px;
     border: 1px solid #d7d7d6;
     border-radius: 5px;
-}
-
-button {
-    all: unset;
-    cursor: pointer;
 }
 
 .login-form button {

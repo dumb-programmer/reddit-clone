@@ -4,7 +4,6 @@ import { getAllPosts } from "../firebase";
 import Post from "./Post";
 import AuthContext from "../context/AuthContext";
 import "../styles/Home.css";
-import ContentLoader from "react-content-loader";
 import PostSkeleton from "./PostSkeleton";
 
 const Home = () => {

@@ -1,10 +1,12 @@
 import { useContext, useEffect, useState } from "react";
 import AuthContext from "../context/AuthContext";
 import { hasJoinedCommunity, joinCommunity, leaveCommunity } from "../firebase";
+import useRedirect from "../hooks/useRedirect";
 
 const JoinCommunityButton = ({ communityName, communityType, ...props }) => {
   const [joined, setJoined] = useState(null);
   const auth = useContext(AuthContext);
+  const redirectToLogin = useRedirect("/login", "You need to login first");
 
   const handleJoin = () => {
     if (!joined) {
@@ -32,7 +34,7 @@ const JoinCommunityButton = ({ communityName, communityType, ...props }) => {
   return (
     <button
       className={`${joined ? "secondary-btn" : "primary-btn"}`}
-      onClick={auth ? handleJoin : null}
+      onClick={auth ? handleJoin : redirectToLogin}
       {...props}
     >
       {joined ? "Joined" : "Join"}

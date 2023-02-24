@@ -3,16 +3,20 @@ import { downvote, removeDownvote, removeUpvote, upvote } from "../firebase";
 import AuthContext from "../context/AuthContext";
 import isUpvoted from "../utils/isUpvoted";
 import isDownvoted from "../utils/isDownvoted";
+import useRedirect from "../hooks/useRedirect";
 
 const Vote = ({ data, type }) => {
   const user = useContext(AuthContext);
   const ignore = useRef(false);
+  const redirectToLogin = useRedirect("/login", "You need to login first");
 
   const [userVote, setUserVote] = useState(() => {
-    if (isUpvoted(data.upvotes, user.uid)) {
-      return 1;
-    } else if (isDownvoted(data.downvotes, user.uid)) {
-      return -1;
+    if (user) {
+      if (isUpvoted(data.upvotes, user.uid)) {
+        return 1;
+      } else if (isDownvoted(data.downvotes, user.uid)) {
+        return -1;
+      }
     }
     return 0;
   });
@@ -61,7 +65,7 @@ const Vote = ({ data, type }) => {
     <>
       <button
         className={`upvote-btn ${userVote === 1 ? "upvote-btn__clicked" : ""}`}
-        onClick={handleUpvote}
+        onClick={user ? handleUpvote : redirectToLogin}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -92,7 +96,7 @@ const Vote = ({ data, type }) => {
         className={`downvote-btn ${
           userVote === -1 ? "downvote-btn__clicked" : ""
         }`}
-        onClick={handleDownvote}
+        onClick={user ? handleDownvote : redirectToLogin}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import AuthContext from "../context/AuthContext";
 import { saveContent, unsaveContent } from "../firebase";
+import useRedirect from "../hooks/useRedirect";
 import DeleteConfirmation from "./DeleteConfirmation";
 import EditIcon from "./icons/EditIcon";
 import SaveIcon from "./icons/SaveIcon";
@@ -22,6 +23,7 @@ const ShowMore = ({
   const [showDropdown, setShowDropdown] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const auth = useContext(AuthContext);
+  const redirectToLogin = useRedirect("/login", "You need to login first");
 
   const handleSave = async () => {
     if (!isSaved) {
@@ -58,7 +60,10 @@ const ShowMore = ({
         <ShowMoreIcon height={25} width={25} />
         {showDropdown && (
           <ul className="comment-dropdown">
-            <li className="comment-dropdown-link" onClick={handleSave}>
+            <li
+              className="comment-dropdown-link"
+              onClick={auth ? handleSave : redirectToLogin}
+            >
               <SaveIcon height={30} width={30} />
               <span>{isSaved ? "Unsave" : "Save"}</span>
             </li>
