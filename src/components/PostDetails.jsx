@@ -238,7 +238,7 @@ const PostDetails = () => {
             ))}
         </div>
       </div>
-      <CommunityInfo data={community} showJoined showAvatar />
+      <CommunityInfo data={community} showJoined />
       {showToast && (
         <ToastNotification text={toastText} setDisplay={setShowToast} />
       )}

@@ -4,6 +4,8 @@ import { getAllPosts } from "../firebase";
 import Post from "./Post";
 import AuthContext from "../context/AuthContext";
 import "../styles/Home.css";
+import ContentLoader from "react-content-loader";
+import PostSkeleton from "./PostSkeleton";
 
 const Home = () => {
   const [showModal, setShowModal] = useState(false);
@@ -43,13 +45,15 @@ const Home = () => {
           onExit={() => setShowModal(false)}
         />
       )}
-      {!loading && (
-        <div style={{ minWidth: 800 }}>
-          {data.map((post) => (
-            <Post key={post.id} data={post.data()} id={post.id} />
-          ))}
-        </div>
-      )}
+      <div style={{ minWidth: 800 }}>
+        {!loading
+          ? data.map((post) => (
+              <Post key={post.id} data={post.data()} id={post.id} />
+            ))
+          : Array.from({ length: 5 }).map((_, idx) => (
+              <PostSkeleton key={idx} />
+            ))}
+      </div>
       {authenticated && (
         <aside className="main-btns">
           <img
