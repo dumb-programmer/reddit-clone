@@ -1,5 +1,5 @@
 import React from "react";
-import CommentsIcon from "./CommentsIcon";
+import CommentsIcon from "./icons/CommentsIcon";
 
 const EmptyComments = () => {
   return (

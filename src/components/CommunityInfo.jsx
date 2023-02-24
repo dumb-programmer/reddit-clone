@@ -1,11 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import ContentLoader from "react-content-loader";
 import JoinCommunityButton from "./JoinCommunityButton";
+import CommunityIcon from "./icons/CommunityIcon";
 
 const CommunityInfo = ({
   data,
   showJoined = false,
   showCreatePost = false,
+  showAvatar = false,
 }) => {
   const navigate = useNavigate();
   return (
@@ -14,7 +16,20 @@ const CommunityInfo = ({
         <b>About Community</b>
       </div>
       <div className="community-description">
-        <p style={{ fontSize: 16, wordWrap: "break-word" }}>
+        {showAvatar && (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-start",
+              alignItems: "center",
+              gap: "0.5rem",
+            }}
+          >
+            <CommunityIcon style={{ height: 50, width: 50, fill: "#0079d3" }} />
+            <p style={{ fontSize: 20 }}>r/{data?.name}</p>
+          </div>
+        )}
+        <p style={{ fontSize: 14, wordWrap: "break-word" }}>
           {data?.description || (
             <ContentLoader
               speed={2}

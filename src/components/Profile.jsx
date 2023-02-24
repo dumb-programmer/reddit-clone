@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import AuthContext from "../context/AuthContext";
 import { getProfile } from "../firebase";
-import CakeIcon from "./CakeIcon";
+import CakeIcon from "./icons/CakeIcon";
 import Post from "./Post";
 
 const Profile = () => {

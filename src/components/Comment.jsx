@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import MessageIcon from "./MessageIcon";
+import MessageIcon from "./icons/MessageIcon";
 import Vote from "./Vote";
 import getRelativeDateTime from "../utils/getRelativeDateTime";
 import ShowMore from "./ShowMore";
@@ -12,7 +12,7 @@ import {
   getComments,
   subscribeToComments,
 } from "../firebase";
-import MaximizeIcon from "./MaximizeIcon";
+import MaximizeIcon from "./icons/MaximizeIcon";
 
 const Comment = ({ comment, saved, setToastText, showToast }) => {
   const [edit, setEdit] = useState(false);

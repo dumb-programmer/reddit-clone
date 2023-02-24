@@ -2,10 +2,10 @@ import React, { useContext, useEffect, useState } from "react";
 import AuthContext from "../context/AuthContext";
 import { saveContent, unsaveContent } from "../firebase";
 import DeleteConfirmation from "./DeleteConfirmation";
-import EditIcon from "./EditIcon";
-import SaveIcon from "./SaveIcon";
-import ShowMoreIcon from "./ShowMoreIcon";
-import TrashIcon from "./TrashIcon";
+import EditIcon from "./icons/EditIcon";
+import SaveIcon from "./icons/SaveIcon";
+import ShowMoreIcon from "./icons/ShowMoreIcon";
+import TrashIcon from "./icons/TrashIcon";
 
 const ShowMore = ({
   id,

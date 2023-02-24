@@ -15,8 +15,8 @@ import getRelativeDateTime from "../utils/getRelativeDateTime";
 import Comment from "./Comment";
 import CommentBox from "./CommentBox";
 import AuthContext from "../context/AuthContext";
-import MessageIcon from "./MessageIcon";
-import ShareArrowIcon from "./ShareArrowIcon";
+import MessageIcon from "./icons/MessageIcon";
+import ShareArrowIcon from "./icons/ShareArrowIcon";
 import ShowMore from "./ShowMore";
 import ToastNotification from "./ToastNotification";
 import EditContent from "./EditContent";
@@ -238,7 +238,7 @@ const PostDetails = () => {
             ))}
         </div>
       </div>
-      <CommunityInfo data={community} showJoined />
+      <CommunityInfo data={community} showJoined showAvatar />
       {showToast && (
         <ToastNotification text={toastText} setDisplay={setShowToast} />
       )}
