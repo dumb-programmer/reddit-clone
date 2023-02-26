@@ -1,0 +1,36 @@
+.media-preview {
+    border: 2px solid #898989;
+    border-radius: 3px;
+    position: relative;
+}
+
+.add-media-btn, .delete-media-btn {
+    all: unset;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.add-media-btn {
+    border: 1px dashed #d6d6d6;
+    border-radius: 4px;
+}
+
+.add-media-btn:hover svg {
+    stroke: green;
+}
+
+.thumbnail, .add-media-btn {
+    height: 100px;
+    width: 100px;
+}
+
+.delete-media-btn {
+    background-color: black;
+    border-radius: 50%;
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    padding: 3px;
+}

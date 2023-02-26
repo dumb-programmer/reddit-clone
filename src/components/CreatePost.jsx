@@ -2,16 +2,23 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { createPost, getCommunityInfo } from "../firebase";
 import CommunityInfo from "./CommunityInfo";
+import FileIcon from "./icons/FileIcon";
+import ImageIcon from "./icons/ImageIcon";
+import LinkIcon from "./icons/LinkIcon";
+import "../styles/CreatePost.css";
+import ImagesUpload from "./ImagesUpload";
 
 const CreatePost = () => {
   const [data, setData] = useState({
     title: "",
     content: "",
+    link: "",
+    media: [],
   });
   const [loading, setLoading] = useState(false);
   const { communityName } = useParams();
-  const [username, setUsername] = useState(localStorage.getItem("username"));
   const [community, setCommunity] = useState(null);
+  const [selected, setSelected] = useState(0);
 
   const handleInput = (e) => {
     if (e.target.name === "title" && e.target.value.length < 301) {
@@ -22,7 +29,7 @@ const CreatePost = () => {
     } else {
       setData({
         ...data,
-        content: e.target.value,
+        [e.target.name]: e.target.value,
       });
     }
   };
@@ -32,7 +39,7 @@ const CreatePost = () => {
       setLoading(true);
       await createPost({
         ...data,
-        username: username,
+        username: localStorage.getItem("username"),
         communityName: communityName,
       });
       setLoading(false);
@@ -84,15 +91,49 @@ const CreatePost = () => {
               borderRadius: 5,
             }}
           >
-            <div className="post-creator-header"></div>
+            <div className="post-creator-header">
+              <div
+                className={`post-creator-tab ${
+                  selected === 0 ? "post-creator-tab__active" : ""
+                }`}
+                onClick={() => setSelected(0)}
+              >
+                <FileIcon height={25} width={25} stroke="grey" />
+                <p>Post</p>
+              </div>
+              <div
+                className={`post-creator-tab ${
+                  selected === 1 ? "post-creator-tab__active" : ""
+                }`}
+                onClick={() => setSelected(1)}
+              >
+                <ImageIcon height={25} width={25} stroke="grey" />
+                <p>Images</p>
+              </div>
+              <div
+                className={`post-creator-tab ${
+                  selected === 2 ? "post-creator-tab__active" : ""
+                }`}
+                onClick={() => setSelected(2)}
+              >
+                <LinkIcon height={25} width={25} stroke="grey" />
+                <p>Link</p>
+              </div>
+            </div>
             <div className="post-form" style={{ padding: 10 }}>
-              <form>
-                <div style={{ position: "relative" }}>
+              <form
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "0.5rem",
+                }}
+              >
+                <div style={{ position: "relative", display: "flex" }}>
                   <input
                     type="text"
                     name="title"
                     className="form-input"
-                    style={{ width: "89%", marginBottom: 20, paddingRight: 65 }}
+                    style={{ flex: "2" }}
                     placeholder="Title"
                     maxLength={300}
                     value={data.title}
@@ -102,7 +143,7 @@ const CreatePost = () => {
                   <span
                     style={{
                       position: "absolute",
-                      right: 5,
+                      right: 15,
                       top: 14,
                       fontSize: 12,
                       fontWeight: "bold",
@@ -112,14 +153,27 @@ const CreatePost = () => {
                     {data.title.length}/300
                   </span>
                 </div>
-                <textarea
-                  placeholder="Text(optional)"
-                  name="content"
-                  className="form-input"
-                  style={{ width: "96.5%", height: 100 }}
-                  value={data.content}
-                  onChange={handleInput}
-                />
+                {selected === 0 && (
+                  <textarea
+                    placeholder="Text(optional"
+                    name="content"
+                    className="form-input"
+                    style={{ height: 100 }}
+                    value={data.content}
+                    onChange={handleInput}
+                  />
+                )}
+                {selected === 1 && <ImagesUpload setData={setData} />}
+                {selected === 2 && (
+                  <textarea
+                    placeholder="Url"
+                    className="form-input"
+                    name="link"
+                    value={data.link}
+                    onChange={handleInput}
+                    required
+                  />
+                )}
               </form>
             </div>
             <div

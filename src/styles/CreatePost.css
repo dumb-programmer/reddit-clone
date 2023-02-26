@@ -1,0 +1,34 @@
+.post-creator-header {
+    border-bottom: 1px solid #edeff1;
+    display: flex;
+    justify-content: space-around;
+}
+
+.post-creator-tab {
+    display: flex;
+    justify-content: center;
+    font-weight: bold;
+    color: #8b8e90;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    cursor: pointer;
+}
+
+.post-creator-tab:nth-child(n+1) {
+    border-right: 1px solid #edeff1;
+}
+
+.post-creator-tab:hover {
+    background-color: #f2f8fd;
+}
+
+.post-creator-tab__active {
+    color: #0079d3;
+    border-bottom: 2px solid #0079d3;
+    margin-bottom: -2px;
+}
+
+.post-creator-tab__active svg {
+    stroke: #0079d3 !important;
+}
