@@ -43,7 +43,14 @@ const Post = ({ data, id }) => {
         <div className="post-title">
           <h3>{post.title}</h3>
         </div>
-        <div className="post-body">{post.content}</div>
+        <div className="post-body">
+          {post.content}
+          {post.link && (
+            <a className="link" href={post.link}>
+              {post.link}
+            </a>
+          )}
+        </div>
       </div>
     </div>
   );

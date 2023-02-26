@@ -38,9 +38,9 @@ const CreatePost = () => {
     if (data.title.length > 0) {
       setLoading(true);
       await createPost({
-        ...data,
         username: localStorage.getItem("username"),
         communityName: communityName,
+        ...data,
       });
       setLoading(false);
     }

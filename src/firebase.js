@@ -138,9 +138,9 @@ const getCommunityInfo = async (communityName) => {
     return community;
 };
 
-const createPost = async ({ username, communityName, title, content }) => {
+const createPost = async ({ username, communityName, ...data }) => {
     const postsRef = collection(db, "Posts");
-    await addDoc(postsRef, { id: uuidv4(), title: title, content: content, votes: 0, createdOn: serverTimestamp(), author: username, communityName: communityName, upvotes: [], downvotes: [] });
+    await addDoc(postsRef, { id: uuidv4(), title: data.title, content: data.content, link: data.link, votes: 0, createdOn: serverTimestamp(), author: username, communityName: communityName, upvotes: [], downvotes: [] });
 };
 
 const editPost = async (postRef, content) => {
