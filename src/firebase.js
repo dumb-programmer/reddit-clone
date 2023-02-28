@@ -2,6 +2,7 @@ import { uuidv4 } from "@firebase/util";
 import { initializeApp } from "firebase/app";
 import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, onSnapshot, orderBy, query, serverTimestamp, setDoc, updateDoc, where } from "firebase/firestore";
+import { getStorage, uploadBytes, ref, getBytes, getDownloadURL } from "firebase/storage";
 
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -15,6 +16,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+const storage = getStorage(app);
 
 const createAccountUsingEmail = async ({ email, password, username }) => {
     try {
@@ -138,9 +140,26 @@ const getCommunityInfo = async (communityName) => {
     return community;
 };
 
+const uploadMedia = async (mediaList) => {
+    const paths = [];
+    for (const media of mediaList) {
+        const snap = await uploadBytes(ref(storage, uuidv4()), media);
+        paths.push(snap.ref.fullPath);
+    }
+    return paths;
+};
+
+const getMediaUrl = async (path) => {
+    return await getDownloadURL(ref(storage, path));
+};
+
 const createPost = async ({ username, communityName, ...data }) => {
     const postsRef = collection(db, "Posts");
-    await addDoc(postsRef, { id: uuidv4(), title: data.title, content: data.content, link: data.link, votes: 0, createdOn: serverTimestamp(), author: username, communityName: communityName, upvotes: [], downvotes: [] });
+    let paths = null;
+    if (data.media) {
+        paths = await uploadMedia(data.media);
+    }
+    await addDoc(postsRef, { id: uuidv4(), title: data.title, content: data.content, link: data.link, media: paths || "", votes: 0, createdOn: serverTimestamp(), author: username, communityName: communityName, upvotes: [], downvotes: [] });
 };
 
 const editPost = async (postRef, content) => {
@@ -321,4 +340,4 @@ const unsaveContent = async (userId, contentId) => {
     return updateDoc(userRef, { saved: user.data().saved.filter(id => id !== contentId) });
 }
 
-export { createAccountUsingEmail, usernameAvailable, emailNotRegistered, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunityInfo, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, hasJoinedCommunity, leaveCommunity, getProfile, getPostById, createComment, getComments, subscribeToComments, subscribeToPost, deleteComment, editComment, subscribeToUserDoc, saveContent, unsaveContent, deletePost, editPost };
+export { createAccountUsingEmail, usernameAvailable, emailNotRegistered, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunityInfo, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, hasJoinedCommunity, leaveCommunity, getProfile, getPostById, createComment, getComments, subscribeToComments, subscribeToPost, deleteComment, editComment, subscribeToUserDoc, saveContent, unsaveContent, deletePost, editPost, getMediaUrl };

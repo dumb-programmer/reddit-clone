@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import AddIcon from "./icons/AddIcon";
 import "../styles/ImageUpload.css";
 import CrossIcon from "./icons/CrossIcon";
@@ -42,6 +42,12 @@ const ImagesUpload = ({ setData }) => {
     });
   };
 
+  useEffect(() => {
+    setData((data) => {
+      return { ...data, media: [] };
+    });
+  }, []);
+
   return (
     <div style={{ border: "2px solid #f0f2f4", borderRadius: 5, padding: 10 }}>
       <input
@@ -50,7 +56,6 @@ const ImagesUpload = ({ setData }) => {
         accept="image/png, image/gif,image/jpeg, image/webp, video/mp4, video/quicktime"
         style={{ display: "none" }}
         onChange={(e) => {
-          console.log(fileInput.current.values);
           setData((data) => {
             return { ...data, media: [...data.media, ...e.target.files] };
           });
