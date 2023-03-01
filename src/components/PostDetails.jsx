@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import {
   createComment,
   deletePost,
+  downloadMedia,
   getComments,
   getCommunityInfo,
   getPostById,
@@ -26,6 +27,7 @@ import EmptyComments from "./EmptyComments";
 import CommunityInfo from "./CommunityInfo";
 import LinkPreview from "./LinkPreview";
 import "../styles/PostDetails.css";
+import MediaCarousal from "./MediaCarousal.jsx";
 
 const PostDetails = () => {
   const [community, setCommunity] = useState(null);
@@ -123,92 +125,90 @@ const PostDetails = () => {
                 </ContentLoader>
               )}
             </div>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <div>
-                <h1 style={{ margin: 0 }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "1rem",
+              }}
+            >
+              <h1 style={{ margin: 0 }}>
+                {data ? (
+                  data?.title
+                ) : (
+                  <ContentLoader
+                    speed={2}
+                    width={387}
+                    height={38}
+                    viewBox="0 0 387 38"
+                    backgroundColor="#f3f3f3"
+                    foregroundColor="#ecebeb"
+                  >
+                    <rect x="17" y="-1" rx="0" ry="0" width="321" height="32" />
+                  </ContentLoader>
+                )}
+              </h1>
+              {!editPost ? (
+                <>
                   {data ? (
-                    data?.title
-                  ) : (
-                    <ContentLoader
-                      speed={2}
-                      width={387}
-                      height={38}
-                      viewBox="0 0 387 38"
-                      backgroundColor="#f3f3f3"
-                      foregroundColor="#ecebeb"
-                    >
-                      <rect
-                        x="17"
-                        y="-1"
-                        rx="0"
-                        ry="0"
-                        width="321"
-                        height="32"
-                      />
-                    </ContentLoader>
-                  )}
-                </h1>
-                {!editPost ? (
-                  <p>
-                    {data ? (
-                      data?.content || (
+                    data?.content ||
+                    (data?.link && (
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                        }}
+                      >
                         <a href={data?.link} target="_blank" rel="noreferrer">
                           {data?.link}
                         </a>
-                      )
-                    ) : (
-                      <ContentLoader
-                        speed={2}
-                        width={421}
-                        height={76}
-                        viewBox="0 0 421 76"
-                        backgroundColor="#f3f3f3"
-                        foregroundColor="#ecebeb"
-                      >
-                        <rect
-                          x="19"
-                          y="0"
-                          rx="0"
-                          ry="0"
-                          width="401"
-                          height="8"
-                        />
-                        <rect
-                          x="19"
-                          y="17"
-                          rx="0"
-                          ry="0"
-                          width="346"
-                          height="8"
-                        />
-                        <rect
-                          x="20"
-                          y="35"
-                          rx="0"
-                          ry="0"
-                          width="374"
-                          height="8"
-                        />
-                        <rect
-                          x="20"
-                          y="53"
-                          rx="0"
-                          ry="0"
-                          width="279"
-                          height="8"
-                        />
-                      </ContentLoader>
-                    )}
-                  </p>
-                ) : (
-                  <EditContent
-                    contentRef={post}
-                    onCancel={() => setEditPost(false)}
-                  />
-                )}
-              </div>
-
-              {data?.link && <LinkPreview link={data.link} />}
+                        {data?.link && <LinkPreview link={data.link} />}
+                      </div>
+                    )) ||
+                    (data?.media && <MediaCarousal paths={data.media} />)
+                  ) : (
+                    <ContentLoader
+                      speed={2}
+                      width={421}
+                      height={76}
+                      viewBox="0 0 421 76"
+                      backgroundColor="#f3f3f3"
+                      foregroundColor="#ecebeb"
+                    >
+                      <rect x="19" y="0" rx="0" ry="0" width="401" height="8" />
+                      <rect
+                        x="19"
+                        y="17"
+                        rx="0"
+                        ry="0"
+                        width="346"
+                        height="8"
+                      />
+                      <rect
+                        x="20"
+                        y="35"
+                        rx="0"
+                        ry="0"
+                        width="374"
+                        height="8"
+                      />
+                      <rect
+                        x="20"
+                        y="53"
+                        rx="0"
+                        ry="0"
+                        width="279"
+                        height="8"
+                      />
+                    </ContentLoader>
+                  )}
+                </>
+              ) : (
+                <EditContent
+                  contentRef={post}
+                  onCancel={() => setEditPost(false)}
+                />
+              )}
             </div>
             {data && (
               <div

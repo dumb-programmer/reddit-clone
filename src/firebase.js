@@ -2,7 +2,7 @@ import { uuidv4 } from "@firebase/util";
 import { initializeApp } from "firebase/app";
 import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, onSnapshot, orderBy, query, serverTimestamp, setDoc, updateDoc, where } from "firebase/firestore";
-import { getStorage, uploadBytes, ref, getBytes, getDownloadURL } from "firebase/storage";
+import { getStorage, uploadBytes, ref, getDownloadURL } from "firebase/storage";
 
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -159,7 +159,9 @@ const createPost = async ({ username, communityName, ...data }) => {
     if (data.media) {
         paths = await uploadMedia(data.media);
     }
-    await addDoc(postsRef, { id: uuidv4(), title: data.title, content: data.content, link: data.link, media: paths || "", votes: 0, createdOn: serverTimestamp(), author: username, communityName: communityName, upvotes: [], downvotes: [] });
+    const id = uuidv4();
+    await addDoc(postsRef, { id, title: data.title, content: data.content, link: data.link, media: paths || "", votes: 0, createdOn: serverTimestamp(), author: username, communityName: communityName, upvotes: [], downvotes: [] });
+    return id;
 };
 
 const editPost = async (postRef, content) => {

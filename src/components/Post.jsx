@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { subscribeToPost } from "../firebase";
 import getRelativeDateTime from "../utils/getRelativeDateTime";
+import MediaCarousal from "./MediaCarousal";
 import Vote from "./Vote";
 
 const Post = ({ data, id }) => {
@@ -50,6 +51,7 @@ const Post = ({ data, id }) => {
               {post.link}
             </a>
           )}
+          {post?.media?.length > 0 && <MediaCarousal paths={post.media} />}
         </div>
       </div>
     </div>

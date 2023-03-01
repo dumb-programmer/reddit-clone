@@ -1,0 +1,43 @@
+.media-carousal {
+    display: flex;
+    position: relative;
+    gap: 1rem;
+}
+
+.media-carousal-navigation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.media-carousal-btn {
+    all: unset;
+    background-color: #fff;
+    border-radius: 50%;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .1);
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.media-carousal-info {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #7f7f7f;
+    color: #fff;
+    border-radius: 15px;
+    min-width: 35px;
+    max-height: 25px;
+    font-size: small;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.media-carousal-content {
+    height: 100%;
+    width: 100%;
+}
