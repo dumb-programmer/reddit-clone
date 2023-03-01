@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { createPost, getCommunityInfo } from "../firebase";
 import CommunityInfo from "./CommunityInfo";
 import FileIcon from "./icons/FileIcon";
 import ImageIcon from "./icons/ImageIcon";
 import LinkIcon from "./icons/LinkIcon";
-import "../styles/CreatePost.css";
 import ImagesUpload from "./ImagesUpload";
+import LoadingSVG from "./LoadingSVG";
+import "../styles/CreatePost.css";
 
 const CreatePost = () => {
   const [data, setData] = useState({
@@ -19,6 +20,7 @@ const CreatePost = () => {
   const { communityName } = useParams();
   const [community, setCommunity] = useState(null);
   const [selected, setSelected] = useState(0);
+  const navigate = useNavigate();
 
   const handleInput = (e) => {
     if (e.target.name === "title" && e.target.value.length < 301) {
@@ -37,11 +39,12 @@ const CreatePost = () => {
   const handleSubmit = async (e) => {
     if (data.title.length > 0) {
       setLoading(true);
-      await createPost({
+      const postId = await createPost({
         username: localStorage.getItem("username"),
         communityName: communityName,
         ...data,
       });
+      navigate(`/r/${communityName}/${postId}`);
       setLoading(false);
     }
   };
@@ -188,11 +191,16 @@ const CreatePost = () => {
               <button className="secondary-btn">Cancel</button>
               <button
                 className="primary-btn"
-                style={{ width: 70 }}
+                style={{
+                  minHeight: 32,
+                  minWidth: 60,
+                  borderRadius: 23,
+                  padding: "4px 16px",
+                }}
                 onClick={!loading ? handleSubmit : null}
                 disabled={loading}
               >
-                Post
+                {!loading ? "Post" : <LoadingSVG />}
               </button>
             </div>
           </div>
