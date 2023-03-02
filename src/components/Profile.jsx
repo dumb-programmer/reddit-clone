@@ -23,7 +23,6 @@ const Profile = () => {
 
   const loading = data === null;
 
-  console.log(data);
   return (
     <div
       style={{
@@ -35,7 +34,9 @@ const Profile = () => {
     >
       <div style={{ width: 800 }}>
         {!loading &&
-          data?.posts.map((post) => <Post key={post.id} data={post} />)}
+          data?.posts.map((post) => (
+            <Post key={post.id} data={post.data()} id={post.id} />
+          ))}
       </div>
       <aside
         style={{
