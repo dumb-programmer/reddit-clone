@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getMediaUrl } from "../firebase";
+import { getMedia } from "../firebase";
 import ChevronLeft from "./icons/ChevronLeft";
 import ChevronRight from "./icons/ChevronRight";
 import "../styles/MediaCarousal.css";
@@ -10,13 +10,13 @@ const MediaCarousal = ({ paths }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const fetchMedia = async () => {
-    const urls = [];
+    const blobUrls = [];
     for (const path of paths) {
-      const url = await getMediaUrl(path);
-      urls.push(url);
+      const blob = await getMedia(path);
+      blobUrls.push(window.URL.createObjectURL(blob));
     }
-    setMedia(urls);
-    console.log(urls);
+    setMedia(blobUrls);
+    console.log(blobUrls);
   };
 
   useEffect(() => {

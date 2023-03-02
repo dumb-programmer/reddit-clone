@@ -7,21 +7,21 @@ const LinkPreview = ({ link }) => {
 
   useEffect(() => {
     fetch(
-      `https://api.linkpreview.net/?key=a7a74075abfe123ca4d1084902d30f4d&q=${link}`
+      `https://api.linkpreview.net/?key=${process.env.REACT_APP_LINK_PREVIEW_API_KEY}&q=${link}`
     ).then((data) => data.json().then((data) => setPreview(data)));
   }, [link]);
 
   return (
     <div className="link-preview" onClick={() => window.open(link)}>
-      {!preview ? (
-        <LinkIcon height={20} width={20} stroke="#0079d3" />
-      ) : (
+      {preview && preview.image ? (
         <img
           src={preview.image}
           alt={preview.description}
           height={120}
           width={150}
         />
+      ) : (
+        <LinkIcon height={20} width={20} stroke="#0079d3" />
       )}
     </div>
   );
