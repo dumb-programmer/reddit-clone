@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../firebase";
+import useRedirect from "../hooks/useRedirect";
 
-const Header = ({ setRefreshHome }) => {
+const Header = () => {
   const [logoutDisabled, setLogoutDisabled] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  const redirectToHome = useRedirect("/");
 
   const navigate = useNavigate();
 
@@ -27,7 +29,11 @@ const Header = ({ setRefreshHome }) => {
 
   return (
     <header className="nav-bar">
-      <div className="logo">
+      <div
+        className="logo"
+        onClick={redirectToHome}
+        style={{ cursor: "pointer" }}
+      >
         <svg
           className="SVG-icon SnooIcon"
           version="1.1"
