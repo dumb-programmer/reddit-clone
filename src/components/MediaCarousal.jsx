@@ -42,9 +42,11 @@ const MediaCarousal = ({ paths }) => {
 
   return (
     <div className="media-carousal">
-      <div className="media-carousal-info">
-        <p>{selectedIndex + 1 + "/" + media.length}</p>
-      </div>
+      {media.length > 1 && (
+        <div className="media-carousal-info">
+          <p>{selectedIndex + 1 + "/" + media.length}</p>
+        </div>
+      )}
       <div className="media-carousal-navigation">
         {selectedIndex > 0 && (
           <button

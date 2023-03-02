@@ -2,7 +2,7 @@ import { uuidv4 } from "@firebase/util";
 import { initializeApp } from "firebase/app";
 import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, onSnapshot, orderBy, query, serverTimestamp, setDoc, updateDoc, where } from "firebase/firestore";
-import { getStorage, uploadBytes, ref, getDownloadURL } from "firebase/storage";
+import { getStorage, uploadBytes, ref, getDownloadURL, deleteObject } from "firebase/storage";
 
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -149,6 +149,12 @@ const uploadMedia = async (mediaList) => {
     return paths;
 };
 
+const deleteMedia = async (mediaList) => {
+    for (const media of mediaList) {
+        await deleteObject(ref(storage, media));
+    }
+}
+
 const getMediaUrl = async (path) => {
     return await getDownloadURL(ref(storage, path));
 };
@@ -168,8 +174,12 @@ const editPost = async (postRef, content) => {
     await updateDoc(postRef, { content, editedOn: serverTimestamp() });
 };
 
-const deletePost = async (postRef) => {
-    await deleteDoc(postRef);
+const deletePost = async (post) => {
+    const media = post.data()?.media;
+    if (media?.length > 0) {
+        deleteMedia(media);
+    }
+    await deleteDoc(post.ref);
 };
 
 const getPostsByCommunity = async (communityName) => {
@@ -272,7 +282,7 @@ const getUserPosts = async (username) => {
     snapshot.forEach((doc) => {
         docs.push(doc);
     });
-    return docs.map(doc => doc.data());
+    return docs;
 };
 
 const getProfile = async (userId, username) => {
@@ -287,7 +297,6 @@ const createComment = async (comment, username, contentId) => {
     const commentsRef = collection(db, "Comments");
     await addDoc(commentsRef, { id: uuidv4(), comment: comment, votes: 0, createdOn: serverTimestamp(), author: username, upvotes: [], downvotes: [], contentId });
 };
-
 
 const getComments = async (contentId) => {
     const commentsRef = collection(db, "Comments");

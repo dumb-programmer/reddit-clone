@@ -1,10 +1,9 @@
 import { useContext, useEffect, useState } from "react";
 import Vote from "./Vote";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   createComment,
   deletePost,
-  downloadMedia,
   getComments,
   getCommunityInfo,
   getPostById,
@@ -26,8 +25,8 @@ import ContentLoader from "react-content-loader";
 import EmptyComments from "./EmptyComments";
 import CommunityInfo from "./CommunityInfo";
 import LinkPreview from "./LinkPreview";
-import "../styles/PostDetails.css";
 import MediaCarousal from "./MediaCarousal.jsx";
+import "../styles/PostDetails.css";
 
 const PostDetails = () => {
   const [community, setCommunity] = useState(null);
@@ -39,6 +38,7 @@ const PostDetails = () => {
   const [editPost, setEditPost] = useState(false);
   const auth = useContext(AuthContext);
   const { communityName, postId } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Subscribe to user document to listen for post/comment saved state changes
@@ -246,7 +246,8 @@ const PostDetails = () => {
                     confirmationText="Are you sure you want to delete your post? You can't undo this."
                     confirmationHeader="Delete post?"
                     handleDelete={async () => {
-                      await deletePost(post.ref);
+                      await deletePost(post);
+                      navigate(`/r/${communityName}`);
                     }}
                     onEdit={() => setEditPost(true)}
                     showToast={() => setShowToast(true)}
