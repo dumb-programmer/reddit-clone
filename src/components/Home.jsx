@@ -1,15 +1,14 @@
 import { useContext, useEffect, useState } from "react";
 import CreateCommunityModal from "./CreateCommunityModal";
 import { getAllPosts } from "../firebase";
-import Post from "./Post";
 import AuthContext from "../context/AuthContext";
+import Posts from "./Posts";
 import "../styles/Home.css";
-import PostSkeleton from "./PostSkeleton";
 
 const Home = () => {
   const [showModal, setShowModal] = useState(false);
   const username = localStorage.getItem("username");
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(null);
   const authenticated = useContext(AuthContext);
 
   useEffect(() => {
@@ -25,17 +24,15 @@ const Home = () => {
     };
   }, []);
 
-  const loading = Object.keys(data).length === 0;
-
   return (
     <div
       style={{
         display: "flex",
         justifyContent: "center",
         gap: "1rem",
-        paddingTop: 100,
-        paddingLeft: 100,
-        paddingRight: 100,
+        marginTop: 90,
+        marginLeft: 100,
+        marginRight: 100,
       }}
     >
       {showModal && (
@@ -44,15 +41,7 @@ const Home = () => {
           onExit={() => setShowModal(false)}
         />
       )}
-      <div style={{ minWidth: 800 }}>
-        {!loading
-          ? data.map((post) => (
-              <Post key={post.id} data={post.data()} id={post.id} />
-            ))
-          : Array.from({ length: 5 }).map((_, idx) => (
-              <PostSkeleton key={idx} />
-            ))}
-      </div>
+      <Posts data={data} />
       {authenticated && (
         <aside className="main-btns">
           <img

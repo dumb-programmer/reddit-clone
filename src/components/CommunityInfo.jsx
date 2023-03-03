@@ -15,6 +15,7 @@ const CommunityInfo = ({
   const navigate = useNavigate();
   const redirectToLogin = useRedirect("/login", "You need to login first");
   const auth = useContext(AuthContext);
+
   return (
     <aside className="community-sidebar">
       <div className="community-sidebar__header">

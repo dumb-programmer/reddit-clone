@@ -6,7 +6,7 @@ const BackToTopButton = ({ visible }) => {
         display: visible ? "block" : "none",
         position: "fixed",
         bottom: 15,
-        right: 195,
+        right: 150,
         minWidth: 100,
         padding: 10,
         fontWeight: "bold",

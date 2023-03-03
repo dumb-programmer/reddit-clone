@@ -16,7 +16,6 @@ const MediaCarousal = ({ paths }) => {
       blobUrls.push(window.URL.createObjectURL(blob));
     }
     setMedia(blobUrls);
-    console.log(blobUrls);
   };
 
   useEffect(() => {
@@ -28,7 +27,7 @@ const MediaCarousal = ({ paths }) => {
       <div>
         <ContentLoader
           speed={2}
-          width={800}
+          width="100%"
           height={500}
           viewBox="0 0 800 500"
           backgroundColor="#f3f3f3"

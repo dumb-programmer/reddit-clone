@@ -1,16 +1,19 @@
 import React, { useContext, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import { getProfile } from "../firebase";
 import CakeIcon from "./icons/CakeIcon";
 import Post from "./Post";
+import Posts from "./Posts";
 
 const Profile = () => {
   const [data, setData] = useState(null);
-  const user = useContext(AuthContext);
+  const auth = useContext(AuthContext);
+  const { username } = useParams();
 
   useEffect(() => {
     let ignore = false;
-    getProfile(user.uid, localStorage.getItem("username")).then((snap) => {
+    getProfile(username).then((snap) => {
       if (!ignore) {
         setData(snap);
       }
@@ -19,9 +22,7 @@ const Profile = () => {
     return () => {
       ignore = true;
     };
-  }, [user]);
-
-  const loading = data === null;
+  }, [username]);
 
   return (
     <div
@@ -29,20 +30,17 @@ const Profile = () => {
         display: "flex",
         justifyContent: "center",
         gap: "1rem",
-        paddingTop: 100,
+        marginTop: 90,
+        marginLeft: 100,
+        marginRight: 100,
       }}
     >
-      <div style={{ width: 800 }}>
-        {!loading &&
-          data?.posts.map((post) => (
-            <Post key={post.id} data={post.data()} id={post.id} />
-          ))}
-      </div>
+      <Posts data={data?.posts} />
       <aside
         style={{
           backgroundColor: "#fff",
           maxHeight: 325,
-          width: 300,
+          minWidth: 300,
           borderRadius: "0.5rem",
         }}
       >
