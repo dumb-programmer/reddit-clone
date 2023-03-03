@@ -285,12 +285,18 @@ const getUserPosts = async (username) => {
     return docs;
 };
 
-const getProfile = async (userId, username) => {
-    const docRef = doc(db, "Users", userId);
-    const profile = (await getDoc(docRef)).data();
+const getProfile = async (username) => {
+    const usersRef = collection(db, "Users");
+    const q = query(usersRef, where("username", "==", username));
+    let user = null;
+    await getDocs(q).then((snap) => {
+        snap.forEach((doc) => {
+            user = doc.data()
+        });
+    });
     const posts = await getUserPosts(username);
-    profile.posts = posts;
-    return profile;
+    user.posts = posts;
+    return user;
 };
 
 const createComment = async (comment, username, contentId) => {

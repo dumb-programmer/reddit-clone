@@ -37,7 +37,7 @@ function App() {
           <Route path="/" element={<MainLayout />}>
             <Route path="/" element={<Home />} />
             <Route path="/r/:communityName/:postId" element={<PostDetails />} />
-            <Route path="/profile" element={<Profile />} />
+            <Route path="/user/:username" element={<Profile />} />
             <Route path="/r/:communityName" element={<Community />} />
             <Route path="/r/:communityName/submit" element={<CreatePost />} />
           </Route>

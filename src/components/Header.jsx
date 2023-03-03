@@ -92,7 +92,9 @@ const Header = () => {
                 <ul>
                   <li
                     className="dropdown-link"
-                    onClick={() => navigate("/profile")}
+                    onClick={() =>
+                      navigate(`/user/${localStorage.getItem("username")}`)
+                    }
                   >
                     Profile
                   </li>
