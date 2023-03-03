@@ -109,7 +109,14 @@ const PostDetails = () => {
             <div className="post-header">
               {data ? (
                 <p>
-                  Posted by u/{data?.author}{" "}
+                  Posted by{" "}
+                  <a
+                    href={`/user/${data.author}`}
+                    style={{ color: "inherit", textDecoration: "none" }}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    u/{data.author}
+                  </a>{" "}
                   {data && getRelativeDateTime(data.createdOn?.toMillis())}
                 </p>
               ) : (

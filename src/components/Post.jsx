@@ -33,10 +33,23 @@ const Post = ({ data, id }) => {
       <div className="post-main">
         <div className="post-header">
           <p>
-            <b>r/{post.communityName}</b>
+            <a
+              href={`/r/${post.communityName}`}
+              style={{ color: "#1c1c1c", textDecoration: "none" }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              r/{post.communityName}
+            </a>
             <span>
               {" "}
-              Posted by u/{post.author}{" "}
+              Posted by{" "}
+              <a
+                href={`/user/${post.author}`}
+                style={{ color: "inherit", textDecoration: "none" }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                u/{post.author}
+              </a>{" "}
               {getRelativeDateTime(post?.createdOn.toMillis())}{" "}
             </span>
           </p>
