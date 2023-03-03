@@ -26,12 +26,10 @@ const JoinCommunityButton = ({ communityName, communityType, ...props }) => {
           setJoined(data);
         }
       });
-    } else {
-      setJoined(false);
+      return () => {
+        ignore = true;
+      };
     }
-    return () => {
-      ignore = true;
-    };
   }, [auth, communityName]);
 
   if (auth && joined === null) {

@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import { getProfile } from "../firebase";
 import CakeIcon from "./icons/CakeIcon";
-import Post from "./Post";
 import Posts from "./Posts";
 
 const Profile = () => {
@@ -28,6 +27,7 @@ const Profile = () => {
     <div
       style={{
         display: "flex",
+        alignItems: "flex-start",
         justifyContent: "center",
         gap: "1rem",
         marginTop: 90,
@@ -39,7 +39,7 @@ const Profile = () => {
       <aside
         style={{
           backgroundColor: "#fff",
-          maxHeight: 325,
+          paddingBottom: 20,
           minWidth: 300,
           borderRadius: "0.5rem",
         }}
@@ -54,7 +54,7 @@ const Profile = () => {
           }}
         >
           <img
-            src="https://preview.redd.it/j6n0dp5c5bu71.png?width=256&format=png&auto=webp&s=e6ce31875458e6f094b997ea4fbf32e93dc4af81"
+            src={data?.profilePicture}
             alt="profile"
             height={100}
             width={100}
@@ -98,7 +98,7 @@ const Profile = () => {
                 month: "short",
                 day: "numeric",
                 year: "numeric",
-              }).format(data.joined_on.toMillis())}
+              }).format(data?.joined_on?.toMillis())}
           </span>
         </div>
         <div

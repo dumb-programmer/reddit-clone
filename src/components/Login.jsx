@@ -4,7 +4,7 @@ import AppleButton from "./AppleButton";
 import GoogleButton from "./GoogleButton";
 import LoadingSVG from "./LoadingSVG";
 import LoginAndSignUpLayout from "./LoginAndSignUpLayout";
-import { isLoggedIn, loginUsingUsernameAndPassword } from "../firebase";
+import { loginUsingUsernameAndPassword } from "../firebase";
 import AlreadyLoggedInMessage from "./AlreadyLoggedInMessage";
 import AuthContext from "../context/AuthContext";
 

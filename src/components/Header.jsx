@@ -66,7 +66,7 @@ const Header = () => {
               }}
             >
               <img
-                src="https://preview.redd.it/j6n0dp5c5bu71.png?width=256&format=png&auto=webp&s=e6ce31875458e6f094b997ea4fbf32e93dc4af81"
+                src={localStorage.getItem("profilePicture")}
                 height="30px"
                 width="30px"
                 alt="user-avatar"

@@ -1,6 +1,6 @@
 import { uuidv4 } from "@firebase/util";
 import { initializeApp } from "firebase/app";
-import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
 import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, onSnapshot, orderBy, query, serverTimestamp, setDoc, updateDoc, where } from "firebase/firestore";
 import { getStorage, uploadBytes, ref, getDownloadURL, deleteObject, getBlob } from "firebase/storage";
 
@@ -20,8 +20,11 @@ const storage = getStorage(app);
 
 const createAccountUsingEmail = async ({ email, password, username }) => {
     try {
-        const userCreds = await createUserWithEmailAndPassword(auth, email, password);
-        await setDoc(doc(db, "Users", userCreds.uid), { username: username, email: userCreds.user.email })
+        await createUserWithEmailAndPassword(auth, email, password);
+        const profilePicture = await getDownloadURL(ref(storage, "default_avatar.png"));
+        localStorage.setItem("username", username);
+        localStorage.setItem("profilePicture", profilePicture);
+        await setDoc(doc(db, "Users", auth.currentUser.uid), { username: username, email: email, profilePicture })
     }
     catch (error) {
         console.log(error);
@@ -113,7 +116,7 @@ const leaveCommunity = async (userId, communityName, communityType) => {
 const hasJoinedCommunity = async (userId, communityName) => {
     const docRef = doc(db, "Users", userId);
     const docSnap = (await getDoc(docRef)).data();
-    return docSnap.joined_communities.includes(communityName);
+    return docSnap.joined_communities?.includes(communityName) || false;
 };
 
 const getUsername = async (email) => {
