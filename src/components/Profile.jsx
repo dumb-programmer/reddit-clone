@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import {
   changeProfilePicture,
-  getProfile,
+  getProfileByUsername,
   getUserPosts,
   subscribeToUserDoc,
   uploadUserBanner,
@@ -26,7 +26,7 @@ const Profile = () => {
   useEffect(() => {
     let ignore = false;
     let unsubUser = null;
-    getProfile(username).then((snap) => {
+    getProfileByUsername(username).then((snap) => {
       if (!ignore) {
         setUserProfile(snap);
         unsubUser = subscribeToUserDoc(snap.id, (snap) =>

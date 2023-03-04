@@ -275,6 +275,7 @@ const PostDetails = () => {
                 await createComment(
                   comment,
                   localStorage.getItem("username"),
+                  auth.uid,
                   postId
                 );
               }}
