@@ -1,8 +1,8 @@
 import { uuidv4 } from "@firebase/util";
 import { initializeApp } from "firebase/app";
-import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
+import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, } from "firebase/auth";
 import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, onSnapshot, orderBy, query, serverTimestamp, setDoc, updateDoc, where } from "firebase/firestore";
-import { getStorage, uploadBytes, ref, getDownloadURL, deleteObject, getBlob } from "firebase/storage";
+import { getStorage, uploadBytes, ref, getDownloadURL, deleteObject, getBlob, } from "firebase/storage";
 
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -24,11 +24,30 @@ const createAccountUsingEmail = async ({ email, password, username }) => {
         const profilePicture = await getDownloadURL(ref(storage, "default_avatar.png"));
         localStorage.setItem("username", username);
         localStorage.setItem("profilePicture", profilePicture);
-        await setDoc(doc(db, "Users", auth.currentUser.uid), { username: username, email: email, profilePicture })
+        await setDoc(doc(db, "Users", auth.currentUser.uid), { id: auth.currentUser.id, username: username, email: email, profilePicture })
     }
     catch (error) {
         console.log(error);
     }
+};
+
+const changeProfilePicture = async (uid, file) => {
+    const uploadTask = await uploadBytes(ref(storage, "Users/" + uuidv4()), file);
+    const userRef = doc(db, "Users", uid);
+    const user = await getDoc(userRef);
+    await deleteObject(ref(storage, user.data().profilePicture));
+    await updateDoc(userRef, { profilePicture: await getDownloadURL(uploadTask.ref) });
+};
+
+const uploadUserBanner = async (uid, file) => {
+    const uploadTask = await uploadBytes(ref(storage, "Users/" + uuidv4()), file);
+    const userRef = doc(db, "Users", uid);
+    const user = await getDoc(userRef);
+    const existingBanner = user.data().banner;
+    if (existingBanner) {
+        await deleteObject(ref(storage, user.data().banner));
+    }
+    await updateDoc(userRef, { banner: await getDownloadURL(uploadTask.ref) });
 };
 
 const usernameAvailable = async (username) => {
@@ -297,8 +316,6 @@ const getProfile = async (username) => {
             user = doc.data()
         });
     });
-    const posts = await getUserPosts(username);
-    user.posts = posts;
     return user;
 };
 
@@ -360,4 +377,4 @@ const unsaveContent = async (userId, contentId) => {
     return updateDoc(userRef, { saved: user.data().saved.filter(id => id !== contentId) });
 }
 
-export { createAccountUsingEmail, usernameAvailable, emailNotRegistered, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunityInfo, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, hasJoinedCommunity, leaveCommunity, getProfile, getPostById, createComment, getComments, subscribeToComments, subscribeToPost, deleteComment, editComment, subscribeToUserDoc, saveContent, unsaveContent, deletePost, editPost, getMedia };
+export { createAccountUsingEmail, usernameAvailable, emailNotRegistered, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunityInfo, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, hasJoinedCommunity, leaveCommunity, getProfile, getPostById, createComment, getComments, subscribeToComments, subscribeToPost, deleteComment, editComment, subscribeToUserDoc, saveContent, unsaveContent, deletePost, editPost, getMedia, changeProfilePicture, getUserPosts, uploadUserBanner };

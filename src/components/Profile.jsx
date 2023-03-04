@@ -1,27 +1,51 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
-import { getProfile } from "../firebase";
+import {
+  changeProfilePicture,
+  getProfile,
+  getUserPosts,
+  subscribeToUserDoc,
+  uploadUserBanner,
+} from "../firebase";
+import AddPhotoIcon from "./icons/AddPhotoIcon";
 import CakeIcon from "./icons/CakeIcon";
 import Posts from "./Posts";
+import "../styles/Profile.css";
 
 const Profile = () => {
-  const [data, setData] = useState(null);
+  const [userProfile, setUserProfile] = useState(null);
+  const [posts, setPosts] = useState(null);
   const auth = useContext(AuthContext);
   const { username } = useParams();
+  const profilePictureInput = useRef();
+  const bannerInput = useRef();
+
+  const isOwner = userProfile?.id === `${auth.uid}`;
 
   useEffect(() => {
     let ignore = false;
+    let unsubUser = null;
     getProfile(username).then((snap) => {
       if (!ignore) {
-        setData(snap);
+        setUserProfile(snap);
+        unsubUser = subscribeToUserDoc(snap.id, (snap) =>
+          setUserProfile(snap.data())
+        );
+      }
+    });
+
+    getUserPosts(username).then((snap) => {
+      if (!ignore) {
+        setPosts(snap);
       }
     });
 
     return () => {
       ignore = true;
+      unsubUser && unsubUser();
     };
-  }, [username]);
+  }, [username, auth.uid]);
 
   return (
     <div
@@ -30,12 +54,10 @@ const Profile = () => {
         alignItems: "flex-start",
         justifyContent: "center",
         gap: "1rem",
-        marginTop: 90,
-        marginLeft: 100,
-        marginRight: 100,
+        margin: "90px 100px 0 100px",
       }}
     >
-      <Posts data={data?.posts} />
+      <Posts data={posts} />
       <aside
         style={{
           backgroundColor: "#fff",
@@ -44,7 +66,52 @@ const Profile = () => {
           borderRadius: "0.5rem",
         }}
       >
-        <div style={{ backgroundColor: "#33a8ff", height: 50 }}></div>
+        {isOwner && (
+          <>
+            <input
+              type="file"
+              style={{ display: "none" }}
+              ref={profilePictureInput}
+              accept="*.jpeg,*.jpg,*.gif,*.png,*.webp"
+              onChange={async (e) => {
+                await changeProfilePicture(auth.uid, e.target.files[0]);
+              }}
+            />
+            <input
+              type="file"
+              style={{ display: "none" }}
+              ref={bannerInput}
+              accept="*.jpeg,*.jpg,*.gif,*.png,*.webp"
+              onChange={async (e) => {
+                await uploadUserBanner(auth.uid, e.target.files[0]);
+              }}
+            />
+          </>
+        )}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "center",
+            backgroundColor: userProfile?.banner == null ? "#33a8ff" : "none",
+            backgroundImage:
+              userProfile?.banner !== null && `url(${userProfile?.banner})`,
+            backgroundSize: "cover",
+            backgroundPosition: "50%",
+            height: userProfile?.banner ? "100%" : 40,
+            width: "100%",
+            borderRadius: "4px 4px 0 0",
+          }}
+        >
+          {isOwner && (
+            <button
+              className="add-banner-btn"
+              onClick={() => bannerInput.current.click()}
+            >
+              <AddPhotoIcon height={30} width={30} stroke="#0079d3" />
+            </button>
+          )}
+        </div>
         <div
           style={{
             display: "flex",
@@ -54,12 +121,14 @@ const Profile = () => {
           }}
         >
           <img
-            src={data?.profilePicture}
+            src={userProfile?.profilePicture}
             alt="profile"
             height={100}
             width={100}
+            onClick={isOwner ? () => profilePictureInput.current.click() : null}
+            style={isOwner ? { cursor: "pointer" } : null}
           />
-          <h3>{data && data.username}</h3>
+          <h3>{userProfile?.username}</h3>
           <span
             style={{
               color: "#7c7c7c",
@@ -68,7 +137,7 @@ const Profile = () => {
               marginTop: -15,
             }}
           >
-            u/{data && data.username}{" "}
+            u/{userProfile?.username}{" "}
           </span>
         </div>
         <div
@@ -93,12 +162,11 @@ const Profile = () => {
               color: "#afafaf",
             }}
           >
-            {data &&
-              Intl.DateTimeFormat("en-us", {
-                month: "short",
-                day: "numeric",
-                year: "numeric",
-              }).format(data?.joined_on?.toMillis())}
+            {Intl.DateTimeFormat("en-us", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            }).format(userProfile?.joined_on?.toMillis())}
           </span>
         </div>
         <div
