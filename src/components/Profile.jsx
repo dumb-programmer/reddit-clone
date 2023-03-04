@@ -21,7 +21,7 @@ const Profile = () => {
   const profilePictureInput = useRef();
   const bannerInput = useRef();
 
-  const isOwner = userProfile?.id === `${auth.uid}`;
+  const isOwner = auth && userProfile?.id === `${auth.uid}`;
 
   useEffect(() => {
     let ignore = false;
@@ -45,7 +45,7 @@ const Profile = () => {
       ignore = true;
       unsubUser && unsubUser();
     };
-  }, [username, auth.uid]);
+  }, [username, auth?.uid]);
 
   return (
     <div
@@ -93,12 +93,12 @@ const Profile = () => {
             display: "flex",
             justifyContent: "flex-end",
             alignItems: "center",
-            backgroundColor: userProfile?.banner == null ? "#33a8ff" : "none",
+            backgroundColor: "#33a8ff",
             backgroundImage:
               userProfile?.banner !== null && `url(${userProfile?.banner})`,
             backgroundSize: "cover",
             backgroundPosition: "50%",
-            height: userProfile?.banner ? "100%" : 40,
+            height: 40,
             width: "100%",
             borderRadius: "4px 4px 0 0",
           }}

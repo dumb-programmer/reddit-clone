@@ -97,8 +97,34 @@ const registerAuthObserver = (cb) => {
 };
 
 const createCommunity = async ({ communityName, communityType, username }) => {
-    const communityRef = collection(db, "Communities", communityType, "communities");
-    await addDoc(communityRef, { name: communityName, members: 0, moderator: username, createdOn: serverTimestamp() });
+    const communityRef = doc(db, "Communities", communityType, "communities", communityName);
+    await setDoc(communityRef, { name: communityName, members: 0, moderator: username, createdOn: serverTimestamp() });
+};
+
+const setCommunityIcon = async (communityName, communityType, file) => {
+    const uploadTask = await uploadBytes(ref(storage, "Communities/" + uuidv4()), file);
+    const communityRef = doc(db, "Communities", communityType, "communities", communityName);
+    const community = await getDoc(communityRef);
+    const existingIcon = community.data().icon;
+    if (existingIcon) {
+        await deleteObject(ref(storage, existingIcon));
+    }
+    await updateDoc(communityRef, { icon: await getDownloadURL(uploadTask.ref) });
+};
+
+const setCommunityBanner = async (communityName, communityType, file) => {
+    const uploadTask = await uploadBytes(ref(storage, "Communities/" + uuidv4()), file);
+    const communityRef = doc(db, "Communities", communityType, "communities", communityName);
+    const community = await getDoc(communityRef);
+    const existingBanner = community.data().banner;
+    if (existingBanner) {
+        await deleteObject(ref(storage, existingBanner));
+    }
+    await updateDoc(communityRef, { banner: await getDownloadURL(uploadTask.ref) });
+};
+
+const subscribeToCommunity = (communityName, communityType, cb) => {
+    return onSnapshot(doc(db, "Communities", communityType, "communities", communityName), cb);
 };
 
 const communityNameAvailable = async ({ communityName, communityType }) => {
@@ -152,14 +178,9 @@ const getUsername = async (email) => {
 };
 
 const getCommunityInfo = async (communityName) => {
-    const communityRef = collection(db, "Communities", "public", "communities");
-    const q = query(communityRef, where("name", "==", communityName));
-    const snapshot = await getDocs(q);
-    let community;
-    snapshot.forEach((doc) => {
-        community = doc.data();
-    })
-    return community;
+    const communityRef = doc(db, "Communities", "public", "communities", communityName);
+    const community = await getDoc(communityRef);
+    return community.data();
 };
 
 const uploadMedia = async (mediaList) => {
@@ -382,4 +403,4 @@ const unsaveContent = async (userId, contentId) => {
     return updateDoc(userRef, { saved: user.data().saved.filter(id => id !== contentId) });
 }
 
-export { createAccountUsingEmail, usernameAvailable, emailNotRegistered, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunityInfo, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, hasJoinedCommunity, leaveCommunity, getProfileByUsername, getPostById, createComment, getComments, subscribeToComments, subscribeToPost, deleteComment, editComment, subscribeToUserDoc, saveContent, unsaveContent, deletePost, editPost, getMedia, changeProfilePicture, getUserPosts, uploadUserBanner, getProfileByUserId };
+export { createAccountUsingEmail, usernameAvailable, emailNotRegistered, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunityInfo, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, hasJoinedCommunity, leaveCommunity, getProfileByUsername, getPostById, createComment, getComments, subscribeToComments, subscribeToPost, deleteComment, editComment, subscribeToUserDoc, saveContent, unsaveContent, deletePost, editPost, getMedia, changeProfilePicture, getUserPosts, uploadUserBanner, getProfileByUserId, setCommunityIcon, setCommunityBanner, subscribeToCommunity };
