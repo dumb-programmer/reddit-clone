@@ -17,7 +17,7 @@ import ContentLoader from "react-content-loader";
 const Community = () => {
   const [community, setCommunity] = useState(null);
   const [posts, setPosts] = useState(null);
-  const user = useContext(AuthContext);
+  const auth = useContext(AuthContext);
   const { communityName } = useParams();
   const iconInput = useRef();
   const bannerInput = useRef();
@@ -40,7 +40,7 @@ const Community = () => {
     return () => {
       ignore = true;
     };
-  }, [communityName, user]);
+  }, [communityName]);
 
   useEffect(() => {
     let ignore = false;
@@ -83,6 +83,7 @@ const Community = () => {
   }
 
   const loading = !community && !posts;
+  const isModerator = community?.moderatorId === auth?.uid;
 
   return (
     <div>
@@ -90,12 +91,12 @@ const Community = () => {
         <div
           className="community-banner"
           style={{
-            cursor: "pointer",
+            cursor: isModerator ? "pointer" : "auto",
             backgroundImage: `url(${community?.banner})`,
             backgroundSize: "cover",
             backgroundPosition: "50%",
           }}
-          onClick={() => bannerInput.current.click()}
+          onClick={isModerator ? () => bannerInput.current.click() : null}
         ></div>
         <div className="community-info" style={{ marginLeft: 90 }}>
           <input
@@ -121,8 +122,8 @@ const Community = () => {
             }
           />
           <div
-            onClick={() => iconInput.current.click()}
-            style={{ cursor: "pointer" }}
+            onClick={isModerator ? () => iconInput.current.click() : null}
+            style={{ cursor: isModerator ? "pointer" : "auto" }}
           >
             {!community?.icon ? (
               <svg
