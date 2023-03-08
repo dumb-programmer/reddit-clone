@@ -199,6 +199,7 @@ const Community = () => {
         style={{
           display: "flex",
           alignItems: "flex-start",
+          justifyContent: "center",
           gap: "1rem",
           marginTop: 20,
           marginLeft: 100,

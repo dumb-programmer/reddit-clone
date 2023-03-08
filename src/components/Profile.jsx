@@ -54,7 +54,7 @@ const Profile = () => {
         alignItems: "flex-start",
         justifyContent: "center",
         gap: "1rem",
-        margin: "90px 100px 0 100px",
+        margin: "30px 100px 0 100px",
       }}
     >
       <Posts

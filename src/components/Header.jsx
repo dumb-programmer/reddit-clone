@@ -2,6 +2,10 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../firebase";
 import useRedirect from "../hooks/useRedirect";
+import "../styles/Header.css";
+import LogoutIcon from "./icons/LogoutIcon";
+import SettingsIcon from "./icons/SettingsIcon";
+import UserIcon from "./icons/UserIcon";
 
 const Header = () => {
   const [logoutDisabled, setLogoutDisabled] = useState(false);
@@ -54,11 +58,11 @@ const Header = () => {
         </svg>
       </div>
       <input type="text" id="search-bar" placeholder="Search Reddit" />
-      <div className="header-btns">
+      <div className="user-controls">
         {localStorage.getItem("username") ? (
           <>
             <div
-              className="user-dropdown"
+              className="user-info"
               styles={{ marginRight: "5px" }}
               onClick={(e) => {
                 e.stopPropagation();
@@ -90,34 +94,22 @@ const Header = () => {
             {showDropdown && (
               <div className="dropdown">
                 <ul>
-                  <li
+                  <a
+                    href={`/user/${localStorage.getItem("username")}`}
                     className="dropdown-link"
-                    onClick={() =>
-                      navigate(`/user/${localStorage.getItem("username")}`)
-                    }
                   >
+                    <UserIcon height={20} width={20} />
                     Profile
-                  </li>
+                  </a>
+                  <a href={`/settings`} className="dropdown-link">
+                    <SettingsIcon height={20} width={20} />
+                    Settings
+                  </a>
                   <li
                     className="dropdown-link"
                     onClick={!logoutDisabled ? handleLogout : null}
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="#1c1c1c"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="feather feather-log-out"
-                    >
-                      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                      <polyline points="16 17 21 12 16 7"></polyline>
-                      <line x1="21" y1="12" x2="9" y2="12"></line>
-                    </svg>{" "}
+                    <LogoutIcon height={20} width={20} />
                     Logout
                   </li>
                 </ul>

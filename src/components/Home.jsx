@@ -30,7 +30,7 @@ const Home = () => {
         display: "flex",
         justifyContent: "center",
         gap: "1rem",
-        marginTop: 90,
+        marginTop: 30,
         marginLeft: 100,
         marginRight: 100,
       }}

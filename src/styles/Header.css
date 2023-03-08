@@ -1,0 +1,104 @@
+.nav-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    border-bottom: 1px solid #edeff1;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: #fff;
+    z-index: 5;
+}
+
+#search-bar {
+    all: unset;
+    width: 60%;
+    border-radius: 19px;
+    border: none;
+    background-color: #f6f7f8;
+    padding: 10px;
+    padding-left: 35px;
+}
+
+#search-bar:focus, #search-bar:hover {
+    outline: 1px solid #0079d3;
+}
+
+.user-controls {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    margin-right: 1rem;
+}
+
+#login-btn, #sign-up-btn {
+    border-radius: 18px;
+    width: 100px;
+    border: none;
+    padding: 5px;
+    font-weight: bolder;
+    margin-right: 15px;
+}
+
+#sign-up-btn {
+    color: #0079d3;
+    background-color: white;
+    border: 0.5px solid;
+    border-color: #0079d3;
+}
+
+#sign-up-btn:hover {
+    background-color: #f4f9fd;
+}
+
+#login-btn {
+    background-color: #0079d3;
+    color: #eee;
+    padding: 7px;
+}
+
+.user-info {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+}
+
+.user-info:hover {
+    outline: 1px solid #edeff1;
+}
+
+.dropdown {
+    position: absolute;
+    border: 1px solid #edeff1;
+    border-radius: 5px;
+    top: 35px;
+    width: 100%;
+    background-color: #fff;
+}
+
+.dropdown>ul {
+    padding: 0;
+}
+
+.dropdown-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    list-style: none;
+    padding: 8px;
+    padding-left: 20px;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+}
+
+.dropdown-link:hover {
+    background-color: #f5f5f5;
+}
+
+.dropdown-link:active {
+    background-color: #ebebeb;
+}
