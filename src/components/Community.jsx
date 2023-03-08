@@ -205,7 +205,13 @@ const Community = () => {
           marginRight: 100,
         }}
       >
-        <Posts data={posts} />
+        <Posts
+          data={posts}
+          setData={setPosts}
+          fetchPosts={(cursorDoc) =>
+            getPostsByCommunity(communityName, cursorDoc)
+          }
+        />
         <CommunityInfo data={community} showCreatePost />
       </div>
     </div>

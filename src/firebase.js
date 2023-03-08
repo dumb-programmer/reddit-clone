@@ -1,7 +1,7 @@
 import { uuidv4 } from "@firebase/util";
 import { initializeApp } from "firebase/app";
 import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, } from "firebase/auth";
-import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, onSnapshot, orderBy, query, serverTimestamp, setDoc, updateDoc, where } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, limit, onSnapshot, orderBy, query, serverTimestamp, setDoc, startAfter, updateDoc, where } from "firebase/firestore";
 import { getStorage, uploadBytes, ref, getDownloadURL, deleteObject, getBlob, } from "firebase/storage";
 
 const firebaseConfig = {
@@ -73,11 +73,15 @@ const loginUsingUsernameAndPassword = async ({ username, password }) => {
     }
 
     let email;
+    let profilePicture;
     snapshot.forEach(snap => {
         email = snap.data().email;
+        profilePicture = snap.data().profilePicture;
     });
     try {
         await signInWithEmailAndPassword(auth, email, password);
+        localStorage.setItem("username", username);
+        localStorage.setItem("profilePicture", profilePicture);
     }
     catch (error) {
         throw error;
@@ -225,22 +229,34 @@ const deletePost = async (post) => {
     await deleteDoc(post.ref);
 };
 
-const getPostsByCommunity = async (communityName) => {
+const getPostsByCommunity = async (communityName, cursorDoc = null) => {
     const postsRef = collection(db, "Posts");
-    const q = query(postsRef, where("communityName", "==", communityName), orderBy("createdOn"));
+    let q = null;
+    if (!cursorDoc) {
+        q = query(postsRef, where("communityName", "==", communityName), orderBy("createdOn", "desc"), limit(5));
+    }
+    else {
+        q = query(postsRef, where("communityName", "==", communityName), orderBy("createdOn", "desc"), startAfter(cursorDoc), limit(5));
+    }
     const snapshot = await getDocs(q);
     const data = [];
     snapshot.forEach(doc => data.push(doc));
-    return data.reverse();
+    return data;
 }
 
-const getAllPosts = async () => {
+const getAllPosts = async (cursorDoc = null) => {
     const postsRef = collection(db, "Posts");
-    const q = query(postsRef, orderBy("createdOn"));
+    let q = null;
+    if (cursorDoc === null) {
+        q = query(postsRef, orderBy("createdOn", "desc"), limit(5));
+    }
+    else {
+        q = query(postsRef, orderBy("createdOn", "desc"), startAfter(cursorDoc), limit(5));
+    }
     const snapshot = await getDocs(q);
     const docs = [];
     snapshot.forEach(doc => docs.push(doc));
-    return docs.reverse();
+    return docs;
 };
 
 const getPostById = async (postId) => {
@@ -317,9 +333,15 @@ const removeDownvote = async (id, userId, type) => {
     await updateDoc(doc.ref, { votes: ++data.votes, downvotes: downvotes.filter(uid => uid !== userId) });
 };
 
-const getUserPosts = async (username) => {
+const getUserPosts = async (username, cursorDoc = null) => {
     const postsRef = collection(db, "Posts");
-    const q = query(postsRef, where("author", "==", username));
+    let q = null;
+    if (cursorDoc) {
+        q = query(postsRef, where("author", "==", username), orderBy("createdOn", "desc"), startAfter(cursorDoc), limit(5));
+    }
+    else {
+        q = query(postsRef, where("author", "==", username), orderBy("createdOn", "desc"), limit(5));
+    }
     const snapshot = await getDocs(q);
     let docs = [];
     snapshot.forEach((doc) => {

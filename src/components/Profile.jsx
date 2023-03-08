@@ -57,7 +57,11 @@ const Profile = () => {
         margin: "90px 100px 0 100px",
       }}
     >
-      <Posts data={posts} />
+      <Posts
+        data={posts}
+        setData={setPosts}
+        fetchPosts={(cursorDoc) => getUserPosts(username, cursorDoc)}
+      />
       <aside
         style={{
           backgroundColor: "#fff",

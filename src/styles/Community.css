@@ -19,9 +19,10 @@
 .community-sidebar {
     background-color: #ffff;
     min-height: 250px;
-    max-width: 250px;
+    min-width: 250px;
     display: flex;
     flex-direction: column;
+    border-radius: 5px;
 }
 
 .community-sidebar__header {

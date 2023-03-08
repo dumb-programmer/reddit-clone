@@ -41,7 +41,7 @@ const Home = () => {
           onExit={() => setShowModal(false)}
         />
       )}
-      <Posts data={data} />
+      <Posts data={data} setData={setData} fetchPosts={getAllPosts} />
       {authenticated && (
         <aside className="main-btns">
           <img

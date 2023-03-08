@@ -40,7 +40,6 @@ const Login = () => {
           usernameNotFound: true,
         });
       } else {
-        localStorage.setItem("username", data.username);
         navigate("/");
       }
     } catch (error) {
@@ -69,7 +68,7 @@ const Login = () => {
     if (authenticated) {
       setTimeout(() => navigate("/"), 1000);
     }
-  }, []);
+  }, [authenticated, navigate]);
 
   const disableLoginBtn = Object.values(error).some((error) => error);
 
