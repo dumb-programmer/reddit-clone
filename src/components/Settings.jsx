@@ -3,10 +3,13 @@ import AuthContext from "../context/AuthContext";
 import Trash2Icon from "./icons/Trash2Icon";
 import DeleteAccountModal from "./DeleteAccountModal";
 import "../styles/Settings.css";
+import ChangeEmailModal from "./ChangeEmailModal";
+import ToastNotification from "./ToastNotification";
 
 const Settings = () => {
   const auth = useContext(AuthContext);
   const [modal, setModal] = useState(null);
+  const [showToast, setShowToast] = useState(false);
 
   return (
     <div
@@ -35,7 +38,11 @@ const Settings = () => {
               <h4>Email Address</h4>
               <p className="small-text">{auth.email}</p>
             </div>
-            <button className="secondary-btn" style={{ height: 20, width: 80 }}>
+            <button
+              className="secondary-btn"
+              style={{ height: 20, width: 80 }}
+              onClick={() => setModal(1)}
+            >
               Change
             </button>
           </div>
@@ -114,7 +121,19 @@ const Settings = () => {
           </button>
         </div>
       </section>
+      {modal === 1 && (
+        <ChangeEmailModal
+          showToast={() => setShowToast(true)}
+          onClose={() => setModal(null)}
+        />
+      )}
       {modal === 2 && <DeleteAccountModal onClose={() => setModal(null)} />}
+      {showToast && (
+        <ToastNotification
+          text="Email updated successfully"
+          onHide={() => setShowToast(false)}
+        />
+      )}
     </div>
   );
 };

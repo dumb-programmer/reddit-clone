@@ -1,6 +1,6 @@
 import { uuidv4 } from "@firebase/util";
 import { initializeApp } from "firebase/app";
-import { createUserWithEmailAndPassword, deleteUser, EmailAuthProvider, getAuth, onAuthStateChanged, ProviderId, reauthenticateWithCredential, SignInMethod, signInWithEmailAndPassword, signOut, } from "firebase/auth";
+import { createUserWithEmailAndPassword, deleteUser, EmailAuthProvider, getAuth, onAuthStateChanged, ProviderId, reauthenticateWithCredential, SignInMethod, signInWithEmailAndPassword, signOut, updateEmail, verifyBeforeUpdateEmail, } from "firebase/auth";
 import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, limit, onSnapshot, orderBy, query, serverTimestamp, setDoc, startAfter, updateDoc, where } from "firebase/firestore";
 import { getStorage, uploadBytes, ref, getDownloadURL, deleteObject, getBlob, } from "firebase/storage";
 
@@ -31,6 +31,17 @@ const createAccountUsingEmail = async ({ email, password, username }) => {
     }
 };
 
+const updateUserEmail = async (newEmail) => {
+    try {
+        await updateEmail(auth.currentUser, newEmail);
+        const user = await getDoc(doc(db, "Users", auth.currentUser.uid));
+        await updateDoc(user.ref, { email: newEmail });
+    }
+    catch (error) {
+        console.log(error);
+    }
+};
+
 const reauthenticate = async (password) => {
     try {
         await reauthenticateWithCredential(auth.currentUser, EmailAuthProvider.credential(auth.currentUser.email, password));
@@ -55,7 +66,7 @@ const deleteAccount = async () => {
     await deleteDoc(doc(db, "Users", auth.currentUser.uid));
     await deleteUser(auth.currentUser);
     localStorage.clear();
-}
+};
 
 const changeProfilePicture = async (uid, file) => {
     const uploadTask = await uploadBytes(ref(storage, "Users/" + uuidv4()), file);
@@ -83,7 +94,7 @@ const usernameAvailable = async (username) => {
     return snapshot.empty || false;
 };
 
-const emailNotRegistered = async (email) => {
+const isEmailAvailable = async (email) => {
     const usersRef = collection(db, "Users");
     const q = query(usersRef, where("email", "==", email));
     const snapshot = await getDocs(q);
@@ -451,4 +462,4 @@ const unsaveContent = async (userId, contentId) => {
     return updateDoc(userRef, { saved: user.data().saved.filter(id => id !== contentId) });
 }
 
-export { createAccountUsingEmail, usernameAvailable, emailNotRegistered, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunityInfo, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, hasJoinedCommunity, leaveCommunity, getProfileByUsername, getPostById, createComment, getComments, subscribeToComments, subscribeToPost, deleteComment, editComment, subscribeToUserDoc, saveContent, unsaveContent, deletePost, editPost, getMedia, changeProfilePicture, getUserPosts, uploadUserBanner, getProfileByUserId, setCommunityIcon, setCommunityBanner, subscribeToCommunity, deleteAccount, reauthenticate, isUsernameCorrect };
+export { createAccountUsingEmail, usernameAvailable, isEmailAvailable, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunityInfo, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, hasJoinedCommunity, leaveCommunity, getProfileByUsername, getPostById, createComment, getComments, subscribeToComments, subscribeToPost, deleteComment, editComment, subscribeToUserDoc, saveContent, unsaveContent, deletePost, editPost, getMedia, changeProfilePicture, getUserPosts, uploadUserBanner, getProfileByUserId, setCommunityIcon, setCommunityBanner, subscribeToCommunity, deleteAccount, reauthenticate, isUsernameCorrect, updateUserEmail };

@@ -6,7 +6,7 @@ import { useContext, useEffect, useState } from "react";
 import {
   createAccountUsingEmail,
   usernameAvailable,
-  emailNotRegistered,
+  isEmailAvailable,
 } from "../firebase";
 import randomWords from "random-words";
 import LoadingSVG from "./LoadingSVG";
@@ -84,7 +84,7 @@ const Signup = () => {
   const handleContinue = async (e) => {
     e.preventDefault();
     setLoading(true);
-    if (await emailNotRegistered(e.target.email.value)) {
+    if (await isEmailAvailable(e.target.email.value)) {
       setContinueClicked(true);
     } else {
       setError({
