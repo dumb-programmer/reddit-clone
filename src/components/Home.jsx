@@ -4,12 +4,16 @@ import { getAllPosts } from "../firebase";
 import AuthContext from "../context/AuthContext";
 import Posts from "./Posts";
 import "../styles/Home.css";
+import { useLocation } from "react-router-dom";
+import ToastNotification from "./ToastNotification";
 
 const Home = () => {
   const [showModal, setShowModal] = useState(false);
   const username = localStorage.getItem("username");
   const [data, setData] = useState(null);
   const authenticated = useContext(AuthContext);
+  const { state } = useLocation();
+  const [displayToast, setDisplayToast] = useState(state?.message?.length > 0);
 
   useEffect(() => {
     let ignore = false;
@@ -87,6 +91,15 @@ const Home = () => {
             </button>
           </div>
         </aside>
+      )}
+      {displayToast && (
+        <ToastNotification
+          text={state?.message}
+          onHide={() => {
+            setDisplayToast(false);
+            window.history.replaceState(null, "");
+          }}
+        />
       )}
     </div>
   );

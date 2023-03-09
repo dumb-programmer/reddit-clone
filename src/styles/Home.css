@@ -81,6 +81,11 @@
     background-color: #3d99dd;
 }
 
+.primary-btn:disabled {
+    background-color: #7c7c7c;
+    cursor: not-allowed;
+}
+
 .secondary-btn {
     border: 1px solid #0079d3;
     color: #0079d3;
@@ -113,7 +118,7 @@
     flex-direction: column;
     justify-content: space-between;
     background-color: #fff;
-    min-width: 500px;
+    max-width: 500px;
     border-radius: 5px;
     position: relative;
 }

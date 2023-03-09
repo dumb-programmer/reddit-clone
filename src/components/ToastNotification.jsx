@@ -1,18 +1,18 @@
 import { useEffect } from "react";
 import "../styles/ToastNotification.css";
 
-const ToastNotification = ({ text, setDisplay }) => {
+const ToastNotification = ({ text, showUndo, onHide }) => {
   useEffect(() => {
-    const timeId = setTimeout(() => setDisplay(false), 3000);
+    const timeId = setTimeout(() => onHide(), 3000);
     return () => clearInterval(timeId);
-  }, []);
+  }, [onHide]);
 
   return (
     <div className="notification-container">
       <div className="notification-side"></div>
       <div className="notification-content">
         <p>{text}</p>
-        <button className="undo-btn">Undo</button>
+        {showUndo && <button className="undo-btn">Undo</button>}
       </div>
     </div>
   );

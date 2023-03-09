@@ -1,10 +1,12 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import AuthContext from "../context/AuthContext";
 import Trash2Icon from "./icons/Trash2Icon";
+import DeleteAccountModal from "./DeleteAccountModal";
 import "../styles/Settings.css";
 
 const Settings = () => {
   const auth = useContext(AuthContext);
+  const [modal, setModal] = useState(null);
 
   return (
     <div
@@ -101,7 +103,7 @@ const Settings = () => {
           className="section-body"
           style={{ display: "flex", justifyContent: "flex-end" }}
         >
-          <button className="delete-account-btn">
+          <button className="delete-account-btn" onClick={() => setModal(2)}>
             <Trash2Icon
               height={20}
               width={20}
@@ -112,6 +114,7 @@ const Settings = () => {
           </button>
         </div>
       </section>
+      {modal === 2 && <DeleteAccountModal onClose={() => setModal(null)} />}
     </div>
   );
 };

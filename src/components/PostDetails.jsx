@@ -302,7 +302,10 @@ const PostDetails = () => {
       </div>
       <CommunityInfo data={community} showJoined />
       {showToast && (
-        <ToastNotification text={toastText} setDisplay={setShowToast} />
+        <ToastNotification
+          text={toastText}
+          onHide={() => setShowToast(false)}
+        />
       )}
     </div>
   );

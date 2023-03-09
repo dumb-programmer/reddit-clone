@@ -1,6 +1,6 @@
 import { uuidv4 } from "@firebase/util";
 import { initializeApp } from "firebase/app";
-import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, } from "firebase/auth";
+import { createUserWithEmailAndPassword, deleteUser, EmailAuthProvider, getAuth, onAuthStateChanged, ProviderId, reauthenticateWithCredential, SignInMethod, signInWithEmailAndPassword, signOut, } from "firebase/auth";
 import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, limit, onSnapshot, orderBy, query, serverTimestamp, setDoc, startAfter, updateDoc, where } from "firebase/firestore";
 import { getStorage, uploadBytes, ref, getDownloadURL, deleteObject, getBlob, } from "firebase/storage";
 
@@ -20,16 +20,42 @@ const storage = getStorage(app);
 
 const createAccountUsingEmail = async ({ email, password, username }) => {
     try {
-        await createUserWithEmailAndPassword(auth, email, password);
+        const userCreds = await createUserWithEmailAndPassword(auth, email, password);
         const profilePicture = await getDownloadURL(ref(storage, "default_avatar.png"));
         localStorage.setItem("username", username);
         localStorage.setItem("profilePicture", profilePicture);
-        await setDoc(doc(db, "Users", auth.currentUser.uid), { id: auth.currentUser.id, username: username, email: email, profilePicture })
+        await setDoc(doc(db, "Users", userCreds.user.uid), { id: userCreds.user.uid, username: username, email: email, profilePicture })
     }
     catch (error) {
         console.log(error);
     }
 };
+
+const reauthenticate = async (password) => {
+    try {
+        await reauthenticateWithCredential(auth.currentUser, EmailAuthProvider.credential(auth.currentUser.email, password));
+    }
+    catch (error) {
+        if (error.message.match("wrong-password")?.length > 0) {
+            return { error: 1, message: "Incorrect password" }
+        }
+        else if (error.message.match("too-many-requests")?.length > 0) {
+            return { error: 1, message: "Too many requests, take a breath" }
+        }
+    }
+    return { error: 0, message: "" }
+};
+
+const isUsernameCorrect = async (username) => {
+    const user = await getDoc(doc(db, "Users", auth.currentUser.uid));
+    return user.data().username === username;
+}
+
+const deleteAccount = async () => {
+    await deleteDoc(doc(db, "Users", auth.currentUser.uid));
+    await deleteUser(auth.currentUser);
+    localStorage.clear();
+}
 
 const changeProfilePicture = async (uid, file) => {
     const uploadTask = await uploadBytes(ref(storage, "Users/" + uuidv4()), file);
@@ -425,4 +451,4 @@ const unsaveContent = async (userId, contentId) => {
     return updateDoc(userRef, { saved: user.data().saved.filter(id => id !== contentId) });
 }
 
-export { createAccountUsingEmail, usernameAvailable, emailNotRegistered, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunityInfo, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, hasJoinedCommunity, leaveCommunity, getProfileByUsername, getPostById, createComment, getComments, subscribeToComments, subscribeToPost, deleteComment, editComment, subscribeToUserDoc, saveContent, unsaveContent, deletePost, editPost, getMedia, changeProfilePicture, getUserPosts, uploadUserBanner, getProfileByUserId, setCommunityIcon, setCommunityBanner, subscribeToCommunity };
+export { createAccountUsingEmail, usernameAvailable, emailNotRegistered, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunityInfo, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, hasJoinedCommunity, leaveCommunity, getProfileByUsername, getPostById, createComment, getComments, subscribeToComments, subscribeToPost, deleteComment, editComment, subscribeToUserDoc, saveContent, unsaveContent, deletePost, editPost, getMedia, changeProfilePicture, getUserPosts, uploadUserBanner, getProfileByUserId, setCommunityIcon, setCommunityBanner, subscribeToCommunity, deleteAccount, reauthenticate, isUsernameCorrect };
