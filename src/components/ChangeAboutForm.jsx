@@ -4,10 +4,15 @@ import { updateAbout } from "../firebase";
 const ChangeAboutForm = ({ onSuccess }) => {
   const [about, setAbout] = useState(localStorage.getItem("about") || "");
 
+  const hasChanged =
+    localStorage.getItem("about") !== about && about.length > 0;
+
   const handleBlur = async () => {
-    await updateAbout(about);
-    localStorage.setItem("about", about);
-    onSuccess();
+    if (hasChanged) {
+      await updateAbout(about);
+      localStorage.setItem("about", about);
+      onSuccess();
+    }
   };
 
   return (

@@ -66,7 +66,7 @@ const Profile = () => {
         style={{
           backgroundColor: "#fff",
           paddingBottom: 20,
-          minWidth: 300,
+          width: 300,
           borderRadius: "0.5rem",
         }}
       >
@@ -132,7 +132,7 @@ const Profile = () => {
             onClick={isOwner ? () => profilePictureInput.current.click() : null}
             style={isOwner ? { cursor: "pointer" } : null}
           />
-          <h3>{userProfile?.username}</h3>
+          <h3>{userProfile?.displayName || userProfile?.username}</h3>
           <span
             style={{
               color: "#7c7c7c",
@@ -143,6 +143,11 @@ const Profile = () => {
           >
             u/{userProfile?.username}{" "}
           </span>
+          {userProfile?.about && (
+            <p style={{ margin: "10px 10px", textAlign: "center" }}>
+              {userProfile?.about}
+            </p>
+          )}
         </div>
         <div
           style={{

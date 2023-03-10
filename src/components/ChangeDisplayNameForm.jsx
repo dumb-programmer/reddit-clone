@@ -6,10 +6,16 @@ const ChangeDisplayNameForm = ({ onSuccess }) => {
     localStorage.getItem("displayName") || ""
   );
 
+  const hasChanged =
+    localStorage.getItem("displayName") !== displayName &&
+    displayName.length > 0;
+
   const handleBlur = async () => {
-    await updateDisplayName(displayName);
-    localStorage.setItem("displayName", displayName);
-    onSuccess();
+    if (hasChanged) {
+      await updateDisplayName(displayName);
+      localStorage.setItem("displayName", displayName);
+      onSuccess();
+    }
   };
 
   return (
