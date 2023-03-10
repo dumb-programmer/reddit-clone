@@ -6,6 +6,8 @@ import ChangeEmailModal from "./ChangeEmailModal";
 import ToastNotification from "./ToastNotification";
 import ChnagePasswordModal from "./ChangePasswordModal";
 import "../styles/Settings.css";
+import ChangeDisplayNameForm from "./ChangeDisplayNameForm";
+import ChangeAboutForm from "./ChangeAboutForm";
 
 const Settings = () => {
   const auth = useContext(AuthContext);
@@ -76,36 +78,18 @@ const Settings = () => {
           <p>Profile Information</p>
         </div>
         <div className="section-body">
-          <div>
-            <h4>Display name (optional)</h4>
-            <p className="small-text">
-              Set a display name. This does not change your username
-            </p>
-          </div>
-          <div>
-            <input
-              className="form-input"
-              type="text"
-              placeholder="Display name (optional)"
-              style={{ width: "100%" }}
-            />
-            <p className="small-text">30 characters remaining</p>
-          </div>
-          <div>
-            <h4>About (optional)</h4>
-            <p className="small-text">
-              A brief description of yourself shown on your profile.
-            </p>
-          </div>
-          <div>
-            <textarea
-              className="form-input"
-              type="text"
-              placeholder="About (optional)"
-              style={{ width: "100%", minHeight: 120 }}
-            />
-            <p className="small-text">200 Characters remaining</p>
-          </div>
+          <ChangeDisplayNameForm
+            onSuccess={() => {
+              setToastText("Display name updated");
+              setShowToast(true);
+            }}
+          />
+          <ChangeAboutForm
+            onSuccess={() => {
+              setToastText("About updated");
+              setShowToast(true);
+            }}
+          />
         </div>
       </section>
       <section className="settings-section">

@@ -49,6 +49,14 @@ const updateUserPassword = async (newPassword) => {
     catch (error) {
         console.log(error);
     }
+};
+
+const updateDisplayName = async (displayName) => {
+    await updateDoc(doc(db, "Users", auth.currentUser.uid), { displayName });
+};
+
+const updateAbout = async (about) => {
+    await updateDoc(doc(db, "Users", auth.currentUser.uid), { about });
 }
 
 const reauthenticate = async (password) => {
@@ -471,4 +479,4 @@ const unsaveContent = async (userId, contentId) => {
     return updateDoc(userRef, { saved: user.data().saved.filter(id => id !== contentId) });
 }
 
-export { createAccountUsingEmail, usernameAvailable, isEmailAvailable, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunityInfo, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, hasJoinedCommunity, leaveCommunity, getProfileByUsername, getPostById, createComment, getComments, subscribeToComments, subscribeToPost, deleteComment, editComment, subscribeToUserDoc, saveContent, unsaveContent, deletePost, editPost, getMedia, changeProfilePicture, getUserPosts, uploadUserBanner, getProfileByUserId, setCommunityIcon, setCommunityBanner, subscribeToCommunity, deleteAccount, reauthenticate, isUsernameCorrect, updateUserEmail, updateUserPassword };
+export { createAccountUsingEmail, usernameAvailable, isEmailAvailable, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunityInfo, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, hasJoinedCommunity, leaveCommunity, getProfileByUsername, getPostById, createComment, getComments, subscribeToComments, subscribeToPost, deleteComment, editComment, subscribeToUserDoc, saveContent, unsaveContent, deletePost, editPost, getMedia, changeProfilePicture, getUserPosts, uploadUserBanner, getProfileByUserId, setCommunityIcon, setCommunityBanner, subscribeToCommunity, deleteAccount, reauthenticate, isUsernameCorrect, updateUserEmail, updateUserPassword, updateDisplayName, updateAbout };
