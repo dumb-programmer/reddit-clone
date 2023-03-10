@@ -67,7 +67,7 @@ const DeleteAccountForm = ({ onCancel }) => {
   const disabled = !data.username || !data.password || !data.checkbox;
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={!loading ? handleSubmit : (e) => e.preventDefault()}>
       <h4>We're sorry to see you go </h4>
       <p>
         Once you delete your account, your profile and username are permanently

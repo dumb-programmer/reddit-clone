@@ -2,14 +2,16 @@ import { useContext, useState } from "react";
 import AuthContext from "../context/AuthContext";
 import Trash2Icon from "./icons/Trash2Icon";
 import DeleteAccountModal from "./DeleteAccountModal";
-import "../styles/Settings.css";
 import ChangeEmailModal from "./ChangeEmailModal";
 import ToastNotification from "./ToastNotification";
+import ChnagePasswordModal from "./ChangePasswordModal";
+import "../styles/Settings.css";
 
 const Settings = () => {
   const auth = useContext(AuthContext);
   const [modal, setModal] = useState(null);
   const [showToast, setShowToast] = useState(false);
+  const [toastText, setToastText] = useState("");
 
   return (
     <div
@@ -41,7 +43,7 @@ const Settings = () => {
             <button
               className="secondary-btn"
               style={{ height: 20, width: 80 }}
-              onClick={() => setModal(1)}
+              onClick={() => setModal(0)}
             >
               Change
             </button>
@@ -59,7 +61,11 @@ const Settings = () => {
                 Password must be at least 8 characters long
               </p>
             </div>
-            <button className="secondary-btn" style={{ height: 20, width: 80 }}>
+            <button
+              className="secondary-btn"
+              style={{ height: 20, width: 80 }}
+              onClick={() => setModal(1)}
+            >
               Change
             </button>
           </div>
@@ -121,16 +127,28 @@ const Settings = () => {
           </button>
         </div>
       </section>
-      {modal === 1 && (
+      {modal === 0 && (
         <ChangeEmailModal
-          showToast={() => setShowToast(true)}
+          showToast={() => {
+            setToastText("Email updated successfully");
+            setShowToast(true);
+          }}
+          onClose={() => setModal(null)}
+        />
+      )}
+      {modal === 1 && (
+        <ChnagePasswordModal
+          showToast={() => {
+            setToastText("Password updated successfully");
+            setShowToast(true);
+          }}
           onClose={() => setModal(null)}
         />
       )}
       {modal === 2 && <DeleteAccountModal onClose={() => setModal(null)} />}
       {showToast && (
         <ToastNotification
-          text="Email updated successfully"
+          text={toastText}
           onHide={() => setShowToast(false)}
         />
       )}

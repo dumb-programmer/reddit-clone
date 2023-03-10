@@ -1,16 +1,16 @@
 import { useState } from "react";
-import { isEmailAvailable, reauthenticate, updateUserEmail } from "../firebase";
+import { reauthenticate, updateUserPassword } from "../firebase";
 import LoadingSVG from "./LoadingSVG";
 
-const ChangeEmailForm = ({ onFinish }) => {
+const ChangePassword = ({ onFinish }) => {
   const [data, setData] = useState({
-    email: "",
     password: "",
+    new_password: "",
   });
 
   const [errors, setErrors] = useState({
-    email: "",
     password: "",
+    new_password: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -35,7 +35,7 @@ const ChangeEmailForm = ({ onFinish }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (data.email && data.password) {
+    if (data.password && data.new_password) {
       setLoading(true);
       const { error, message } = await reauthenticate(data.password);
       if (error) {
@@ -44,13 +44,13 @@ const ChangeEmailForm = ({ onFinish }) => {
           password: message,
         });
       } else {
-        if (!(await isEmailAvailable(data.email))) {
+        if (data.new_password.length < 8) {
           setErrors({
             ...errors,
-            email: "This email is already taken",
+            new_password: "Password should be atleast 8 characters",
           });
         } else {
-          await updateUserEmail(data.email);
+          await updateUserPassword(data.new_password);
           onFinish();
         }
       }
@@ -59,8 +59,8 @@ const ChangeEmailForm = ({ onFinish }) => {
   };
 
   const disabled =
-    !data.email ||
     !data.password ||
+    !data.new_password ||
     Object.values(errors).some((error) => error);
 
   return (
@@ -90,16 +90,17 @@ const ChangeEmailForm = ({ onFinish }) => {
         )}
 
         <input
-          type="email"
-          name="email"
+          type="password"
+          name="new_password"
           className={`form-input ${errors.email ? "form-input__error" : ""}`}
-          placeholder="NEW EMAIL"
-          autoComplete="off"
+          placeholder="NEW PASSWORD"
           onChange={handleInput}
           onBlur={handleBlur}
           required
         />
-        {errors.email && <div className="error-message">{errors.email}</div>}
+        {errors.new_password && (
+          <div className="error-message">{errors.new_password}</div>
+        )}
       </div>
       <div
         style={{
@@ -120,11 +121,11 @@ const ChangeEmailForm = ({ onFinish }) => {
           }}
           disabled={disabled}
         >
-          {loading ? <LoadingSVG height={25} width={25} /> : "Save Email"}
+          {loading ? <LoadingSVG height={25} width={25} /> : "Save"}
         </button>
       </div>
     </form>
   );
 };
 
-export default ChangeEmailForm;
+export default ChangePassword;
