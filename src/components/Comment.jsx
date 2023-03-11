@@ -1,10 +1,9 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import MessageIcon from "./icons/MessageIcon";
 import Vote from "./Vote";
 import getRelativeDateTime from "../utils/getRelativeDateTime";
 import ShowMore from "./ShowMore";
 import CommentBox from "./CommentBox";
-import "../styles/Comment.css";
 import {
   createComment,
   deleteComment,
@@ -14,7 +13,8 @@ import {
   subscribeToComments,
 } from "../firebase";
 import MaximizeIcon from "./icons/MaximizeIcon";
-import AuthContext from "../context/AuthContext";
+import useAuthContext from "../hooks/useAuthContext";
+import "../styles/Comment.css";
 
 const Comment = ({ comment, saved, setToastText, showToast }) => {
   const [edit, setEdit] = useState(false);
@@ -22,7 +22,7 @@ const Comment = ({ comment, saved, setToastText, showToast }) => {
   const [replies, setReplies] = useState(null);
   const [minimize, setMinimize] = useState(false);
   const [profile, setProfile] = useState(null);
-  const auth = useContext(AuthContext);
+  const auth = useAuthContext();
 
   const data = comment.data();
 

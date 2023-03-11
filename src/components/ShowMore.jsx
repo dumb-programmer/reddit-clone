@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useState } from "react";
-import AuthContext from "../context/AuthContext";
+import { useEffect, useState } from "react";
 import { saveContent, unsaveContent } from "../firebase";
+import useAuthContext from "../hooks/useAuthContext";
 import useRedirect from "../hooks/useRedirect";
 import DeleteConfirmation from "./DeleteConfirmation";
 import EditIcon from "./icons/EditIcon";
@@ -22,7 +22,7 @@ const ShowMore = ({
 }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const auth = useContext(AuthContext);
+  const auth = useAuthContext();
   const redirectToLogin = useRedirect("/login", "You need to login first");
 
   const handleSave = async () => {

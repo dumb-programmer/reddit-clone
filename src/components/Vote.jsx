@@ -1,12 +1,12 @@
-import { useContext, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { downvote, removeDownvote, removeUpvote, upvote } from "../firebase";
-import AuthContext from "../context/AuthContext";
 import isUpvoted from "../utils/isUpvoted";
 import isDownvoted from "../utils/isDownvoted";
 import useRedirect from "../hooks/useRedirect";
+import useAuthContext from "../hooks/useAuthContext";
 
 const Vote = ({ data, type }) => {
-  const user = useContext(AuthContext);
+  const user = useAuthContext();
   const ignore = useRef(false);
   const redirectToLogin = useRedirect("/login", "You need to login first");
 

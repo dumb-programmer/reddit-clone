@@ -1,8 +1,10 @@
-import { useState } from "react";
-import { updateAbout } from "../firebase";
+import { useEffect, useState } from "react";
+import { subscribeToUserDoc, updateAbout } from "../firebase";
+import useAuthContext from "../hooks/useAuthContext";
 
 const ChangeAboutForm = ({ onSuccess }) => {
   const [about, setAbout] = useState(localStorage.getItem("about") || "");
+  const auth = useAuthContext();
 
   const hasChanged =
     localStorage.getItem("about") !== about && about.length > 0;
@@ -14,6 +16,16 @@ const ChangeAboutForm = ({ onSuccess }) => {
       onSuccess();
     }
   };
+
+  useEffect(() => {
+    const unsubUser = subscribeToUserDoc(auth.uid, (doc) => {
+      setAbout(doc.data().about);
+    });
+
+    return () => {
+      unsubUser();
+    };
+  }, [auth]);
 
   return (
     <>

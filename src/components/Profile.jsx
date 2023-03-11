@@ -1,6 +1,5 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import AuthContext from "../context/AuthContext";
 import {
   changeProfilePicture,
   getProfileByUsername,
@@ -11,12 +10,13 @@ import {
 import AddPhotoIcon from "./icons/AddPhotoIcon";
 import CakeIcon from "./icons/CakeIcon";
 import Posts from "./Posts";
+import useAuthContext from "../hooks/useAuthContext";
 import "../styles/Profile.css";
 
 const Profile = () => {
   const [userProfile, setUserProfile] = useState(null);
   const [posts, setPosts] = useState(null);
-  const auth = useContext(AuthContext);
+  const auth = useAuthContext();
   const { username } = useParams();
   const profilePictureInput = useRef();
   const bannerInput = useRef();

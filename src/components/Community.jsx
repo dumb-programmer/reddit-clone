@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   getCommunityInfo,
   getPostsByCommunity,
@@ -7,17 +7,17 @@ import {
   setCommunityIcon,
   subscribeToCommunity,
 } from "../firebase";
-import AuthContext from "../context/AuthContext";
 import CommunityInfo from "./CommunityInfo";
 import JoinCommunityButton from "./JoinCommunityButton";
-import "../styles/Community.css";
 import Posts from "./Posts";
 import ContentLoader from "react-content-loader";
+import useAuthContext from "../hooks/useAuthContext";
+import "../styles/Community.css";
 
 const Community = () => {
   const [community, setCommunity] = useState(null);
   const [posts, setPosts] = useState(null);
-  const auth = useContext(AuthContext);
+  const auth = useAuthContext();
   const { communityName } = useParams();
   const iconInput = useRef();
   const bannerInput = useRef();

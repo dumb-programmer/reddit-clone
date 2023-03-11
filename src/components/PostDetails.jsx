@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Vote from "./Vote";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -14,7 +14,6 @@ import {
 import getRelativeDateTime from "../utils/getRelativeDateTime";
 import Comment from "./Comment";
 import CommentBox from "./CommentBox";
-import AuthContext from "../context/AuthContext";
 import MessageIcon from "./icons/MessageIcon";
 import ShareArrowIcon from "./icons/ShareArrowIcon";
 import ShowMore from "./ShowMore";
@@ -26,6 +25,7 @@ import EmptyComments from "./EmptyComments";
 import CommunityInfo from "./CommunityInfo";
 import LinkPreview from "./LinkPreview";
 import MediaCarousal from "./MediaCarousal.jsx";
+import useAuthContext from "../hooks/useAuthContext";
 import "../styles/PostDetails.css";
 
 const PostDetails = () => {
@@ -36,7 +36,7 @@ const PostDetails = () => {
   const [showToast, setShowToast] = useState(false);
   const [toastText, setToastText] = useState("");
   const [editPost, setEditPost] = useState(false);
-  const auth = useContext(AuthContext);
+  const auth = useAuthContext();
   const { communityName, postId } = useParams();
   const navigate = useNavigate();
 

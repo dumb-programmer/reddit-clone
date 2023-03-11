@@ -1,5 +1,5 @@
-import { useContext, useState } from "react";
-import AuthContext from "../context/AuthContext";
+import { useState } from "react";
+import useAuthContext from "../hooks/useAuthContext";
 import useRedirect from "../hooks/useRedirect";
 import LoadingSVG from "./LoadingSVG";
 
@@ -14,7 +14,7 @@ const CommentBox = ({
   );
   const [loading, setLoading] = useState(false);
   const redirectToLogin = useRedirect("/login", "You need to login first");
-  const auth = useContext(AuthContext);
+  const auth = useAuthContext();
 
   const handleSubmit = async (e) => {
     e.preventDefault();

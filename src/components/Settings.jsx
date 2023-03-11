@@ -1,16 +1,16 @@
-import { useContext, useState } from "react";
-import AuthContext from "../context/AuthContext";
+import { useState } from "react";
 import Trash2Icon from "./icons/Trash2Icon";
 import DeleteAccountModal from "./DeleteAccountModal";
 import ChangeEmailModal from "./ChangeEmailModal";
 import ToastNotification from "./ToastNotification";
 import ChnagePasswordModal from "./ChangePasswordModal";
-import "../styles/Settings.css";
 import ChangeDisplayNameForm from "./ChangeDisplayNameForm";
 import ChangeAboutForm from "./ChangeAboutForm";
+import useAuthContext from "../hooks/useAuthContext";
+import "../styles/Settings.css";
 
 const Settings = () => {
-  const auth = useContext(AuthContext);
+  const auth = useAuthContext();
   const [modal, setModal] = useState(null);
   const [showToast, setShowToast] = useState(false);
   const [toastText, setToastText] = useState("");

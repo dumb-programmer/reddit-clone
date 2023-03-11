@@ -1,10 +1,12 @@
-import { useState } from "react";
-import { updateDisplayName } from "../firebase";
+import { useEffect, useState } from "react";
+import { subscribeToUserDoc, updateDisplayName } from "../firebase";
+import useAuthContext from "../hooks/useAuthContext";
 
 const ChangeDisplayNameForm = ({ onSuccess }) => {
   const [displayName, setDisplayName] = useState(
     localStorage.getItem("displayName") || ""
   );
+  const auth = useAuthContext();
 
   const hasChanged =
     localStorage.getItem("displayName") !== displayName &&
@@ -17,6 +19,16 @@ const ChangeDisplayNameForm = ({ onSuccess }) => {
       onSuccess();
     }
   };
+
+  useEffect(() => {
+    const unsubUser = subscribeToUserDoc(auth.uid, (doc) => {
+      setDisplayName(doc.data().displayName);
+    });
+
+    return () => {
+      unsubUser();
+    };
+  }, [auth]);
 
   return (
     <>

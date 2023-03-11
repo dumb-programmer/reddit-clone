@@ -3,8 +3,7 @@ import ContentLoader from "react-content-loader";
 import JoinCommunityButton from "./JoinCommunityButton";
 import CommunityIcon from "./icons/CommunityIcon";
 import useRedirect from "../hooks/useRedirect";
-import { useContext } from "react";
-import AuthContext from "../context/AuthContext";
+import useAuthContext from "../hooks/useAuthContext";
 
 const CommunityInfo = ({
   data,
@@ -14,7 +13,7 @@ const CommunityInfo = ({
 }) => {
   const navigate = useNavigate();
   const redirectToLogin = useRedirect("/login", "You need to login first");
-  const auth = useContext(AuthContext);
+  const auth = useAuthContext();
 
   return (
     <aside className="community-sidebar">

@@ -2,7 +2,7 @@ import AppleButton from "./AppleButton";
 import GoogleButton from "./GoogleButton";
 import LoginAndSignUpLayout from "./LoginAndSignUpLayout";
 import { Link } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   createAccountUsingEmail,
   usernameAvailable,
@@ -12,8 +12,8 @@ import randomWords from "random-words";
 import LoadingSVG from "./LoadingSVG";
 import { useNavigate } from "react-router-dom";
 import AlreadyLoggedInMessage from "./AlreadyLoggedInMessage";
-import AuthContext from "../context/AuthContext";
 import "../styles/SignupForm.css";
+import useAuthContext from "../hooks/useAuthContext";
 
 const generateUsernames = () => {
   return Array.from({ length: 5 }).map(
@@ -39,7 +39,7 @@ const Signup = () => {
   );
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const authenticated = useContext(AuthContext);
+  const authenticated = useAuthContext();
 
   const handleInput = (e) => {
     setData({

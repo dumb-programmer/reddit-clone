@@ -1,12 +1,12 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ContentLoader from "react-content-loader";
-import AuthContext from "../context/AuthContext";
 import { hasJoinedCommunity, joinCommunity, leaveCommunity } from "../firebase";
+import useAuthContext from "../hooks/useAuthContext";
 import useRedirect from "../hooks/useRedirect";
 
 const JoinCommunityButton = ({ communityName, communityType, ...props }) => {
   const [joined, setJoined] = useState(null);
-  const auth = useContext(AuthContext);
+  const auth = useAuthContext();
   const redirectToLogin = useRedirect("/login", "You need to login first");
 
   const handleJoin = () => {

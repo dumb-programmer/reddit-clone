@@ -1,17 +1,17 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import CreateCommunityModal from "./CreateCommunityModal";
 import { getAllPosts } from "../firebase";
-import AuthContext from "../context/AuthContext";
 import Posts from "./Posts";
-import "../styles/Home.css";
 import { useLocation } from "react-router-dom";
 import ToastNotification from "./ToastNotification";
+import useAuthContext from "../hooks/useAuthContext";
+import "../styles/Home.css";
 
 const Home = () => {
   const [showModal, setShowModal] = useState(false);
   const username = localStorage.getItem("username");
   const [data, setData] = useState(null);
-  const authenticated = useContext(AuthContext);
+  const authenticated = useAuthContext();
   const { state } = useLocation();
   const [displayToast, setDisplayToast] = useState(state?.message?.length > 0);
 

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AppleButton from "./AppleButton";
 import GoogleButton from "./GoogleButton";
@@ -6,7 +6,7 @@ import LoadingSVG from "./LoadingSVG";
 import LoginAndSignUpLayout from "./LoginAndSignUpLayout";
 import { loginUsingUsernameAndPassword } from "../firebase";
 import AlreadyLoggedInMessage from "./AlreadyLoggedInMessage";
-import AuthContext from "../context/AuthContext";
+import useAuthContext from "../hooks/useAuthContext";
 
 const Login = () => {
   const [data, setData] = useState({
@@ -20,7 +20,7 @@ const Login = () => {
     incorrectPassword: false,
   });
   const navigate = useNavigate();
-  const authenticated = useContext(AuthContext);
+  const authenticated = useAuthContext();
 
   const handleInput = (e) => {
     setData({
