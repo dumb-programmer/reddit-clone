@@ -12,13 +12,12 @@
 }
 
 #search-bar {
-    all: unset;
-    width: 60%;
+    flex: 2;
     border-radius: 19px;
     border: none;
     background-color: #f6f7f8;
     padding: 10px;
-    padding-left: 35px;
+    padding-left: 40px;
 }
 
 #search-bar:focus, #search-bar:hover {

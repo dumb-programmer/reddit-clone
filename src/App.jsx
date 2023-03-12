@@ -12,6 +12,7 @@ import Profile from "./components/Profile";
 import PostDetails from "./components/PostDetails";
 import "./App.css";
 import Settings from "./components/Settings";
+import Search from "./components/Search";
 
 function App() {
   const [user, setUser] = useState(
@@ -42,6 +43,7 @@ function App() {
             <Route path="/r/:communityName" element={<Community />} />
             <Route path="/r/:communityName/submit" element={<CreatePost />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/search" element={<Search />} />
           </Route>
         </Routes>
       </BrowserRouter>

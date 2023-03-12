@@ -9,7 +9,8 @@ const JoinCommunityButton = ({ communityName, communityType, ...props }) => {
   const auth = useAuthContext();
   const redirectToLogin = useRedirect("/login", "You need to login first");
 
-  const handleJoin = () => {
+  const handleJoin = (e) => {
+    e.stopPropagation();
     if (!joined) {
       joinCommunity(auth?.uid, communityName, communityType);
     } else {

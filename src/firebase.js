@@ -313,6 +313,62 @@ const getAllPosts = async (cursorDoc = null) => {
     return docs;
 };
 
+function escapeRegExp(value) {
+    return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+}
+
+const searchPosts = async (text) => {
+    const postsRef = collection(db, "Posts");
+    const q = query(postsRef, orderBy("createdOn"));
+    const posts = await getDocs(q);
+    const data = [];
+    posts.forEach(post => data.push(post.data()));
+    const searchRegex = new RegExp(escapeRegExp(text), "i");
+    const filteredRows = data.filter((post) => {
+        return searchRegex.test(post.title);
+    });
+    return filteredRows;
+}
+
+const searchCommunities = async (communityName) => {
+    const communitiesRef = collection(db, "Communities", "public", "communities");
+    const q = query(communitiesRef, orderBy("createdOn"));
+    const communities = await getDocs(q);
+    const data = [];
+    communities.forEach(community => data.push(community.data()));
+    const searchRegex = new RegExp(escapeRegExp(communityName), "i");
+    const filteredRows = data.filter((community) => {
+        return searchRegex.test(community.name);
+    });
+    return filteredRows;
+};
+
+const searchUsers = async (username) => {
+    const usersRef = collection(db, "Users");
+    const q = query(usersRef);
+    const users = await getDocs(q);
+    const data = [];
+    users.forEach(user => data.push(user.data()));
+    const searchRegex = new RegExp(escapeRegExp(username), "i");
+    const filteredRows = data.filter((user) => {
+        return searchRegex.test(user.username);
+    });
+    return filteredRows;
+};
+
+const searchComments = async (text) => {
+    const commentsRef = collection(db, "Comments");
+    const q = query(commentsRef, orderBy("createdOn", "desc"));
+    const comments = await getDocs(q);
+    const data = [];
+    comments.forEach(comment => data.push(comment.data()));
+    const searchRegex = new RegExp(escapeRegExp(text), "i");
+    const filteredRows = data.filter((comment) => {
+        return searchRegex.test(comment.comment);
+    });
+    return filteredRows;
+};
+
 const getPostById = async (postId) => {
     const postsRef = collection(db, "Posts");
     const q = query(postsRef, where("id", "==", postId));
@@ -479,4 +535,4 @@ const unsaveContent = async (userId, contentId) => {
     return updateDoc(userRef, { saved: user.data().saved.filter(id => id !== contentId) });
 }
 
-export { createAccountUsingEmail, usernameAvailable, isEmailAvailable, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunityInfo, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, hasJoinedCommunity, leaveCommunity, getProfileByUsername, getPostById, createComment, getComments, subscribeToComments, subscribeToPost, deleteComment, editComment, subscribeToUserDoc, saveContent, unsaveContent, deletePost, editPost, getMedia, changeProfilePicture, getUserPosts, uploadUserBanner, getProfileByUserId, setCommunityIcon, setCommunityBanner, subscribeToCommunity, deleteAccount, reauthenticate, isUsernameCorrect, updateUserEmail, updateUserPassword, updateDisplayName, updateAbout };
+export { createAccountUsingEmail, usernameAvailable, isEmailAvailable, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunityInfo, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, hasJoinedCommunity, leaveCommunity, getProfileByUsername, getPostById, createComment, getComments, subscribeToComments, subscribeToPost, deleteComment, editComment, subscribeToUserDoc, saveContent, unsaveContent, deletePost, editPost, getMedia, changeProfilePicture, getUserPosts, uploadUserBanner, getProfileByUserId, setCommunityIcon, setCommunityBanner, subscribeToCommunity, deleteAccount, reauthenticate, isUsernameCorrect, updateUserEmail, updateUserPassword, updateDisplayName, updateAbout, searchPosts, searchCommunities, searchUsers, searchComments };

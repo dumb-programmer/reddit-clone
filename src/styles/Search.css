@@ -1,0 +1,24 @@
+.search-header {
+    display: flex;
+    gap: 1rem;
+}
+
+.search-tab {
+    color: inherit;
+    text-decoration: none;
+    border-radius: 50px;
+    padding: 15px;
+    font-weight: 700;
+}
+
+.search-tab:hover {
+    background-color: #edeeef;
+}
+
+.search-tab__active {
+    background-color: #f6f7f8;
+}
+
+.search-body {
+    margin-top: 15px;
+}
