@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import CreateCommunityModal from "./CreateCommunityModal";
-import { getAllPosts } from "../firebase";
+import { getAllPosts, getUserHome } from "../firebase";
 import Posts from "./Posts";
 import { useLocation } from "react-router-dom";
 import ToastNotification from "./ToastNotification";
@@ -11,22 +11,30 @@ const Home = () => {
   const [showModal, setShowModal] = useState(false);
   const username = localStorage.getItem("username");
   const [data, setData] = useState(null);
-  const authenticated = useAuthContext();
+  const auth = useAuthContext();
   const { state } = useLocation();
   const [displayToast, setDisplayToast] = useState(state?.message?.length > 0);
 
   useEffect(() => {
     let ignore = false;
-    getAllPosts().then((snapshot) => {
-      if (!ignore) {
-        setData(snapshot);
-      }
-    });
+    if (!auth) {
+      getAllPosts().then((snapshot) => {
+        if (!ignore) {
+          setData(snapshot);
+        }
+      });
+    } else {
+      getUserHome(auth.uid).then((snapshot) => {
+        if (!ignore) {
+          setData(snapshot);
+        }
+      });
+    }
 
     return () => {
       ignore = true;
     };
-  }, []);
+  }, [auth]);
 
   return (
     <div
@@ -45,8 +53,14 @@ const Home = () => {
           onExit={() => setShowModal(false)}
         />
       )}
-      <Posts data={data} setData={setData} fetchPosts={getAllPosts} />
-      {authenticated && (
+      <Posts
+        data={data}
+        setData={setData}
+        fetchPosts={
+          auth ? (cursorDoc) => getUserHome(auth.uid, cursorDoc) : getAllPosts
+        }
+      />
+      {auth && (
         <aside className="main-btns">
           <img
             src="https://www.redditstatic.com/desktop2x/img/id-cards/home-banner@2x.png"

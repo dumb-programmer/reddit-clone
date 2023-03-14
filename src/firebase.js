@@ -318,6 +318,29 @@ const getAllPosts = async (cursorDoc = null) => {
     return docs;
 };
 
+const getUserHome = async (uid, cursorDoc = null) => {
+    try {
+        const user = (await getDoc(doc(db, "Users", uid))).data();
+        const joined_communities = user.joined_communities;
+        const postsRef = collection(db, "Posts");
+        const docs = [];
+        let q = null;
+        if (cursorDoc === null) {
+            q = query(postsRef, where("communityName", "in", joined_communities), orderBy("createdOn", "desc"), limit(5));
+        }
+        else {
+            q = query(postsRef, where("communityName", "in", joined_communities), orderBy("createdOn", "desc"), startAfter(cursorDoc), limit(5));
+        }
+        const snapshot = await getDocs(q);
+        snapshot.forEach(doc => docs.push(doc));
+        return docs;
+    } catch (error) {
+        if (error.message.includes("non-empty array")) {
+            return [];
+        }
+    }
+}
+
 function escapeRegExp(value) {
     return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 }
@@ -551,4 +574,4 @@ const unsaveContent = async (userId, contentId) => {
     return updateDoc(userRef, { saved: user.data().saved.filter(id => id !== contentId) });
 }
 
-export { createAccountUsingEmail, usernameAvailable, isEmailAvailable, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunityInfo, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, hasJoinedCommunity, leaveCommunity, getProfileByUsername, getPostById, createComment, getComments, subscribeToComments, subscribeToPost, deleteComment, editComment, subscribeToUserDoc, saveContent, unsaveContent, deletePost, editPostContent, getMedia, changeProfilePicture, getUserPosts, uploadUserBanner, getProfileByUserId, setCommunityIcon, setCommunityBanner, subscribeToCommunity, deleteAccount, reauthenticate, isUsernameCorrect, updateUserEmail, updateUserPassword, updateDisplayName, updateAbout, searchPosts, searchCommunities, searchUsers, searchComments, editPostLink };
+export { createAccountUsingEmail, usernameAvailable, isEmailAvailable, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunityInfo, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, hasJoinedCommunity, leaveCommunity, getProfileByUsername, getPostById, createComment, getComments, subscribeToComments, subscribeToPost, deleteComment, editComment, subscribeToUserDoc, saveContent, unsaveContent, deletePost, editPostContent, getMedia, changeProfilePicture, getUserPosts, uploadUserBanner, getProfileByUserId, setCommunityIcon, setCommunityBanner, subscribeToCommunity, deleteAccount, reauthenticate, isUsernameCorrect, updateUserEmail, updateUserPassword, updateDisplayName, updateAbout, searchPosts, searchCommunities, searchUsers, searchComments, editPostLink, getUserHome };
