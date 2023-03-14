@@ -3,7 +3,7 @@ import CommunityIcon from "./icons/CommunityIcon";
 import JoinCommunityButton from "./JoinCommunityButton";
 
 const CommunityLink = ({ community }) => {
-  const { name, description, logo, members, type } = community;
+  const { name, description, icon, members, type } = community;
   const navigateToCommunity = useRedirect(`/r/${name}`);
   return (
     <div
@@ -20,7 +20,7 @@ const CommunityLink = ({ community }) => {
       }}
       onClick={() => navigateToCommunity()}
     >
-      {(logo && <img src={logo} alt={`${name} logo`} className="avatar" />) || (
+      {(icon && <img src={icon} alt={`${name} icon`} className="avatar" />) || (
         <CommunityIcon
           style={{
             height: 50,

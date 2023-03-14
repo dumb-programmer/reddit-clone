@@ -14,7 +14,6 @@ const BackToTopButton = ({ visible }) => {
         borderRadius: 25,
       }}
       onClick={() => {
-        console.log("Hello");
         window.scroll(0, 0);
       }}
     >

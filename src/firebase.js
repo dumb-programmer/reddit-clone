@@ -1,7 +1,7 @@
 import { uuidv4 } from "@firebase/util";
 import { initializeApp } from "firebase/app";
 import { createUserWithEmailAndPassword, deleteUser, EmailAuthProvider, getAuth, onAuthStateChanged, reauthenticateWithCredential, signInWithEmailAndPassword, signOut, updateEmail, updatePassword, } from "firebase/auth";
-import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, limit, onSnapshot, orderBy, query, serverTimestamp, setDoc, startAfter, updateDoc, where } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDoc, getDocs, getFirestore, limit, onSnapshot, orderBy, query, serverTimestamp, setDoc, startAfter, updateDoc, where } from "firebase/firestore";
 import { getStorage, uploadBytes, ref, getDownloadURL, deleteObject, getBlob, } from "firebase/storage";
 
 const firebaseConfig = {
@@ -154,9 +154,9 @@ const registerAuthObserver = (cb) => {
     return onAuthStateChanged(auth, cb);
 };
 
-const createCommunity = async ({ communityName, communityType, username }) => {
+const createCommunity = async (communityName, communityType, moderator, moderatorId) => {
     const communityRef = doc(db, "Communities", communityType, "communities", communityName);
-    await setDoc(communityRef, { name: communityName, members: 0, moderator: username, createdOn: serverTimestamp() });
+    await setDoc(communityRef, { name: communityName, type: communityType, members: 0, moderator: moderator, moderatorId, createdOn: serverTimestamp() });
 };
 
 const setCommunityIcon = async (communityName, communityType, file) => {
@@ -171,8 +171,8 @@ const setCommunityIcon = async (communityName, communityType, file) => {
 };
 
 const setCommunityBanner = async (communityName, communityType, file) => {
-    const uploadTask = await uploadBytes(ref(storage, "Communities/" + uuidv4()), file);
     const communityRef = doc(db, "Communities", communityType, "communities", communityName);
+    const uploadTask = await uploadBytes(ref(storage, "Communities/" + uuidv4()), file);
     const community = await getDoc(communityRef);
     const existingBanner = community.data().banner;
     if (existingBanner) {
@@ -502,8 +502,8 @@ const getProfileByUserId = async (uid) => {
 }
 
 const createComment = async (comment, username, uid, contentId) => {
-    const commentsRef = collection(db, "Comments");
-    await addDoc(commentsRef, { id: uuidv4(), comment: comment, votes: 0, createdOn: serverTimestamp(), author: username, authorId: uid, upvotes: [], downvotes: [], contentId });
+    const id = uuidv4();
+    await setDoc(doc(db, "Comments", id), { id, comment: comment, votes: 0, createdOn: serverTimestamp(), author: username, authorId: uid, upvotes: [], downvotes: [], contentId });
 };
 
 const getComments = async (contentId) => {
@@ -524,14 +524,8 @@ const subscribeToComments = (contentId, cb) => {
 };
 
 const getCommentById = async (commentId) => {
-    const commentsRef = collection(db, "Comments");
-    const q = query(commentsRef, where("id", "==", commentId));
-    const snapshot = await getDocs(q);
-    let doc = null;
-    snapshot.forEach((document) => {
-        doc = document;
-    });
-    return doc;
+    const snapshot = await getDoc(doc(db, "Comments", commentId));
+    return snapshot;
 };
 
 const deleteComment = async (commentRef) => {

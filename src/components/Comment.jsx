@@ -15,6 +15,7 @@ import {
 import MaximizeIcon from "./icons/MaximizeIcon";
 import useAuthContext from "../hooks/useAuthContext";
 import "../styles/Comment.css";
+import { Link } from "react-router-dom";
 
 const Comment = ({ comment, saved, setToastText, showToast }) => {
   const [edit, setEdit] = useState(false);
@@ -114,12 +115,12 @@ const Comment = ({ comment, saved, setToastText, showToast }) => {
       </div>
       <div className="comment-main">
         <div className="comment-body">
-          <a
-            href={`/user/${data.author}`}
+          <Link
+            to={`/user/${data.author}`}
             style={{ color: "inherit", textDecoration: "none" }}
           >
             {data.author}
-          </a>
+          </Link>
           <span
             style={{
               color: "#a4a7a8",

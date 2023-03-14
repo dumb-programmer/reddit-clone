@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { subscribeToPost } from "../firebase";
 import getRelativeDateTime from "../utils/getRelativeDateTime";
 import MediaCarousal from "./MediaCarousal";
@@ -33,23 +33,23 @@ const Post = ({ data, id }) => {
       <div className="post-main">
         <div className="post-header">
           <p>
-            <a
-              href={`/r/${post.communityName}`}
+            <Link
+              to={`/r/${post.communityName}`}
               style={{ color: "#1c1c1c", textDecoration: "none" }}
               onClick={(e) => e.stopPropagation()}
             >
               r/{post.communityName}
-            </a>
+            </Link>
             <span>
               {" "}
               Posted by{" "}
-              <a
-                href={`/user/${post.author}`}
+              <Link
+                to={`/user/${post.author}`}
                 style={{ color: "inherit", textDecoration: "none" }}
                 onClick={(e) => e.stopPropagation()}
               >
                 u/{post.author}
-              </a>{" "}
+              </Link>{" "}
               {getRelativeDateTime(post?.createdOn.toMillis())}{" "}
             </span>
           </p>
