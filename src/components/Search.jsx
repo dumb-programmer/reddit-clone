@@ -82,8 +82,6 @@ const Search = () => {
     };
   }, [q, type]);
 
-  console.log(result);
-
   return (
     <div
       style={{
@@ -91,12 +89,11 @@ const Search = () => {
         justifyContent: "center",
         alignItems: "flex-start",
         marginTop: 20,
-        // height: "100%",
       }}
     >
       <div style={{ minWidth: 800 }}>
         <div className="search-header">
-          {tabs.map((tab, idx) => (
+          {tabs.map((tab) => (
             <a
               key={tab.id}
               href={tab.link}
@@ -132,16 +129,16 @@ const Search = () => {
             ))}
           {type === "posts" &&
             result &&
-            result.map((post) => <PostLink id={post.id} post={post} />)}
+            result.map((post) => <PostLink key={post.id} post={post} />)}
           {type === "comments" &&
             result &&
             result.map((comment) => (
-              <SearchComment id={comment.id} comment={comment} />
+              <SearchComment key={comment.id} comment={comment} />
             ))}
           {type === "communities" &&
             result &&
             result.map((community) => (
-              <CommunityLink id={community.id} community={community} />
+              <CommunityLink key={community.name} community={community} />
             ))}
           {type === "people" &&
             result &&

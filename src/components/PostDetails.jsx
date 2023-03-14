@@ -166,7 +166,12 @@ const PostDetails = () => {
                           justifyContent: "space-between",
                         }}
                       >
-                        <a href={data?.link} target="_blank" rel="noreferrer">
+                        <a
+                          style={{ paddingRight: 10 }}
+                          href={data?.link}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
                           {data?.link}
                         </a>
                         {data?.link && <LinkPreview link={data.link} />}
@@ -262,6 +267,7 @@ const PostDetails = () => {
                     isOwner={
                       auth && localStorage.getItem("username") === data?.author
                     }
+                    isMedia={post?.data().media.length > 0 || false}
                   />
                 </div>
               </div>

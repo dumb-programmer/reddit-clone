@@ -18,6 +18,7 @@ const ShowMore = ({
   handleDelete,
   showToast,
   isOwner,
+  isMedia,
   setToastText,
 }) => {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -69,17 +70,19 @@ const ShowMore = ({
             </li>
             {isOwner && (
               <>
-                <li
-                  className="comment-dropdown-link"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onEdit();
-                    setShowDropdown(false);
-                  }}
-                >
-                  <EditIcon height={25} width={25} />
-                  <span>Edit</span>
-                </li>
+                {!isMedia && (
+                  <li
+                    className="comment-dropdown-link"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onEdit();
+                      setShowDropdown(false);
+                    }}
+                  >
+                    <EditIcon height={25} width={25} />
+                    <span>Edit</span>
+                  </li>
+                )}
                 <li
                   className="comment-dropdown-link"
                   onClick={(e) => {

@@ -261,18 +261,21 @@ const getMedia = async (path) => {
 };
 
 const createPost = async ({ username, communityName, ...data }) => {
-    const postsRef = collection(db, "Posts");
     let paths = null;
     if (data.media) {
         paths = await uploadMedia(data.media);
     }
     const id = uuidv4();
-    await addDoc(postsRef, { id, title: data.title, content: data.content, link: data.link, media: paths || "", votes: 0, createdOn: serverTimestamp(), author: username, communityName: communityName, upvotes: [], downvotes: [] });
+    await setDoc(doc(db, "Posts", id), { id, title: data.title, content: data.content, link: data.link, media: paths || "", votes: 0, createdOn: serverTimestamp(), author: username, communityName: communityName, upvotes: [], downvotes: [] });
     return id;
 };
 
-const editPost = async (postRef, content) => {
+const editPostContent = async (postRef, content) => {
     await updateDoc(postRef, { content, editedOn: serverTimestamp() });
+};
+
+const editPostLink = async (postRef, link) => {
+    await updateDoc(postRef, { link, editedOn: serverTimestamp() });
 };
 
 const deletePost = async (post) => {
@@ -280,7 +283,9 @@ const deletePost = async (post) => {
     if (media?.length > 0) {
         deleteMedia(media);
     }
-    await deleteDoc(post.ref);
+    const id = post.data().id;
+    await deleteComments(id);
+    await deleteDoc(doc(db, "Posts", id));
 };
 
 const getPostsByCommunity = async (communityName, cursorDoc = null) => {
@@ -370,14 +375,9 @@ const searchComments = async (text) => {
 };
 
 const getPostById = async (postId) => {
-    const postsRef = collection(db, "Posts");
-    const q = query(postsRef, where("id", "==", postId));
-    const snapshot = await getDocs(q);
-    let doc = null;
-    snapshot.forEach((document) => {
-        doc = document;
-    });
-    return doc;
+    const postRef = doc(db, "Posts", postId);
+    const snapshot = await getDoc(postRef);
+    return snapshot;
 };
 
 const subscribeToPost = (postId, cb) => {
@@ -515,6 +515,22 @@ const deleteComment = async (commentRef) => {
     await deleteDoc(commentRef);
 };
 
+const deleteComments = async (contentId) => {
+    const commentsRef = collection(db, "Comments");
+    const q = query(commentsRef, where("contentId", "==", contentId));
+    const commentsSnap = await getDocs(q);
+    if (!commentsSnap.empty) {
+        const ids = [];
+        commentsSnap.forEach(async comment => {
+            ids.push(comment.data().id);
+            await deleteDoc(comment.ref);
+        });
+        for (const id of ids) {
+            await deleteComments(id);
+        }
+    }
+}
+
 const editComment = async (commentRef, comment) => {
     await updateDoc(commentRef, { comment, editedOn: serverTimestamp() });
 };
@@ -535,4 +551,4 @@ const unsaveContent = async (userId, contentId) => {
     return updateDoc(userRef, { saved: user.data().saved.filter(id => id !== contentId) });
 }
 
-export { createAccountUsingEmail, usernameAvailable, isEmailAvailable, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunityInfo, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, hasJoinedCommunity, leaveCommunity, getProfileByUsername, getPostById, createComment, getComments, subscribeToComments, subscribeToPost, deleteComment, editComment, subscribeToUserDoc, saveContent, unsaveContent, deletePost, editPost, getMedia, changeProfilePicture, getUserPosts, uploadUserBanner, getProfileByUserId, setCommunityIcon, setCommunityBanner, subscribeToCommunity, deleteAccount, reauthenticate, isUsernameCorrect, updateUserEmail, updateUserPassword, updateDisplayName, updateAbout, searchPosts, searchCommunities, searchUsers, searchComments };
+export { createAccountUsingEmail, usernameAvailable, isEmailAvailable, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunityInfo, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, hasJoinedCommunity, leaveCommunity, getProfileByUsername, getPostById, createComment, getComments, subscribeToComments, subscribeToPost, deleteComment, editComment, subscribeToUserDoc, saveContent, unsaveContent, deletePost, editPostContent, getMedia, changeProfilePicture, getUserPosts, uploadUserBanner, getProfileByUserId, setCommunityIcon, setCommunityBanner, subscribeToCommunity, deleteAccount, reauthenticate, isUsernameCorrect, updateUserEmail, updateUserPassword, updateDisplayName, updateAbout, searchPosts, searchCommunities, searchUsers, searchComments, editPostLink };

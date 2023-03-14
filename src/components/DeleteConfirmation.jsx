@@ -1,4 +1,7 @@
+import { useState } from "react";
+
 const DeleteConfirmation = ({ header, text, setShowModal, handleDelete }) => {
+  const [loading, setLoading] = useState(false);
   return (
     <div className="modal-container">
       <div className="modal">
@@ -31,14 +34,24 @@ const DeleteConfirmation = ({ header, text, setShowModal, handleDelete }) => {
         <footer className="modal-footer">
           <button
             className="primary-btn danger-btn"
-            onClick={async () => {
-              await handleDelete();
-              setShowModal(false);
-            }}
+            onClick={
+              !loading
+                ? async () => {
+                    setLoading(true);
+                    await handleDelete();
+                    setShowModal(false);
+                  }
+                : null
+            }
+            disabled={loading}
           >
             Delete
           </button>
-          <button className="secondary-btn" onClick={() => setShowModal(false)}>
+          <button
+            className="secondary-btn"
+            onClick={!loading ? () => setShowModal(false) : null}
+            disabled={loading}
+          >
             Keep
           </button>
         </footer>

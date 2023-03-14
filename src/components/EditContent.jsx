@@ -1,16 +1,22 @@
 import { useState } from "react";
-import { editPost } from "../firebase";
+import { editPostContent, editPostLink } from "../firebase";
 import LoadingSVG from "./LoadingSVG";
 
 const EditContent = ({ contentRef, onCancel }) => {
-  const [text, setText] = useState(contentRef.data().content);
+  const [text, setText] = useState(
+    contentRef.data().content || contentRef.data().link
+  );
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (text) {
       setLoading(true);
-      await editPost(contentRef.ref, text);
+      if (contentRef.data().content) {
+        await editPostContent(contentRef.ref, text);
+      } else {
+        await editPostLink(contentRef.ref, text);
+      }
       onCancel();
     }
   };
