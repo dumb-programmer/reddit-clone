@@ -4,6 +4,7 @@ import JoinCommunityButton from "./JoinCommunityButton";
 import CommunityIcon from "./icons/CommunityIcon";
 import useRedirect from "../hooks/useRedirect";
 import useAuthContext from "../hooks/useAuthContext";
+import CommunityDescription from "./CommunityDescription";
 
 const CommunityInfo = ({
   data,
@@ -17,10 +18,10 @@ const CommunityInfo = ({
 
   return (
     <aside className="community-sidebar">
-      <div className="community-sidebar__header">
+      <div className="community-sidebar-header">
         <b>About Community</b>
       </div>
-      <div className="community-description">
+      <div className="community-sidebar-body">
         {showAvatar && (
           <div
             style={{
@@ -34,23 +35,23 @@ const CommunityInfo = ({
             <p style={{ fontSize: 20 }}>r/{data?.name}</p>
           </div>
         )}
-        <p style={{ fontSize: 14, wordWrap: "break-word" }}>
-          {data?.description || (
-            <ContentLoader
-              speed={2}
-              width={300}
-              height={76}
-              viewBox="0 0 421 76"
-              backgroundColor="#f3f3f3"
-              foregroundColor="#ecebeb"
-            >
-              <rect x="2" y="0" rx="0" ry="0" width="300" height="10" />
-              <rect x="2" y="18" rx="0" ry="0" width="290" height="10" />
-              <rect x="2" y="40" rx="0" ry="0" width="310" height="10" />
-              <rect x="2" y="58" rx="0" ry="0" width="279" height="10" />
-            </ContentLoader>
-          )}
-        </p>
+        {data ? (
+          <CommunityDescription community={data} />
+        ) : (
+          <ContentLoader
+            speed={2}
+            width={300}
+            height={76}
+            viewBox="0 0 421 76"
+            backgroundColor="#f3f3f3"
+            foregroundColor="#ecebeb"
+          >
+            <rect x="2" y="0" rx="0" ry="0" width="300" height="10" />
+            <rect x="2" y="18" rx="0" ry="0" width="290" height="10" />
+            <rect x="2" y="40" rx="0" ry="0" width="310" height="10" />
+            <rect x="2" y="58" rx="0" ry="0" width="279" height="10" />
+          </ContentLoader>
+        )}
         {data && (
           <span style={{ color: "#818589" }}>
             Created{" "}

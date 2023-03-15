@@ -19,20 +19,20 @@
 .community-sidebar {
     background-color: #ffff;
     min-height: 250px;
-    width: 250px;
+    width: 312px;
     display: flex;
     flex-direction: column;
     border-radius: 5px;
 }
 
-.community-sidebar__header {
+.community-sidebar-header {
     text-align: center;
     background-color: #33a8ff;
     color: #fff;
     padding: 10px;
 }
 
-.community-description {
+.community-sidebar-body {
     padding: 15px;
     display: flex;
     flex-direction: column;

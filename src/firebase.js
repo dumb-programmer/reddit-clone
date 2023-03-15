@@ -156,7 +156,7 @@ const registerAuthObserver = (cb) => {
 
 const createCommunity = async (communityName, communityType, moderator, moderatorId) => {
     const communityRef = doc(db, "Communities", communityType, "communities", communityName);
-    await setDoc(communityRef, { name: communityName, type: communityType, members: 0, moderator: moderator, moderatorId, createdOn: serverTimestamp() });
+    await setDoc(communityRef, { name: communityName, type: communityType, members: 0, moderator, moderatorId, createdOn: serverTimestamp() });
 };
 
 const setCommunityIcon = async (communityName, communityType, file) => {
@@ -181,6 +181,11 @@ const setCommunityBanner = async (communityName, communityType, file) => {
     await updateDoc(communityRef, { banner: await getDownloadURL(uploadTask.ref) });
 };
 
+const updateCommunityDescription = async (communityName, communityType, description) => {
+    console.log(communityName, communityType, description);
+    await updateDoc(doc(db, "Communities", communityType, "communities", communityName), { description })
+}
+
 const subscribeToCommunity = (communityName, communityType, cb) => {
     return onSnapshot(doc(db, "Communities", communityType, "communities", communityName), cb);
 };
@@ -195,13 +200,15 @@ const communityNameAvailable = async ({ communityName, communityType }) => {
 const joinCommunity = async (userId, communityName, communityType) => {
     const docRef = doc(db, "Users", userId);
     const docSnap = (await getDoc(docRef)).data();
-    await updateDoc(docRef, { joined_communities: Array.from(new Set([...docSnap.joined_communities, communityName])) });
-    const communityRef = collection(db, "Communities", communityType, "communities");
-    const q = query(communityRef, where("name", "==", communityName));
-    const snapshot = await getDocs(q);
-    snapshot.forEach(async (doc) => {
-        await updateDoc(doc.ref, { members: ++doc.data().members });
-    });
+    if (docSnap.joined_communities) {
+        await updateDoc(docRef, { joined_communities: Array.from(new Set([...docSnap.joined_communities, communityName])) });
+    }
+    else {
+        await updateDoc(docRef, { joined_communities: Array.from(new Set([communityName])) });
+    }
+    const communityRef = doc(db, "Communities", communityType, "communities", communityName);
+    const community = (await getDoc(communityRef)).data();
+    await updateDoc(communityRef, { members: ++community.members });
 };
 
 const leaveCommunity = async (userId, communityName, communityType) => {
@@ -568,4 +575,4 @@ const unsaveContent = async (userId, contentId) => {
     return updateDoc(userRef, { saved: user.data().saved.filter(id => id !== contentId) });
 }
 
-export { createAccountUsingEmail, usernameAvailable, isEmailAvailable, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunityInfo, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, hasJoinedCommunity, leaveCommunity, getProfileByUsername, getPostById, createComment, getComments, subscribeToComments, subscribeToPost, deleteComment, editComment, subscribeToUserDoc, saveContent, unsaveContent, deletePost, editPostContent, getMedia, changeProfilePicture, getUserPosts, uploadUserBanner, getProfileByUserId, setCommunityIcon, setCommunityBanner, subscribeToCommunity, deleteAccount, reauthenticate, isUsernameCorrect, updateUserEmail, updateUserPassword, updateDisplayName, updateAbout, searchPosts, searchCommunities, searchUsers, searchComments, editPostLink, getUserHome };
+export { createAccountUsingEmail, usernameAvailable, isEmailAvailable, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunityInfo, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, hasJoinedCommunity, leaveCommunity, getProfileByUsername, getPostById, createComment, getComments, subscribeToComments, subscribeToPost, deleteComment, editComment, subscribeToUserDoc, saveContent, unsaveContent, deletePost, editPostContent, getMedia, changeProfilePicture, getUserPosts, uploadUserBanner, getProfileByUserId, setCommunityIcon, setCommunityBanner, subscribeToCommunity, deleteAccount, reauthenticate, isUsernameCorrect, updateUserEmail, updateUserPassword, updateDisplayName, updateAbout, searchPosts, searchCommunities, searchUsers, searchComments, editPostLink, getUserHome, updateCommunityDescription };
