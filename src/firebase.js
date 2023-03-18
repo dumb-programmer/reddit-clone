@@ -138,7 +138,9 @@ const loginUsingUsernameAndPassword = async ({ username, password }) => {
         localStorage.setItem("profilePicture", profilePicture);
     }
     catch (error) {
-        throw error;
+        if (error.message.match(/wrong-password/i)) {
+            return -2;
+        }
     }
 };
 

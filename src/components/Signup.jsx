@@ -2,24 +2,19 @@ import AppleButton from "./AppleButton";
 import GoogleButton from "./GoogleButton";
 import LoginAndSignUpLayout from "./LoginAndSignUpLayout";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   createAccountUsingEmail,
   usernameAvailable,
   isEmailAvailable,
 } from "../firebase";
-import randomWords from "random-words";
 import LoadingSVG from "./LoadingSVG";
 import { useNavigate } from "react-router-dom";
 import AlreadyLoggedInMessage from "./AlreadyLoggedInMessage";
-import "../styles/SignupForm.css";
 import useAuthContext from "../hooks/useAuthContext";
-
-const generateUsernames = () => {
-  return Array.from({ length: 5 }).map(
-    () => randomWords() + "_" + randomWords() + Math.ceil(Math.random() * 1000)
-  );
-};
+import generateUsernames from "../utils/generateUsernames";
+import RefreshIcon from "./icons/RefreshIcon";
+import "../styles/SignupForm.css";
 
 const Signup = () => {
   const [data, setData] = useState({
@@ -40,6 +35,8 @@ const Signup = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const authenticated = useAuthContext();
+  const usernameRef = useRef();
+  const passwordRef = useRef();
 
   const handleInput = (e) => {
     setData({
@@ -54,8 +51,15 @@ const Signup = () => {
     }
   };
 
-  const handleFormSubmit = async (e) => {
-    e.preventDefault();
+  const handleFormSubmit = async () => {
+    if (!usernameRef.current.checkValidity()) {
+      usernameRef.current.reportValidity();
+      return;
+    } else if (!passwordRef.current.checkValidity()) {
+      passwordRef.current.reportValidity();
+      return;
+    }
+
     setLoading(true);
     if (!Object.values(error).some((error) => error)) {
       if (data.password < 8 && !(await usernameAvailable(data.username))) {
@@ -83,15 +87,17 @@ const Signup = () => {
 
   const handleContinue = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    if (await isEmailAvailable(e.target.email.value)) {
-      setContinueClicked(true);
-    } else {
-      setError({
-        ...error,
-        emailAlreadyRegistered: true,
-      });
-      setLoading(false);
+    if (data.email) {
+      setLoading(true);
+      if (await isEmailAvailable(data.email)) {
+        setContinueClicked(true);
+      } else {
+        setError({
+          ...error,
+          emailAlreadyRegistered: true,
+        });
+        setLoading(false);
+      }
     }
   };
 
@@ -139,7 +145,7 @@ const Signup = () => {
     if (authenticated) {
       setTimeout(() => navigate("/"), 1000);
     }
-  }, [authenticated]);
+  }, [authenticated, navigate]);
 
   if (authenticated) {
     return (
@@ -178,11 +184,13 @@ const Signup = () => {
             placeholder="Email"
             value={data.email}
             onChange={handleInput}
+            required
           />
           {error.emailAlreadyRegistered && (
             <div className="error-message">This email is already taken</div>
           )}
           <button
+            data-testid="continue-btn"
             className={`submit-btn ${loading ? "btn__loading" : ""}`}
             disabled={error.emailAlreadyRegistered}
           >
@@ -217,8 +225,10 @@ const Signup = () => {
             type="text"
             placeholder="Choose a username"
             value={data.username}
+            ref={usernameRef}
             onChange={handleInput}
             onBlur={handleUsernameBlur}
+            required
           />
           {error.usernameTaken && (
             <div className="error-message">That username is already taken</div>
@@ -231,8 +241,10 @@ const Signup = () => {
             type="password"
             placeholder="Password"
             value={data.password}
+            ref={passwordRef}
             onChange={handleInput}
             onBlur={handlePasswordBlur}
+            required
           />
           {error.passwordTooShort && (
             <div className="error-message">
@@ -240,7 +252,10 @@ const Signup = () => {
             </div>
           )}
         </form>
-        <div className="username-suggestions">
+        <div
+          className="username-suggestions"
+          data-testid="username-suggestions"
+        >
           <p>
             Here are some username suggestions{" "}
             <button
@@ -249,22 +264,9 @@ const Signup = () => {
                 setSuggestedUsernames(generateUsernames());
               }}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#0079d3"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="feather feather-refresh-cw"
-              >
-                <polyline points="23 4 23 10 17 10"></polyline>
-                <polyline points="1 20 1 14 7 14"></polyline>
-                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
-              </svg>
+              <RefreshIcon
+                style={{ height: 16, width: 16, stroke: "#0079d3" }}
+              />
             </button>
           </p>
           {suggestedUsername.map((suggestion, idx) => (

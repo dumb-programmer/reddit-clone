@@ -32,21 +32,19 @@ const Login = () => {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    try {
-      const val = await loginUsingUsernameAndPassword(data);
-      if (val === -1) {
-        setError({
-          ...error,
-          usernameNotFound: true,
-        });
-      } else {
-        navigate("/");
-      }
-    } catch (error) {
+    const val = await loginUsingUsernameAndPassword(data);
+    if (val === -1) {
+      setError({
+        ...error,
+        usernameNotFound: true,
+      });
+    } else if (val === -2) {
       setError({
         ...error,
         incorrectPassword: true,
       });
+    } else {
+      navigate("/");
     }
     setLoading(false);
   };
@@ -108,6 +106,7 @@ const Login = () => {
           value={data.username}
           onChange={handleInput}
           onBlur={handleUsernameBlur}
+          required
         />
         {error.usernameNotFound && (
           <div className="error-message">Incorrect username</div>
@@ -122,11 +121,13 @@ const Login = () => {
           value={data.password}
           onChange={handleInput}
           onBlur={handlePasswordBlur}
+          required
         />
         {error.incorrectPassword && (
           <div className="error-message">Incorrect password</div>
         )}
         <button
+          data-testid="login-btn"
           className={`submit-btn ${loading ? "btn__loading" : ""}`}
           disabled={error.emailAlreadyRegistered}
         >

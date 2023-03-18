@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import Home from "./components/Home";
@@ -10,9 +10,9 @@ import AuthContext from "./context/AuthContext";
 import { registerAuthObserver } from "./firebase";
 import Profile from "./components/Profile";
 import PostDetails from "./components/PostDetails";
-import "./App.css";
 import Settings from "./components/Settings";
 import Search from "./components/Search";
+import "./App.css";
 
 function App() {
   const [user, setUser] = useState(
@@ -32,21 +32,19 @@ function App() {
 
   return (
     <AuthContext.Provider value={user}>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/" element={<MainLayout />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/r/:communityName/:postId" element={<PostDetails />} />
-            <Route path="/user/:username" element={<Profile />} />
-            <Route path="/r/:communityName" element={<Community />} />
-            <Route path="/r/:communityName/submit" element={<CreatePost />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/search" element={<Search />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/" element={<MainLayout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/r/:communityName/:postId" element={<PostDetails />} />
+          <Route path="/user/:username" element={<Profile />} />
+          <Route path="/r/:communityName" element={<Community />} />
+          <Route path="/r/:communityName/submit" element={<CreatePost />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/search" element={<Search />} />
+        </Route>
+      </Routes>
     </AuthContext.Provider>
   );
 }
