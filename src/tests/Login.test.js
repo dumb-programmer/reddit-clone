@@ -7,19 +7,17 @@ import * as Firebase from "../firebase";
 
 jest.mock("../firebase.js");
 
-describe("Login works", () => {
-    beforeEach(() => {
-        Firebase.loginUsingUsernameAndPassword = jest.fn(async ({ username, password }) => {
-            if (username === "elliot") {
-                if (password === "123") {
-                    return 0;
-                }
-                return -2;
-            }
-            return -1;
-        });
-    });
+Firebase.loginUsingUsernameAndPassword = jest.fn(async ({ username, password }) => {
+    if (username === "elliot") {
+        if (password === "123") {
+            return 0;
+        }
+        return -2;
+    }
+    return -1;
+});
 
+describe("Login works", () => {
     test("Render", async () => {
         // TODO: custom render function
         const { container } = render(<MemoryRouter>

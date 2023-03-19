@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Signup works render 1`] = `
+exports[`Signup works Render 1`] = `
 <div>
   <div
     class="login-page"

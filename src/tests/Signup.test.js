@@ -7,26 +7,23 @@ import * as Firebase from "../firebase.js";
 
 jest.mock("../firebase.js");
 
+Firebase.isEmailAvailable = jest.fn(async (email) => {
+    if (email === "test@test.org") {
+        return false;
+    }
+    return true;
+});
+
+Firebase.usernameAvailable = jest.fn(async (username) => {
+    if (username === "test") {
+        return false;
+    }
+    return true;
+});
+
+Firebase.createAccountUsingEmail = jest.fn();
+
 describe("Signup works", () => {
-    // Reference: https://lightrun.com/answers/facebook-jest-jest-mockspy-returns-undefined-even-when-set-up
-    beforeEach(() => {
-        Firebase.isEmailAvailable = jest.fn(async (email) => {
-            if (email === "test@test.org") {
-                return false;
-            }
-            return true;
-        });
-
-        Firebase.usernameAvailable = jest.fn(async (username) => {
-            if (username === "test") {
-                return false;
-            }
-            return true;
-        });
-
-        Firebase.createAccountUsingEmail = jest.fn();
-    });
-
     test("Render", () => {
         const { container } = render(<MemoryRouter>
             <Signup />
