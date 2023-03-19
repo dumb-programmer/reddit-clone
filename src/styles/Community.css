@@ -37,11 +37,3 @@
     display: flex;
     flex-direction: column;
 }
-
-.upvote-btn__clicked svg {
-    stroke: #ff4500;
-}
-
-.downvote-btn__clicked svg {
-    stroke: #7193ff;
-}

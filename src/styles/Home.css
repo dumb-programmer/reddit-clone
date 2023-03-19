@@ -30,11 +30,6 @@
     padding: 5px;
 }
 
-.upvote-btn, .downvote-btn {
-    all: unset;
-    cursor: pointer;
-}
-
 .post-main {
     padding-left: 15px;
     width: 100%;

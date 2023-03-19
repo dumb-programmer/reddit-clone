@@ -23,7 +23,7 @@ const SearchBar = () => {
           width: 20,
           stroke: "#898c8e",
           position: "absolute",
-          top: 9,
+          top: 8,
           left: 10,
         }}
       />
