@@ -54,6 +54,7 @@ const CommunityDescription = ({ community }) => {
               }}
             >
               <span
+                data-testid="remaining-characters"
                 className={`small-text ${
                   remainingCharactersLength === 0 ? "danger-text" : ""
                 }`}
