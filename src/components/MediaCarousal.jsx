@@ -66,6 +66,7 @@ const MediaCarousal = ({ paths }) => {
             src={media[selectedIndex]}
             width="100%"
             alt="test"
+            data-testid="carousal-img"
           />
         )}
       </div>

@@ -55,7 +55,7 @@ const PostDetails = () => {
     let unsubPost;
     getPostById(postId).then((snap) => {
       if (!ignore) {
-        docId = snap.id;
+        docId = snap?.id;
         unsubPost = subscribeToPost(docId, (doc) => setPost(doc));
         setPost(snap);
       }

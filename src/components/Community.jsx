@@ -104,22 +104,32 @@ const Community = () => {
             type="file"
             accept="*.jpg, *.jpeg, *.png, *.gif"
             style={{ display: "none" }}
-            onChange={(e) =>
-              setCommunityIcon(communityName, community.type, e.target.files[0])
-            }
+            data-testid="community-icon"
+            onChange={(e) => {
+              if (isModerator) {
+                setCommunityIcon(
+                  communityName,
+                  community.type,
+                  e.target.files[0]
+                );
+              }
+            }}
           />
           <input
             ref={bannerInput}
             type="file"
             accept="*.jpg, *.jpeg, *.png, *.gif"
             style={{ display: "none" }}
-            onChange={(e) =>
-              setCommunityBanner(
-                communityName,
-                community.type,
-                e.target.files[0]
-              )
-            }
+            data-testid="community-banner"
+            onChange={(e) => {
+              if (isModerator) {
+                setCommunityBanner(
+                  communityName,
+                  community.type,
+                  e.target.files[0]
+                );
+              }
+            }}
           />
           <div
             onClick={isModerator ? () => iconInput.current.click() : null}
@@ -150,7 +160,7 @@ const Community = () => {
             )}
           </div>
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <h2 style={{ padding: 0, margin: 0 }}>
+            <h2 data-testid="community-name" style={{ padding: 0, margin: 0 }}>
               {community?.name || (
                 <ContentLoader
                   speed={2}
@@ -171,6 +181,7 @@ const Community = () => {
                 color: "#afafaf",
                 fontWeight: "bolder",
               }}
+              data-testid="community-handle"
             >
               {!loading && "r/"}
               {community?.name || (

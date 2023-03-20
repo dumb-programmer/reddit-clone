@@ -12,7 +12,11 @@ const LinkPreview = ({ link }) => {
   }, [link]);
 
   return (
-    <div className="link-preview" onClick={() => window.open(link)}>
+    <div
+      className="link-preview"
+      data-testid="link-preview"
+      onClick={() => window.open(link)}
+    >
       {preview && preview.image ? (
         <img
           src={preview.image}
