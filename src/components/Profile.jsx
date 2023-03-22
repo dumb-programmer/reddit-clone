@@ -29,7 +29,7 @@ const Profile = () => {
     getProfileByUsername(username).then((snap) => {
       if (!ignore) {
         setUserProfile(snap);
-        unsubUser = subscribeToUserDoc(snap.id, (snap) =>
+        unsubUser = subscribeToUserDoc(snap?.id, (snap) =>
           setUserProfile(snap.data())
         );
       }
@@ -73,6 +73,7 @@ const Profile = () => {
         {isOwner && (
           <>
             <input
+              data-testid="profile-picture-input"
               type="file"
               style={{ display: "none" }}
               ref={profilePictureInput}
@@ -82,6 +83,7 @@ const Profile = () => {
               }}
             />
             <input
+              data-testid="banner-input"
               type="file"
               style={{ display: "none" }}
               ref={bannerInput}
@@ -93,6 +95,7 @@ const Profile = () => {
           </>
         )}
         <div
+          data-testid="user-banner"
           style={{
             display: "flex",
             justifyContent: "flex-end",
@@ -109,6 +112,7 @@ const Profile = () => {
         >
           {isOwner && (
             <button
+              data-testid="add-banner-btn"
               className="add-banner-btn"
               onClick={() => bannerInput.current.click()}
             >
@@ -125,6 +129,7 @@ const Profile = () => {
           }}
         >
           <img
+            data-testid="profile-picture"
             src={userProfile?.profilePicture}
             alt="profile"
             height={100}
