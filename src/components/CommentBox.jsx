@@ -29,8 +29,18 @@ const CommentBox = ({
 
   return (
     <div style={{ paddingBottom: 10 }}>
-      <form onSubmit={auth ? handleSubmit : redirectToLogin}>
+      <form
+        onSubmit={
+          auth
+            ? handleSubmit
+            : (e) => {
+                e.preventDefault();
+                redirectToLogin();
+              }
+        }
+      >
         <textarea
+          data-testid="comment-box"
           className="comment-box"
           placeholder="What are your thoughts?"
           value={comment}
@@ -50,6 +60,7 @@ const CommentBox = ({
             </button>
           )}
           <button
+            data-testid="comment-btn"
             className="primary-btn comment-btn"
             disabled={comment.length === 0}
           >

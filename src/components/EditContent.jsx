@@ -25,6 +25,7 @@ const EditContent = ({ contentRef, onCancel }) => {
     <div style={{ paddingBottom: 10 }}>
       <form onSubmit={handleSubmit}>
         <textarea
+          data-testid="edit-post-textbox"
           className="comment-box"
           value={text}
           onChange={(e) => setText(e.target.value)}
@@ -38,6 +39,7 @@ const EditContent = ({ contentRef, onCancel }) => {
           }}
         >
           <button
+            data-testid="cancel-edit-btn"
             className="secondary-btn comment-btn"
             onClick={onCancel}
             disabled={loading}
@@ -45,6 +47,7 @@ const EditContent = ({ contentRef, onCancel }) => {
             Cancel
           </button>
           <button
+            data-testid="save-edits-btn"
             className="primary-btn comment-btn"
             disabled={text.length === 0 || loading}
           >

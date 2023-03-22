@@ -52,6 +52,7 @@ const ShowMore = ({
   return (
     <>
       <div
+        data-testid="show-more"
         className="show-more"
         onClick={(e) => {
           e.stopPropagation();
@@ -60,8 +61,9 @@ const ShowMore = ({
       >
         <ShowMoreIcon height={25} width={25} />
         {showDropdown && (
-          <ul className="comment-dropdown">
+          <ul data-testid="content-dropdown" className="comment-dropdown">
             <li
+              data-testid="save"
               className="comment-dropdown-link"
               onClick={auth ? handleSave : redirectToLogin}
             >
@@ -72,6 +74,7 @@ const ShowMore = ({
               <>
                 {!isMedia && (
                   <li
+                    data-testid="edit"
                     className="comment-dropdown-link"
                     onClick={(e) => {
                       e.stopPropagation();
@@ -79,11 +82,14 @@ const ShowMore = ({
                       setShowDropdown(false);
                     }}
                   >
-                    <EditIcon height={25} width={25} />
+                    <EditIcon
+                      style={{ height: 25, width: 25, stroke: "#000" }}
+                    />
                     <span>Edit</span>
                   </li>
                 )}
                 <li
+                  data-testid="delete"
                   className="comment-dropdown-link"
                   onClick={(e) => {
                     e.stopPropagation();

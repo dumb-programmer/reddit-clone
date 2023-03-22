@@ -264,9 +264,7 @@ const PostDetails = () => {
                     onEdit={() => setEditPost(true)}
                     showToast={() => setShowToast(true)}
                     setToastText={setToastText}
-                    isOwner={
-                      auth && localStorage.getItem("username") === data?.author
-                    }
+                    isOwner={auth?.uid === data?.authorId}
                     isMedia={post?.data().media.length > 0 || false}
                   />
                 </div>
@@ -282,7 +280,7 @@ const PostDetails = () => {
                   comment,
                   localStorage.getItem("username"),
                   auth.uid,
-                  postId
+                  data?.data().id
                 );
               }}
             />
