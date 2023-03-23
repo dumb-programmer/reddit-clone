@@ -18,12 +18,18 @@ const ChangeAboutForm = ({ onSuccess }) => {
   };
 
   useEffect(() => {
-    const unsubUser = subscribeToUserDoc(auth.uid, (doc) => {
-      setAbout(doc.data().about);
-    });
+    let unsubUser = null;
+
+    if (auth) {
+      unsubUser = subscribeToUserDoc(auth?.uid, (doc) => {
+        setAbout(doc.data().about);
+      });
+    }
 
     return () => {
-      unsubUser();
+      if (unsubUser) {
+        unsubUser();
+      }
     };
   }, [auth]);
 
@@ -37,6 +43,7 @@ const ChangeAboutForm = ({ onSuccess }) => {
       </div>
       <div>
         <textarea
+          data-testid="about-input"
           className="form-input"
           type="text"
           placeholder="About (optional)"
@@ -49,7 +56,9 @@ const ChangeAboutForm = ({ onSuccess }) => {
           }}
           onBlur={handleBlur}
         />
-        <p className="small-text">{200 - about.length} Characters remaining</p>
+        <p data-testid="about-remaining-characters" className="small-text">
+          {200 - about.length} characters remaining
+        </p>
       </div>
     </>
   );

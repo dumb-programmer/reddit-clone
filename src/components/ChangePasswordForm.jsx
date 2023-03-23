@@ -66,8 +66,7 @@ const ChangePassword = ({ onFinish }) => {
   return (
     <form onSubmit={!loading ? handleSubmit : (e) => e.preventDefault()}>
       <p>
-        Update your email below. There will be a new verification email sent
-        that you will need to use to verify this new email.
+        Changing your password logs you out of all browsers on your device(s).
       </p>
       <div
         style={{
@@ -92,7 +91,9 @@ const ChangePassword = ({ onFinish }) => {
         <input
           type="password"
           name="new_password"
-          className={`form-input ${errors.email ? "form-input__error" : ""}`}
+          className={`form-input ${
+            errors.new_password ? "form-input__error" : ""
+          }`}
           placeholder="NEW PASSWORD"
           onChange={handleInput}
           onBlur={handleBlur}

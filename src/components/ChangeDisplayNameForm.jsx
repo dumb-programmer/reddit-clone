@@ -21,12 +21,18 @@ const ChangeDisplayNameForm = ({ onSuccess }) => {
   };
 
   useEffect(() => {
-    const unsubUser = subscribeToUserDoc(auth.uid, (doc) => {
-      setDisplayName(doc.data().displayName);
-    });
+    let unsubUser = null;
+
+    if (auth) {
+      unsubUser = subscribeToUserDoc(auth?.uid, (doc) => {
+        setDisplayName(doc.data().displayName);
+      });
+    }
 
     return () => {
-      unsubUser();
+      if (unsubUser) {
+        unsubUser();
+      }
     };
   }, [auth]);
 
@@ -40,6 +46,7 @@ const ChangeDisplayNameForm = ({ onSuccess }) => {
       </div>
       <div>
         <input
+          data-testid="displayName-input"
           className="form-input"
           type="text"
           placeholder="Display name (optional)"
@@ -52,7 +59,10 @@ const ChangeDisplayNameForm = ({ onSuccess }) => {
           }}
           onBlur={handleBlur}
         />
-        <p className="small-text">
+        <p
+          data-testid="displayName-remaining-characters"
+          className="small-text"
+        >
           {30 - displayName.length} characters remaining
         </p>
       </div>

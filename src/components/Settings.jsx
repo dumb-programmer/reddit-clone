@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Trash2Icon from "./icons/Trash2Icon";
 import DeleteAccountModal from "./DeleteAccountModal";
 import ChangeEmailModal from "./ChangeEmailModal";
@@ -7,6 +7,7 @@ import ChnagePasswordModal from "./ChangePasswordModal";
 import ChangeDisplayNameForm from "./ChangeDisplayNameForm";
 import ChangeAboutForm from "./ChangeAboutForm";
 import useAuthContext from "../hooks/useAuthContext";
+import useRedirect from "../hooks/useRedirect";
 import "../styles/Settings.css";
 
 const Settings = () => {
@@ -14,6 +15,13 @@ const Settings = () => {
   const [modal, setModal] = useState(null);
   const [showToast, setShowToast] = useState(false);
   const [toastText, setToastText] = useState("");
+  const redirectToLogin = useRedirect("/login", "You need to login first");
+
+  useEffect(() => {
+    if (!auth) {
+      redirectToLogin();
+    }
+  }, [auth]);
 
   return (
     <div
@@ -40,9 +48,10 @@ const Settings = () => {
           >
             <div>
               <h4>Email Address</h4>
-              <p className="small-text">{auth.email}</p>
+              <p className="small-text">{auth?.email}</p>
             </div>
             <button
+              data-testid="change-email-btn"
               className="secondary-btn"
               style={{ height: 20, width: 80 }}
               onClick={() => setModal(0)}
@@ -64,6 +73,7 @@ const Settings = () => {
               </p>
             </div>
             <button
+              data-testid="change-password-btn"
               className="secondary-btn"
               style={{ height: 20, width: 80 }}
               onClick={() => setModal(1)}
@@ -100,7 +110,11 @@ const Settings = () => {
           className="section-body"
           style={{ display: "flex", justifyContent: "flex-end" }}
         >
-          <button className="delete-account-btn" onClick={() => setModal(2)}>
+          <button
+            data-testid="delete-account-btn"
+            className="delete-account-btn"
+            onClick={() => setModal(2)}
+          >
             <Trash2Icon
               height={20}
               width={20}

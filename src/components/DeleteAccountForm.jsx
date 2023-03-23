@@ -64,7 +64,7 @@ const DeleteAccountForm = ({ onCancel }) => {
     });
   };
 
-  const disabled = !data.username || !data.password || !data.checkbox;
+  const disabled = errors.username || errors.password || !data.checkbox;
 
   return (
     <form onSubmit={!loading ? handleSubmit : (e) => e.preventDefault()}>
@@ -129,6 +129,7 @@ const DeleteAccountForm = ({ onCancel }) => {
         }}
       >
         <button
+          data-testid="cancel-btn"
           className="secondary-btn"
           style={{ height: 20, width: 60 }}
           onClick={onCancel}
@@ -136,6 +137,7 @@ const DeleteAccountForm = ({ onCancel }) => {
           Cancel
         </button>
         <button
+          data-testid="delete-btn"
           className="primary-btn"
           style={{
             height: 20,
