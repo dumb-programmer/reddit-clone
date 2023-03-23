@@ -61,7 +61,7 @@ const Home = () => {
         }
       />
       {auth && (
-        <aside className="main-btns">
+        <aside data-testid="home-sidebar" className="main-btns">
           <img
             src="https://www.redditstatic.com/desktop2x/img/id-cards/home-banner@2x.png"
             alt="banner art"

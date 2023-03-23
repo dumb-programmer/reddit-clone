@@ -92,6 +92,7 @@ const CreateCommunityModal = ({ username, onExit }) => {
                 r/
               </span>
               <input
+                data-testid="community-name-input"
                 type="text"
                 name="communityName"
                 className="form-input"
@@ -101,12 +102,17 @@ const CreateCommunityModal = ({ username, onExit }) => {
                 onChange={handleInput}
               />
               {communityNameNotAvailable && (
-                <div className="error-message" style={{ marginTop: 5 }}>
+                <div
+                  data-testid="error-message"
+                  className="error-message"
+                  style={{ marginTop: 5 }}
+                >
                   Sorry, r/{data.communityName} is taken. Try another.
                 </div>
               )}
             </div>
             <p
+              data-testid="remaining-characters"
               style={{
                 color: `${remainingCharacters !== 0 ? "#afafaf" : "#ea072c"} `,
                 fontSize: "12px",
@@ -162,6 +168,7 @@ const CreateCommunityModal = ({ username, onExit }) => {
         </div>
         <footer className="modal-footer">
           <button
+            data-testid="create-community-btn"
             className="primary-btn"
             onClick={!loading ? handleSubmit : null}
             style={{
