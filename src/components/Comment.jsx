@@ -36,7 +36,7 @@ const Comment = ({ comment, saved, setToastText, showToast }) => {
     });
 
     getProfileByUserId(data?.authorId).then((snap) =>
-      setProfile(snap.data().profilePicture)
+      setProfile(snap?.data().profilePicture)
     );
 
     const unsubComments = subscribeToComments(data?.id, (doc) => {

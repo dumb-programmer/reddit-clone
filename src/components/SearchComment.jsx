@@ -8,7 +8,7 @@ const SearchComment = ({ comment }) => {
 
   useEffect(() => {
     getProfileByUserId(comment?.authorId).then((snap) =>
-      setProfile(snap.data().profilePicture)
+      setProfile(snap?.data().profilePicture)
     );
   }, [comment?.authorId]);
 

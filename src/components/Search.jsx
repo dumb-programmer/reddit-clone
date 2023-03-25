@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import {
   searchComments,
   searchCommunities,
@@ -22,8 +22,7 @@ const Search = () => {
   const [URLSearchParams] = useSearchParams();
   const q = URLSearchParams.get("q");
   const type = URLSearchParams.get("type");
-  const [result, setResult] = useState(null);
-  const navigate = useNavigate();
+  const [results, setResults] = useState(null);
 
   const tabs = useMemo(
     () => [
@@ -43,36 +42,30 @@ const Search = () => {
     [q]
   );
 
-  const handleTabClick = (e, link) => {
-    setResult(null);
-    e.preventDefault();
-    navigate(link);
-  };
-
   useEffect(() => {
     let ignore = false;
     if (type === "posts") {
       searchPosts(q).then((posts) => {
         if (!ignore) {
-          setResult(posts);
+          setResults(posts);
         }
       });
     } else if (type === "comments") {
       searchComments(q).then((comments) => {
         if (!ignore) {
-          setResult(comments);
+          setResults(comments);
         }
       });
     } else if (type === "communities") {
       searchCommunities(q).then((communities) => {
         if (!ignore) {
-          setResult(communities);
+          setResults(communities);
         }
       });
     } else if (type === "people") {
       searchUsers(q).then((users) => {
         if (!ignore) {
-          setResult(users);
+          setResults(users);
         }
       });
     }
@@ -94,56 +87,56 @@ const Search = () => {
       <div style={{ minWidth: 800 }}>
         <div className="search-header">
           {tabs.map((tab) => (
-            <a
+            <Link
               key={tab.id}
-              href={tab.link}
+              to={tab.link}
               className={`search-tab ${
                 type === tab.caption.toLowerCase() ? "search-tab__active" : ""
               }`}
-              onClick={(e) => handleTabClick(e, tab.link)}
+              onClick={() => setResults(null)}
             >
               {tab.caption}
-            </a>
+            </Link>
           ))}
         </div>
         <div className="search-body">
           {type === "posts" &&
-            !result &&
+            !results &&
             Array.from({ length: 10 }).map((_, idx) => (
               <PostLinkSkeleton key={idx} />
             ))}
           {type === "comments" &&
-            !result &&
+            !results &&
             Array.from({ length: 10 }).map((_, idx) => (
               <SearchCommentSkeleton key={idx} />
             ))}
           {type === "communities" &&
-            !result &&
+            !results &&
             Array.from({ length: 10 }).map((_, idx) => (
               <CommunityLinkSkeleton key={idx} />
             ))}
           {type === "people" &&
-            !result &&
+            !results &&
             Array.from({ length: 10 }).map((_, idx) => (
               <ProfileLinkSkeleton key={idx} />
             ))}
           {type === "posts" &&
-            result &&
-            result.map((post) => <PostLink key={post.id} post={post} />)}
+            results &&
+            results.map((post) => <PostLink key={post.id} post={post} />)}
           {type === "comments" &&
-            result &&
-            result.map((comment) => (
+            results &&
+            results.map((comment) => (
               <SearchComment key={comment.id} comment={comment} />
             ))}
           {type === "communities" &&
-            result &&
-            result.map((community) => (
+            results &&
+            results.map((community) => (
               <CommunityLink key={community.name} community={community} />
             ))}
           {type === "people" &&
-            result &&
-            result.map((user) => <ProfileLink key={user.id} user={user} />)}
-          {result && result.length === 0 && <NoResultsFound query={q} />}
+            results &&
+            results.map((user) => <ProfileLink key={user.id} user={user} />)}
+          {results && results.length === 0 && <NoResultsFound query={q} />}
         </div>
       </div>
     </div>
