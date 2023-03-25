@@ -96,6 +96,7 @@ const CreatePost = () => {
           >
             <div className="post-creator-header">
               <div
+                data-testid="post-tab"
                 className={`post-creator-tab ${
                   selected === 0 ? "post-creator-tab__active" : ""
                 }`}
@@ -105,6 +106,7 @@ const CreatePost = () => {
                 <p>Post</p>
               </div>
               <div
+                data-testid="images-tab"
                 className={`post-creator-tab ${
                   selected === 1 ? "post-creator-tab__active" : ""
                 }`}
@@ -114,6 +116,7 @@ const CreatePost = () => {
                 <p>Images</p>
               </div>
               <div
+                data-testid="link-tab"
                 className={`post-creator-tab ${
                   selected === 2 ? "post-creator-tab__active" : ""
                 }`}
@@ -144,6 +147,7 @@ const CreatePost = () => {
                     required
                   />
                   <span
+                    data-testid="title-remaining-characters"
                     style={{
                       position: "absolute",
                       right: 15,
@@ -190,6 +194,7 @@ const CreatePost = () => {
             >
               <button className="secondary-btn">Cancel</button>
               <button
+                data-testid="post-btn"
                 className="primary-btn"
                 style={{
                   minHeight: 32,

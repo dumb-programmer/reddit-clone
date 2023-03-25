@@ -51,6 +51,7 @@ const ImagesUpload = ({ setData }) => {
   return (
     <div style={{ border: "2px solid #f0f2f4", borderRadius: 5, padding: 10 }}>
       <input
+        data-testid="file-input"
         ref={fileInput}
         type="file"
         accept="image/png, image/gif,image/jpeg, image/webp, video/mp4, video/quicktime"
