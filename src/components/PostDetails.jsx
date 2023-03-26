@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Vote from "./Vote";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   createComment,
   deletePost,
@@ -110,13 +110,13 @@ const PostDetails = () => {
               {data ? (
                 <p>
                   Posted by{" "}
-                  <a
-                    href={`/user/${data.author}`}
+                  <Link
+                    to={`/user/${data.author}`}
                     style={{ color: "inherit", textDecoration: "none" }}
                     onClick={(e) => e.stopPropagation()}
                   >
                     u/{data.author}
-                  </a>{" "}
+                  </Link>{" "}
                   {data && getRelativeDateTime(data.createdOn?.toMillis())}
                 </p>
               ) : (
@@ -270,9 +270,11 @@ const PostDetails = () => {
                 </div>
               </div>
             )}
-            <p style={{ fontSize: 12 }}>
-              Comment as {localStorage.getItem("username")}
-            </p>
+            {auth && (
+              <p style={{ fontSize: 12 }}>
+                Comment as {localStorage.getItem("username")}
+              </p>
+            )}
             <CommentBox
               primaryCaption="Comment"
               onSubmit={async (comment) => {

@@ -16,6 +16,7 @@ import MaximizeIcon from "./icons/MaximizeIcon";
 import useAuthContext from "../hooks/useAuthContext";
 import "../styles/Comment.css";
 import { Link } from "react-router-dom";
+import useRedirect from "../hooks/useRedirect";
 
 const Comment = ({ comment, saved, setToastText, showToast }) => {
   const [edit, setEdit] = useState(false);
@@ -24,6 +25,7 @@ const Comment = ({ comment, saved, setToastText, showToast }) => {
   const [minimize, setMinimize] = useState(false);
   const [profile, setProfile] = useState(null);
   const auth = useAuthContext();
+  const redirectToLogin = useRedirect("/login", "You need to login first");
 
   const data = comment.data();
 
@@ -57,7 +59,11 @@ const Comment = ({ comment, saved, setToastText, showToast }) => {
         className="comment"
         style={{ display: "flex", alignItems: "center", gap: "0.7rem" }}
       >
-        <button style={{ all: "unset" }} onClick={() => setMinimize(false)}>
+        <button
+          data-testid="maximize-btn"
+          style={{ background: "unset", border: "none" }}
+          onClick={() => setMinimize(false)}
+        >
           <MaximizeIcon height={20} width={20} fill="#ffff" stroke="#0079d3" />
         </button>
         <img src={profile} alt="avatar" className="avatar" />
@@ -111,7 +117,11 @@ const Comment = ({ comment, saved, setToastText, showToast }) => {
     <div className="comment">
       <div className="comment-sidebar">
         <img src={profile} alt="avatar" className="avatar" />
-        <div className="thread-line" onClick={() => setMinimize(true)}></div>
+        <div
+          data-testid="thread-line"
+          className="thread-line"
+          onClick={() => setMinimize(true)}
+        ></div>
       </div>
       <div className="comment-main">
         <div className="comment-body">
@@ -173,7 +183,9 @@ const Comment = ({ comment, saved, setToastText, showToast }) => {
             <Vote data={data} type="comment" />
             <button
               className="reply-btn"
-              onClick={() => setReply((prev) => !prev)}
+              onClick={
+                auth ? () => setReply((prev) => !prev) : () => redirectToLogin()
+              }
             >
               <MessageIcon height={24} width={24} stroke="black" />
               <span>Reply</span>
@@ -183,8 +195,8 @@ const Comment = ({ comment, saved, setToastText, showToast }) => {
               confirmationText="Are you sure you want to delete your comment?"
               confirmationHeader="Delete comment"
               onEdit={() => setEdit(true)}
-              isSaved={saved && saved.includes(comment.data().id)}
-              isOwner={localStorage.getItem("username") === data?.author}
+              isSaved={saved && saved.includes(data.id)}
+              isOwner={auth?.uid === comment?.authorId}
               handleDelete={async () => {
                 await deleteComment(comment.ref);
               }}

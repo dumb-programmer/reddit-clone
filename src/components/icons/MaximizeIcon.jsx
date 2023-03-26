@@ -5,9 +5,9 @@ const MaximizeIcon = ({ height, width, fill, stroke }) => {
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
-      stroke-width="1.3"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="1.3"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       style={{ height, width, fill, stroke, transform: "rotate(90deg)" }}
     >
       <polyline points="15 3 21 3 21 9"></polyline>
