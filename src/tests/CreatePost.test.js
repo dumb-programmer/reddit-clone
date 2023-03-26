@@ -3,14 +3,21 @@ import CreatePost from "../components/CreatePost";
 import '@testing-library/jest-dom';
 import * as Firebase from "../firebase";
 import userEvent from "@testing-library/user-event";
-import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { MemoryRouter, Route, Routes, useNavigate } from "react-router-dom";
 
 jest.mock("../firebase.js");
+jest.mock("react-router-dom", () => {
+    const navigate = jest.fn();
+    return {
+        ...(jest.requireActual("react-router-dom")),
+        useNavigate: () => navigate
+    }
+});
 
+const newPostId = "fas234-ajk34";
 Firebase.getCommunityInfo = jest.fn(async () => null);
-Firebase.createPost = jest.fn(async () => "fas234-ajk34");
+Firebase.createPost = jest.fn(async () => newPostId);
 
-// TODO: mock useNavigate
 describe("CreatePost", () => {
     const communityName = "test";
     const user = userEvent.setup();
@@ -46,10 +53,12 @@ describe("CreatePost", () => {
             imagesTab = screen.getByTestId("images-tab");
             linkTab = screen.getByTestId("link-tab");
         });
+
         test("Post", async () => {
             await user.click(postTab);
             expect(postTab).toHaveClass("post-creator-tab__active");
         });
+
         test("Images", async () => {
             await user.click(imagesTab);
             expect(imagesTab).toHaveClass("post-creator-tab__active");
@@ -57,6 +66,7 @@ describe("CreatePost", () => {
             expect(screen.getByPlaceholderText(/title/i)).toBeInTheDocument();
             expect(screen.getByText(/upload/i)).toBeInTheDocument();
         });
+
         test("Link", async () => {
             await user.click(linkTab);
             expect(linkTab).toHaveClass("post-creator-tab__active");
@@ -64,6 +74,7 @@ describe("CreatePost", () => {
             expect(screen.getByPlaceholderText(/url/i)).toBeInTheDocument();
         });
     });
+
     test("Title input works", async () => {
         render(<MemoryRouter initialEntries={[`/r/${communityName}/submit`]}>
             <Routes>
@@ -105,6 +116,8 @@ describe("CreatePost", () => {
             await user.click(screen.getByTestId("post-btn"));
             expect(Firebase.createPost).toBeCalled();
             expect(Firebase.createPost).toBeCalledWith({ communityName, title, content: text, link: "", media: [], username: "test" });
+            expect(useNavigate()).toBeCalled();
+            expect(useNavigate()).toBeCalledWith(`/r/${communityName}/${newPostId}`);
         });
     });
 
@@ -137,6 +150,7 @@ describe("CreatePost", () => {
                     target: { files }
                 });
             });
+
             test("File upload works", async () => {
                 expect(fileInput.files).toEqual(files);
             });

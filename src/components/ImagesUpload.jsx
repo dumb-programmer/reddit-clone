@@ -95,7 +95,7 @@ const ImagesUpload = ({ setData }) => {
       ) : (
         <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
           {thumbs.map((thumb, index) => (
-            <div className="media-preview">
+            <div key={index} className="media-preview">
               <button
                 className="delete-media-btn"
                 onClick={(e) => {
