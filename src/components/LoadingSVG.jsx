@@ -1,4 +1,10 @@
-const LoadingSVG = ({ height = 25, width = 25, ...otherProps }) => {
+const LoadingSVG = ({
+  height = 25,
+  width = 25,
+  stroke = "#fff",
+  strokeWidth = 7,
+  ...otherProps
+}) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -12,8 +18,8 @@ const LoadingSVG = ({ height = 25, width = 25, ...otherProps }) => {
         cx="50"
         cy="50"
         fill="none"
-        stroke="#ffffff"
-        strokeWidth="7"
+        stroke={stroke}
+        strokeWidth={strokeWidth}
         r="30"
         strokeDasharray="113.09733552923255 39.69911184307752"
       >

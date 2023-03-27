@@ -1,0 +1,24 @@
+.notification-container {
+    position: fixed;
+    bottom: 10px;
+    min-width: 380px;
+    border: 1px solid #8a8d8f;
+    display: flex;
+    flex-direction: column;
+    border-radius: 5px;
+    box-shadow: -1px 4px 17px -3px rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: -1px 4px 17px -3px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: -1px 4px 17px -3px rgba(0, 0, 0, 0.3);
+}
+
+.notification-status {
+    padding: 0 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.progress-bar {
+    height: 5px;
+    background: #0079d3;
+}

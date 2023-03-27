@@ -1,37 +1,50 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
-  changeProfilePicture,
   getProfileByUsername,
   getUserPosts,
   subscribeToUserDoc,
-  uploadUserBanner,
+  updateUserBanner,
+  updateUserProfilePicture,
 } from "../firebase";
 import AddPhotoIcon from "./icons/AddPhotoIcon";
 import CakeIcon from "./icons/CakeIcon";
 import Posts from "./Posts";
 import useAuthContext from "../hooks/useAuthContext";
 import "../styles/Profile.css";
+import ProgressToast from "./ProgressToast";
 
 const Profile = () => {
-  const [userProfile, setUserProfile] = useState(null);
-  const [posts, setPosts] = useState(null);
-  const auth = useAuthContext();
   const { username } = useParams();
+  const [userDoc, setUserDoc] = useState(null);
+  const [posts, setPosts] = useState(null);
+  const [progress, setProgress] = useState(null);
+  const [progressText, setProgressText] = useState("Uploading icon");
+  const [uploadStatus, setUploadStatus] = useState(null);
+  const auth = useAuthContext();
   const profilePictureInput = useRef();
   const bannerInput = useRef();
 
+  const userProfile = userDoc?.data();
   const isOwner = auth && userProfile?.id === `${auth.uid}`;
+
+  const onSuccess = useCallback((text) => {
+    setProgressText(text);
+    setUploadStatus("success");
+    setTimeout(() => setProgress(null), 1800);
+  }, []);
+
+  const onError = useCallback((error) => {
+    console.log(error);
+  }, []);
 
   useEffect(() => {
     let ignore = false;
     let unsubUser = null;
     getProfileByUsername(username).then((snap) => {
       if (!ignore) {
-        setUserProfile(snap);
-        unsubUser = subscribeToUserDoc(snap?.id, (snap) =>
-          setUserProfile(snap.data())
-        );
+        setUserDoc(snap);
+        unsubUser = subscribeToUserDoc(snap?.id, (snap) => setUserDoc(snap));
       }
     });
 
@@ -79,7 +92,16 @@ const Profile = () => {
               ref={profilePictureInput}
               accept="*.jpeg,*.jpg,*.gif,*.png,*.webp"
               onChange={async (e) => {
-                await changeProfilePicture(auth.uid, e.target.files[0]);
+                setProgressText("Uploading profile picture");
+                setUploadStatus("uploading");
+                updateUserProfilePicture(
+                  userDoc.ref,
+                  userProfile?.profilePicture,
+                  setProgress,
+                  e.target.files[0],
+                  () => onSuccess("Profile picture uploded successfully"),
+                  (error) => onError(error)
+                );
               }}
             />
             <input
@@ -89,7 +111,16 @@ const Profile = () => {
               ref={bannerInput}
               accept="*.jpeg,*.jpg,*.gif,*.png,*.webp"
               onChange={async (e) => {
-                await uploadUserBanner(auth.uid, e.target.files[0]);
+                setProgressText("Uploading banner");
+                setUploadStatus("uploading");
+                updateUserBanner(
+                  userDoc.ref,
+                  userProfile?.banner,
+                  setProgress,
+                  e.target.files[0],
+                  () => onSuccess("Banner uploded successfully"),
+                  (error) => onError(error)
+                );
               }}
             />
           </>
@@ -195,6 +226,13 @@ const Profile = () => {
           </button>
         </div>
       </aside>
+      {progress !== null && (
+        <ProgressToast
+          progress={progress}
+          status={uploadStatus}
+          text={progressText}
+        />
+      )}
     </div>
   );
 };

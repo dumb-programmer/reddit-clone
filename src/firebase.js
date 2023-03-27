@@ -2,7 +2,7 @@ import { uuidv4 } from "@firebase/util";
 import { initializeApp } from "firebase/app";
 import { createUserWithEmailAndPassword, deleteUser, EmailAuthProvider, getAuth, onAuthStateChanged, reauthenticateWithCredential, signInWithEmailAndPassword, signOut, updateEmail, updatePassword, } from "firebase/auth";
 import { collection, deleteDoc, doc, getDoc, getDocs, getFirestore, limit, onSnapshot, orderBy, query, serverTimestamp, setDoc, startAfter, updateDoc, where } from "firebase/firestore";
-import { getStorage, uploadBytes, ref, getDownloadURL, deleteObject, getBlob, } from "firebase/storage";
+import { getStorage, uploadBytes, ref, getDownloadURL, deleteObject, getBlob, uploadBytesResumable, } from "firebase/storage";
 
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -21,7 +21,7 @@ const storage = getStorage(app);
 const createAccountUsingEmail = async ({ email, password, username }) => {
     try {
         const userCreds = await createUserWithEmailAndPassword(auth, email, password);
-        const profilePicture = await getDownloadURL(ref(storage, "default_avatar.png"));
+        const profilePicture = await getDownloadURL(ref(storage, "Users/default_avatar.png"));
         localStorage.setItem("username", username);
         localStorage.setItem("profilePicture", profilePicture);
         await setDoc(doc(db, "Users", userCreds.user.uid), { id: userCreds.user.uid, username: username, email: email, profilePicture })
@@ -85,23 +85,51 @@ const deleteAccount = async () => {
     localStorage.clear();
 };
 
-const changeProfilePicture = async (uid, file) => {
-    const uploadTask = await uploadBytes(ref(storage, "Users/" + uuidv4()), file);
-    const userRef = doc(db, "Users", uid);
-    const user = await getDoc(userRef);
-    await deleteObject(ref(storage, user.data().profilePicture));
-    await updateDoc(userRef, { profilePicture: await getDownloadURL(uploadTask.ref) });
+const setProfilePicture = async (userRef, existingProfilePicture, newProfilePictureUrl, setProgress, onSuccess, onError) => {
+    const timeId = setInterval(() => setProgress((p) => p + 0.25), 100);
+    try {
+        if (existingProfilePicture && !(/default_avatar/i.test(existingProfilePicture))) {
+            await deleteObject(ref(storage, existingProfilePicture));
+        }
+        await updateDoc(userRef, { profilePicture: newProfilePictureUrl });
+        onSuccess();
+    }
+    catch (error) {
+        onError(error);
+    }
+    clearInterval(timeId);
+    setProgress(100);
 };
 
-const uploadUserBanner = async (uid, file) => {
-    const uploadTask = await uploadBytes(ref(storage, "Users/" + uuidv4()), file);
-    const userRef = doc(db, "Users", uid);
-    const user = await getDoc(userRef);
-    const existingBanner = user.data().banner;
-    if (existingBanner) {
-        await deleteObject(ref(storage, user.data().banner));
+const updateUserProfilePicture = (userRef, existingProfilePicture, setProgress, file, onSuccess, onError) => {
+    const storageRef = ref(storage, "Users/" + uuidv4());
+    uploadFileWithProgess(storageRef, file, setProgress, (url) =>
+        setProfilePicture(userRef, existingProfilePicture, url, setProgress, onSuccess, onError),
+        (error) => onError(error));
+}
+
+const setUserBanner = async (userRef, existingBannerUrl, newBannerUrl, setProgress, onSuccess, onError) => {
+    const timeId = setInterval(() => setProgress((p) => p + 0.25), 100);
+    try {
+        if (existingBannerUrl) {
+            await deleteObject(ref(storage, existingBannerUrl));
+        }
+        await updateDoc(userRef, { banner: newBannerUrl });
+        onSuccess();
     }
-    await updateDoc(userRef, { banner: await getDownloadURL(uploadTask.ref) });
+    catch (error) {
+        clearInterval(timeId);
+        onError(error);
+    }
+    clearInterval(timeId);
+    setProgress(100);
+};
+
+const updateUserBanner = async (userRef, existingBannerUrl, setProgress, file, onSuccess, onError) => {
+    const storageRef = ref(storage, "Users/" + uuidv4());
+    uploadFileWithProgess(storageRef, file, setProgress, (url) =>
+        setUserBanner(userRef, existingBannerUrl, url, setProgress, onSuccess, onError),
+        (error) => onError(error));
 };
 
 const usernameAvailable = async (username) => {
@@ -161,30 +189,66 @@ const createCommunity = async (communityName, communityType, moderator, moderato
     await setDoc(communityRef, { name: communityName, type: communityType, members: 0, moderator, moderatorId, createdOn: serverTimestamp() });
 };
 
-const setCommunityIcon = async (communityName, communityType, file) => {
-    const uploadTask = await uploadBytes(ref(storage, "Communities/" + uuidv4()), file);
-    const communityRef = doc(db, "Communities", communityType, "communities", communityName);
-    const community = await getDoc(communityRef);
-    const existingIcon = community.data().icon;
-    if (existingIcon) {
-        await deleteObject(ref(storage, existingIcon));
-    }
-    await updateDoc(communityRef, { icon: await getDownloadURL(uploadTask.ref) });
+const uploadFileWithProgess = (storageRef, file, setProgress, onSuccess, onError) => {
+    const uploadTask = uploadBytesResumable(storageRef, file);
+    uploadTask.on("state_changed", (snapshot) => {
+        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        setProgress(progress > 30 ? progress - 30 : progress);
+    }, (error) => {
+        onError(error);
+    }, () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((url) => onSuccess(url)).catch(error => onError(error));
+    });
 };
 
-const setCommunityBanner = async (communityName, communityType, file) => {
-    const communityRef = doc(db, "Communities", communityType, "communities", communityName);
-    const uploadTask = await uploadBytes(ref(storage, "Communities/" + uuidv4()), file);
-    const community = await getDoc(communityRef);
-    const existingBanner = community.data().banner;
-    if (existingBanner) {
-        await deleteObject(ref(storage, existingBanner));
+const updateCommunityIcon = async (communityRef, existingIcon, file, setProgress, onSuccess, onError) => {
+    const storageRef = ref(storage, "Communities/" + uuidv4());
+    uploadFileWithProgess(storageRef, file, setProgress, (url) =>
+        setCommunityIcon(communityRef, existingIcon, url, setProgress, onSuccess, onError),
+        (error) => onError(error));
+}
+
+const setCommunityIcon = async (communityRef, existingIcon, iconUrl, setProgress, onSuccess, onError) => {
+    const timeId = setInterval(() => setProgress((p) => p + 0.25), 100);
+    try {
+        if (existingIcon) {
+            await deleteObject(ref(storage, existingIcon));
+        }
+        await updateDoc(communityRef, { icon: iconUrl });
+        onSuccess();
     }
-    await updateDoc(communityRef, { banner: await getDownloadURL(uploadTask.ref) });
+    catch (error) {
+        onError(error);
+    }
+    clearInterval(timeId);
+    setProgress(100);
+};
+
+const updateCommunityBanner = async (communityRef, existingBanner, file, setProgress, onSuccess, onError) => {
+    const storageRef = ref(storage, "Communities/" + uuidv4());
+    uploadFileWithProgess(storageRef, file, setProgress, (url) =>
+        setCommunityBanner(communityRef, existingBanner, url, setProgress, onSuccess, onError),
+        (error) => onError(error));
+}
+
+const setCommunityBanner = async (communityRef, existingBanner, bannerUrl, setProgress, onSuccess, onError) => {
+    const timeId = setInterval(() => setProgress((p) => p + 0.25), 100);
+    try {
+        if (existingBanner) {
+            await deleteObject(ref(storage, existingBanner));
+        }
+        await updateDoc(communityRef, { banner: bannerUrl });
+        clearInterval(timeId);
+        onSuccess();
+        setProgress(100);
+    }
+    catch (error) {
+        onError(error);
+    }
+    clearInterval(timeId);
 };
 
 const updateCommunityDescription = async (communityName, communityType, description) => {
-    console.log(communityName, communityType, description);
     await updateDoc(doc(db, "Communities", communityType, "communities", communityName), { description })
 }
 
@@ -248,6 +312,12 @@ const getCommunityInfo = async (communityName) => {
     const communityRef = doc(db, "Communities", "public", "communities", communityName);
     const community = await getDoc(communityRef);
     return community.data();
+};
+
+const getCommunityDoc = async (communityName) => {
+    const communityRef = doc(db, "Communities", "public", "communities", communityName);
+    const community = await getDoc(communityRef);
+    return community;
 };
 
 const uploadMedia = async (mediaList) => {
@@ -498,7 +568,7 @@ const getProfileByUsername = async (username) => {
     let user = null;
     await getDocs(q).then((snap) => {
         snap.forEach((doc) => {
-            user = doc.data()
+            user = doc
         });
     });
     return user;
@@ -577,4 +647,4 @@ const unsaveContent = async (userId, contentId) => {
     return updateDoc(userRef, { saved: user.data().saved.filter(id => id !== contentId) });
 }
 
-export { createAccountUsingEmail, usernameAvailable, isEmailAvailable, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunityInfo, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, hasJoinedCommunity, leaveCommunity, getProfileByUsername, getPostById, createComment, getComments, subscribeToComments, subscribeToPost, deleteComment, editComment, subscribeToUserDoc, saveContent, unsaveContent, deletePost, editPostContent, getMedia, changeProfilePicture, getUserPosts, uploadUserBanner, getProfileByUserId, setCommunityIcon, setCommunityBanner, subscribeToCommunity, deleteAccount, reauthenticate, isUsernameCorrect, updateUserEmail, updateUserPassword, updateDisplayName, updateAbout, searchPosts, searchCommunities, searchUsers, searchComments, editPostLink, getUserHome, updateCommunityDescription };
+export { createAccountUsingEmail, usernameAvailable, isEmailAvailable, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunityInfo, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, hasJoinedCommunity, leaveCommunity, getProfileByUsername, getPostById, createComment, getComments, subscribeToComments, subscribeToPost, deleteComment, editComment, subscribeToUserDoc, saveContent, unsaveContent, deletePost, editPostContent, getMedia, getUserPosts, updateUserBanner, getProfileByUserId, setCommunityIcon, setCommunityBanner, subscribeToCommunity, deleteAccount, reauthenticate, isUsernameCorrect, updateUserEmail, updateUserPassword, updateDisplayName, updateAbout, searchPosts, searchCommunities, searchUsers, searchComments, editPostLink, getUserHome, updateCommunityDescription, uploadFileWithProgess, getCommunityDoc, updateCommunityIcon, updateCommunityBanner, updateUserProfilePicture };

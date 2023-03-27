@@ -1,33 +1,49 @@
 import { useParams } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
-  getCommunityInfo,
+  getCommunityDoc,
   getPostsByCommunity,
-  setCommunityBanner,
-  setCommunityIcon,
   subscribeToCommunity,
+  updateCommunityBanner,
+  updateCommunityIcon,
 } from "../firebase";
 import CommunityInfo from "./CommunityInfo";
 import JoinCommunityButton from "./JoinCommunityButton";
 import Posts from "./Posts";
 import ContentLoader from "react-content-loader";
 import useAuthContext from "../hooks/useAuthContext";
+import ProgressToast from "./ProgressToast";
 import "../styles/Community.css";
 
 const Community = () => {
-  const [community, setCommunity] = useState(null);
-  const [posts, setPosts] = useState(null);
-  const auth = useAuthContext();
   const { communityName } = useParams();
+  const [communityDoc, setCommunityDoc] = useState(null);
+  const [posts, setPosts] = useState(null);
+  const [progress, setProgress] = useState(null);
+  const [progressText, setProgressText] = useState("Uploading icon");
+  const [uploadStatus, setUploadStatus] = useState(null);
+  const auth = useAuthContext();
   const iconInput = useRef();
   const bannerInput = useRef();
+
+  const community = communityDoc?.data();
+
+  const onSuccess = useCallback((text) => {
+    setProgressText(text);
+    setUploadStatus("success");
+    setTimeout(() => setProgress(null), 1800);
+  }, []);
+
+  const onError = useCallback((error) => {
+    console.log(error);
+  }, []);
 
   useEffect(() => {
     let ignore = false;
 
-    getCommunityInfo(communityName).then((snapshot) => {
+    getCommunityDoc(communityName).then((snapshot) => {
       if (!ignore) {
-        setCommunity(snapshot);
+        setCommunityDoc(snapshot);
       }
     });
 
@@ -51,7 +67,7 @@ const Community = () => {
         community?.type,
         (snap) => {
           if (!ignore) {
-            setCommunity(snap.data());
+            setCommunityDoc(snap);
           }
         }
       );
@@ -63,7 +79,7 @@ const Community = () => {
     };
   }, [communityName, community?.type]);
 
-  if (community === undefined) {
+  if (communityDoc && !communityDoc?._document) {
     return (
       <div
         style={{
@@ -96,7 +112,11 @@ const Community = () => {
             backgroundSize: "cover",
             backgroundPosition: "50%",
           }}
-          onClick={isModerator ? () => bannerInput.current.click() : null}
+          onClick={
+            isModerator && !(uploadStatus === "uploading")
+              ? () => bannerInput.current.click()
+              : null
+          }
         ></div>
         <div className="community-info" style={{ marginLeft: 90 }}>
           <input
@@ -107,10 +127,15 @@ const Community = () => {
             data-testid="community-icon"
             onChange={(e) => {
               if (isModerator) {
-                setCommunityIcon(
-                  communityName,
-                  community.type,
-                  e.target.files[0]
+                setProgressText("Uploading icon");
+                setUploadStatus("uploading");
+                updateCommunityIcon(
+                  communityDoc.ref,
+                  community?.icon,
+                  e.target.files[0],
+                  setProgress,
+                  () => onSuccess("Icon uploded successfully"),
+                  (error) => onError(error)
                 );
               }
             }}
@@ -123,16 +148,27 @@ const Community = () => {
             data-testid="community-banner"
             onChange={(e) => {
               if (isModerator) {
-                setCommunityBanner(
-                  communityName,
-                  community.type,
-                  e.target.files[0]
+                setProgressText("Uploading banner");
+                setUploadStatus("uploading");
+                updateCommunityBanner(
+                  communityDoc.ref,
+                  community?.banner,
+                  e.target.files[0],
+                  setProgress,
+                  () => {
+                    onSuccess("Banner updated successfully");
+                  },
+                  (error) => onError(error)
                 );
               }
             }}
           />
           <div
-            onClick={isModerator ? () => iconInput.current.click() : null}
+            onClick={
+              isModerator && !(uploadStatus === "uploading")
+                ? () => iconInput.current.click()
+                : null
+            }
             style={{ cursor: isModerator ? "pointer" : "auto" }}
           >
             {!community?.icon ? (
@@ -225,6 +261,13 @@ const Community = () => {
           }
         />
         <CommunityInfo data={community} showCreatePost />
+        {progress !== null && (
+          <ProgressToast
+            progress={progress}
+            status={uploadStatus}
+            text={progressText}
+          />
+        )}
       </div>
     </div>
   );
