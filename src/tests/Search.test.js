@@ -1,5 +1,5 @@
 import { screen, render, waitFor } from "@testing-library/react";
-import Search from "../components/Search";
+import Search from "../components/search/Search";
 import '@testing-library/jest-dom';
 import * as Firebase from "../firebase";
 import userEvent from "@testing-library/user-event";

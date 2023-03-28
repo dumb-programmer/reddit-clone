@@ -1,5 +1,5 @@
 import { screen, render } from "@testing-library/react";
-import Settings from "../components/Settings";
+import Settings from "../components/settings/Settings";
 import '@testing-library/jest-dom';
 import AuthContext from "../context/AuthContext";
 import * as Firebase from "../firebase";

@@ -1,5 +1,5 @@
 import { MemoryRouter } from "react-router-dom";
-import Login from "../components/Login";
+import Login from "../components/login/Login";
 import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'

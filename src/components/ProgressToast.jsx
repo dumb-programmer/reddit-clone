@@ -1,6 +1,7 @@
 import CheckSVG from "./CheckSVG";
 import LoadingSVG from "./LoadingSVG";
 import "../styles/ProgressToast.css";
+import { useMemo } from "react";
 
 const findIcon = (status) => {
   switch (status) {
@@ -16,12 +17,12 @@ const findIcon = (status) => {
 };
 
 const ProgressToast = ({ progress, status, text }) => {
-  const StatusIcon = findIcon(status); // optimization: call this function only when status changes
+  const StatusIcon = useMemo(() => findIcon(status), [status]);
 
   return (
-    <div className="notification-container">
+    <div className="progress-container" style={{ width: 380 }}>
       <div style={{ display: "flex" }}>
-        <div className="notification-status">{StatusIcon}</div>
+        <div className="progress-status">{StatusIcon}</div>
         <p>{text}</p>
       </div>
       <div className="progress-bar" style={{ width: `${progress}%` }}></div>

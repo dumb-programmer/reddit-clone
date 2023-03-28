@@ -1,5 +1,5 @@
 import { screen, render, fireEvent } from "@testing-library/react";
-import CreatePost from "../components/CreatePost";
+import CreatePost from "../components/post/CreatePost";
 import '@testing-library/jest-dom';
 import * as Firebase from "../firebase";
 import userEvent from "@testing-library/user-event";

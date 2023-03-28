@@ -23,7 +23,6 @@ const createAccountUsingEmail = async ({ email, password, username }) => {
         const userCreds = await createUserWithEmailAndPassword(auth, email, password);
         const profilePicture = await getDownloadURL(ref(storage, "Users/default_avatar.png"));
         localStorage.setItem("username", username);
-        localStorage.setItem("profilePicture", profilePicture);
         await setDoc(doc(db, "Users", userCreds.user.uid), { id: userCreds.user.uid, username: username, email: email, profilePicture })
     }
     catch (error) {
@@ -339,13 +338,13 @@ const getMedia = async (path) => {
     return await getBlob(ref(storage, path));
 };
 
-const createPost = async ({ username, communityName, ...data }) => {
+const createPost = async ({ authorId, username, communityName, ...data }) => {
     let paths = null;
     if (data.media) {
         paths = await uploadMedia(data.media);
     }
     const id = uuidv4();
-    await setDoc(doc(db, "Posts", id), { id, title: data.title, content: data.content, link: data.link, media: paths || "", votes: 0, createdOn: serverTimestamp(), author: username, communityName: communityName, upvotes: [], downvotes: [] });
+    await setDoc(doc(db, "Posts", id), { id, title: data.title, content: data.content, link: data.link, media: paths || "", votes: 0, createdOn: serverTimestamp(), author: username, authorId, communityName: communityName, upvotes: [], downvotes: [] });
     return id;
 };
 

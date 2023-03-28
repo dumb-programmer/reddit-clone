@@ -1,4 +1,4 @@
-import Posts from "../components/Posts"
+import Posts from "../components/post/Posts"
 import { render, screen } from "@testing-library/react";
 
 const data = [];

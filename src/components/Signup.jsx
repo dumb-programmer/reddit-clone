@@ -1,5 +1,5 @@
-import AppleButton from "./AppleButton";
-import GoogleButton from "./GoogleButton";
+import AppleButton from "./login/AppleButton";
+import GoogleButton from "./login/GoogleButton";
 import LoginAndSignUpLayout from "./LoginAndSignUpLayout";
 import { Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
@@ -10,7 +10,7 @@ import {
 } from "../firebase";
 import LoadingSVG from "./LoadingSVG";
 import { useNavigate } from "react-router-dom";
-import AlreadyLoggedInMessage from "./AlreadyLoggedInMessage";
+import AlreadyLoggedInMessage from "./login/AlreadyLoggedInMessage";
 import useAuthContext from "../hooks/useAuthContext";
 import generateUsernames from "../utils/generateUsernames";
 import RefreshIcon from "./icons/RefreshIcon";

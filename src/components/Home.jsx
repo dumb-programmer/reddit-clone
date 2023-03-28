@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import CreateCommunityModal from "./CreateCommunityModal";
+import CreateCommunityModal from "./community/CreateCommunityModal";
 import { getAllPosts, getUserHome } from "../firebase";
-import Posts from "./Posts";
+import Posts from "./post/Posts";
 import { useLocation } from "react-router-dom";
 import ToastNotification from "./ToastNotification";
 import useAuthContext from "../hooks/useAuthContext";

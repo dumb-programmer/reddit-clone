@@ -1,6 +1,6 @@
 import { screen, render, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import Comment from "../components/Comment";
+import Comment from "../components/post/Comment";
 import '@testing-library/jest-dom';
 import AuthContext from "../context/AuthContext";
 import * as Firebase from "../firebase";

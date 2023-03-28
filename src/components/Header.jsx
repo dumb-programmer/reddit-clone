@@ -1,18 +1,21 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { logout } from "../firebase";
+import { Link, useNavigate } from "react-router-dom";
+import { logout, subscribeToUserDoc } from "../firebase";
 import useRedirect from "../hooks/useRedirect";
-import "../styles/Header.css";
 import LogoutIcon from "./icons/LogoutIcon";
 import RedditIcon from "./icons/RedditIcon";
 import SettingsIcon from "./icons/SettingsIcon";
 import UserIcon from "./icons/UserIcon";
 import SearchBar from "./SearchBar";
+import useAuthContext from "../hooks/useAuthContext";
+import "../styles/Header.css";
 
 const Header = () => {
   const [logoutDisabled, setLogoutDisabled] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [profilePicture, setProfilePicture] = useState(null);
   const redirectToHome = useRedirect("/");
+  const auth = useAuthContext();
 
   const navigate = useNavigate();
 
@@ -24,6 +27,18 @@ const Header = () => {
     localStorage.removeItem("user");
     navigate("/");
   };
+
+  useEffect(() => {
+    let unsubUser = null;
+    if (auth) {
+      unsubUser = subscribeToUserDoc(auth.uid, (snap) => {
+        setProfilePicture(snap.data().profilePicture);
+      });
+    }
+    return () => {
+      unsubUser && unsubUser();
+    };
+  }, [auth]);
 
   useEffect(() => {
     window.addEventListener("click", () => {
@@ -55,7 +70,7 @@ const Header = () => {
               }}
             >
               <img
-                src={localStorage.getItem("profilePicture")}
+                src={profilePicture}
                 height="30px"
                 width="30px"
                 alt="user-avatar"
@@ -79,17 +94,17 @@ const Header = () => {
             {showDropdown && (
               <div className="dropdown">
                 <ul>
-                  <a
-                    href={`/user/${localStorage.getItem("username")}`}
+                  <Link
+                    to={`/user/${localStorage.getItem("username")}`}
                     className="dropdown-link"
                   >
                     <UserIcon height={20} width={20} />
                     Profile
-                  </a>
-                  <a href={`/settings`} className="dropdown-link">
+                  </Link>
+                  <Link to={`/settings`} className="dropdown-link">
                     <SettingsIcon height={20} width={20} />
                     Settings
-                  </a>
+                  </Link>
                   <li
                     className="dropdown-link"
                     onClick={!logoutDisabled ? handleLogout : null}

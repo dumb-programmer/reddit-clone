@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import {
   getProfileByUsername,
   getUserPosts,
@@ -9,7 +9,7 @@ import {
 } from "../firebase";
 import AddPhotoIcon from "./icons/AddPhotoIcon";
 import CakeIcon from "./icons/CakeIcon";
-import Posts from "./Posts";
+import Posts from "./post/Posts";
 import useAuthContext from "../hooks/useAuthContext";
 import "../styles/Profile.css";
 import ProgressToast from "./ProgressToast";

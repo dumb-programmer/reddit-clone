@@ -1,17 +1,18 @@
 import { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
-import Login from "./components/Login";
+import Login from "./components/login/Login";
 import Signup from "./components/Signup";
 import Home from "./components/Home";
-import Community from "./components/Community";
-import CreatePost from "./components/CreatePost";
+import Community from "./components/community/Community";
+import CreatePost from "./components/post/CreatePost";
 import MainLayout from "./components/MainLayout";
 import AuthContext from "./context/AuthContext";
 import { registerAuthObserver } from "./firebase";
 import Profile from "./components/Profile";
-import PostDetails from "./components/PostDetails";
-import Settings from "./components/Settings";
-import Search from "./components/Search";
+import PostDetails from "./components/post/PostDetails";
+import Settings from "./components/settings/Settings";
+import Search from "./components/search/Search";
+import ProtectedRoute from "./components/ProtectedRoute";
 import "./App.css";
 
 function App() {
@@ -20,9 +21,11 @@ function App() {
   );
 
   useEffect(() => {
-    const unsub = registerAuthObserver((authUser) => {
-      setUser(authUser);
-      localStorage.setItem("user", JSON.stringify(authUser));
+    const unsub = registerAuthObserver((auth) => {
+      if (auth) {
+        setUser(auth);
+        localStorage.setItem("user", JSON.stringify(auth));
+      }
     });
 
     return () => {
@@ -40,8 +43,22 @@ function App() {
           <Route path="/r/:communityName/:postId" element={<PostDetails />} />
           <Route path="/user/:username" element={<Profile />} />
           <Route path="/r/:communityName" element={<Community />} />
-          <Route path="/r/:communityName/submit" element={<CreatePost />} />
-          <Route path="/settings" element={<Settings />} />
+          <Route
+            path="/r/:communityName/submit"
+            element={
+              <ProtectedRoute isLoggedIn={user}>
+                <CreatePost />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <ProtectedRoute isLoggedIn={user}>
+                <Settings />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/search" element={<Search />} />
         </Route>
       </Routes>

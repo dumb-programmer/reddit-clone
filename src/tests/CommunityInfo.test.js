@@ -1,6 +1,6 @@
 import { screen, render, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import CommunityInfo from "../components/CommunityInfo";
+import CommunityInfo from "../components/community/CommunityInfo";
 import '@testing-library/jest-dom';
 import userEvent from "@testing-library/user-event";
 import useRedirect from "../hooks/useRedirect";
