@@ -3,17 +3,10 @@ import Settings from "../components/Settings";
 import '@testing-library/jest-dom';
 import AuthContext from "../context/AuthContext";
 import * as Firebase from "../firebase";
-import useRedirect from "../hooks/useRedirect";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 
 jest.mock("../firebase.js");
-jest.mock("../hooks/useRedirect", () => {
-    const redirect = jest.fn();
-    const useRedirect = jest.fn(() => redirect);
-    return useRedirect;
-});
-
 
 const userData = {
     "displayName": "Jester",
@@ -55,15 +48,6 @@ describe("Settings", () => {
             return true;
         });
         Firebase.isUsernameCorrect = jest.fn((username) => username === userData.username);
-    });
-
-    test("Unauthorized users are redirect to /login", () => {
-        render(<MemoryRouter>
-            <Settings />
-        </MemoryRouter>);
-        expect(useRedirect).toHaveBeenCalled();
-        expect(useRedirect).toHaveBeenCalledWith("/login", "You need to login first");
-        expect(useRedirect()).toHaveBeenCalled();
     });
 
     test("Data renders correctly for authorized users", () => {

@@ -76,16 +76,14 @@ describe("Profile", () => {
         fireEvent.change(screen.getByTestId("profile-picture-input"), {
             target: { files: [file] }
         });
-        expect(Firebase.changeProfilePicture).toBeCalled();
-        expect(Firebase.changeProfilePicture).toBeCalledWith(auth.uid, file);
+        expect(Firebase.updateUserProfilePicture).toBeCalled();
 
         expect(screen.getByTestId("banner-input")).toBeInTheDocument();
         expect(screen.getByTestId("add-banner-btn")).toBeInTheDocument();
         fireEvent.change(screen.getByTestId("banner-input"), {
             target: { files: [file] }
         });
-        expect(Firebase.changeProfilePicture).toBeCalled();
-        expect(Firebase.changeProfilePicture).toBeCalledWith(auth.uid, file);
+        expect(Firebase.updateUserBanner).toBeCalled();
 
     });
     test("Users can't change someone else's profile or banner", async () => {

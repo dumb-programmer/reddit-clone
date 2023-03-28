@@ -54,6 +54,8 @@ let posts = [
 
 posts.forEach(post => post.data = () => post);
 posts.forEach(post => post.createdOn.toMillis = () => new Date(post.createdOn.seconds));
+community.data = () => community;
+community.exists = () => true;
 community.createdOn.toMillis = () => new Date(community.createdOn.seconds);
 
 jest.mock("../firebase.js");
@@ -63,8 +65,6 @@ const unsubFromPost = jest.fn();
 Firebase.subscribeToPost = jest.fn(() => unsubFromPost);
 Firebase.subscribeToCommunity = jest.fn(() => unsubFromCommunity);
 Firebase.hasJoinedCommunity = jest.fn(async () => true);
-Firebase.setCommunityIcon = jest.fn();
-Firebase.setCommunityBanner = jest.fn();
 
 const setData = jest.fn();
 const fetchPosts = jest.fn();
@@ -82,7 +82,7 @@ window.IntersectionObserver = jest.fn(() => ({
 
 describe("Community", () => {
     test("Skeleton is show while data is loading", async () => {
-        Firebase.getCommunityInfo = jest.fn(async () => null);
+        Firebase.getCommunityDoc = jest.fn(async () => null);
         Firebase.getPostsByCommunity = jest.fn(async () => null);
         await waitFor(() => {
             render(<MemoryRouter>
@@ -95,7 +95,7 @@ describe("Community", () => {
     });
 
     test("Data renders", async () => {
-        Firebase.getCommunityInfo = jest.fn(async () => community);
+        Firebase.getCommunityDoc = jest.fn(async () => community);
         Firebase.getPostsByCommunity = jest.fn(async () => posts);
         await waitFor(() => {
             render(<MemoryRouter>
@@ -107,10 +107,25 @@ describe("Community", () => {
         expect(screen.getByTestId("community-handle").textContent).toEqual(`r/${community.name}`);
     });
 
+    test("Community not found message is shown, if community doesn't exist", async () => {
+        community.exists = () => false;
+        Firebase.getCommunityDoc = jest.fn(async () => community);
+        Firebase.getPostsByCommunity = jest.fn(async () => posts);
+        await waitFor(() => {
+            render(<MemoryRouter>
+                <Community />
+            </MemoryRouter>);
+        });
+        expect(screen.getByText(/sorry, there aren't any communities with that name/i)).toBeInTheDocument();
+    })
+
     describe("Moderator Controls", () => {
         const file = new File(['(⌐□_□)'], 'chucknorris.png', { type: 'image/png' });
-
+        beforeAll(() => {
+            community.exists = () => true;
+        });
         test("Normal user isn't allowed to edit community icon and banner", async () => {
+
             const auth = { uid: 'fkajksdfjlasdf' };
 
             await waitFor(() => {
@@ -124,17 +139,15 @@ describe("Community", () => {
             fireEvent.change(screen.getByTestId("community-icon"), {
                 target: { files: [file] }
             })
-            expect(Firebase.setCommunityIcon).not.toHaveBeenCalled();
+            expect(Firebase.updateCommunityIcon).not.toHaveBeenCalled();
 
 
             fireEvent.change(screen.getByTestId("community-banner"), {
                 target: { files: [file] }
             })
-            expect(Firebase.setCommunityBanner).not.toHaveBeenCalled();
+            expect(Firebase.updateCommunityBanner).not.toHaveBeenCalled();
         });
 
-        // TODO:
-        // For some reason the file isn't being uploaded after fireEvent.change even though onChange listener is being called
         test("Moderator is allowed to upload icon and banner", async () => {
             const auth = { uid: community.moderatorId };
             await waitFor(() => {
@@ -151,12 +164,12 @@ describe("Community", () => {
                 },
             })
 
-            expect(Firebase.setCommunityIcon).toHaveBeenCalled();
+            expect(Firebase.updateCommunityIcon).toHaveBeenCalled();
 
             fireEvent.change(screen.getByTestId("community-banner"), {
                 target: { files: [file] }
             })
-            expect(Firebase.setCommunityBanner).toHaveBeenCalled();
+            expect(Firebase.updateCommunityBanner).toHaveBeenCalled();
         });
     })
 })
