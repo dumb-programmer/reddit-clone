@@ -92,8 +92,7 @@ const PostDetails = () => {
   }, [postId, communityName, auth]);
 
   const data = post?.data();
-  console.log(auth?.uid);
-  console.log(data?.authorId);
+
   return (
     <div className="content-container">
       <div className="content">
