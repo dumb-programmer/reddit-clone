@@ -49,6 +49,7 @@ const MediaCarousal = ({ paths }) => {
       <div className="media-carousal-navigation">
         {selectedIndex > 0 && (
           <button
+            aria-label="move-left"
             className="media-carousal-btn"
             onClick={(e) => {
               e.stopPropagation();
@@ -74,6 +75,7 @@ const MediaCarousal = ({ paths }) => {
         {selectedIndex < media.length - 1 && (
           <button
             className="media-carousal-btn"
+            aria-label="move-right"
             onClick={(e) => {
               e.stopPropagation();
               setSelectedIndex((idx) => ++idx);

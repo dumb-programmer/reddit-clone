@@ -29,7 +29,6 @@
     flex-direction: column;
     justify-content: center;
     position: relative;
-    margin-right: 1rem;
 }
 
 #login-btn, #sign-up-btn {
@@ -100,4 +99,19 @@
 
 .dropdown-link:active {
     background-color: #ebebeb;
+}
+
+@media only screen and (max-width: 500px) {
+    .username {
+        display: none;
+    }
+
+    .dropdown {
+        width: max-content;
+        right: -10px;
+    }
+
+    .dropdown-link {
+        padding: 8px;
+    }
 }

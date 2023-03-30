@@ -172,8 +172,6 @@ const CreateCommunityModal = ({ username, onExit }) => {
             className="primary-btn"
             onClick={!loading ? handleSubmit : null}
             style={{
-              width: 120,
-              height: 20,
               borderRadius: 20,
               display: "flex",
               justifyContent: "center",
@@ -188,7 +186,7 @@ const CreateCommunityModal = ({ username, onExit }) => {
           </button>
           <button
             className="secondary-btn"
-            style={{ height: 20, borderRadius: 20 }}
+            style={{ borderRadius: 20 }}
             onClick={onExit}
             disabled={loading}
           >

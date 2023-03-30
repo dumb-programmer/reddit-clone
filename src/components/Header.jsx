@@ -75,7 +75,9 @@ const Header = () => {
                 width="30px"
                 alt="user-avatar"
               />
-              <span>{localStorage.getItem("username")}</span>
+              <span className="username">
+                {localStorage.getItem("username")}
+              </span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"

@@ -84,7 +84,7 @@ const Search = () => {
         marginTop: 20,
       }}
     >
-      <div style={{ minWidth: 800 }}>
+      <div className="search-container">
         <div className="search-header">
           {tabs.map((tab) => (
             <Link

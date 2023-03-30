@@ -39,10 +39,10 @@ const CreatePost = () => {
   };
 
   const handleSubmit = async (e) => {
-    if (data.title.length > 0) {
+    if (auth && data.title.length > 0) {
       setLoading(true);
       const postId = await createPost({
-        authorId: auth.uid,
+        authorId: auth?.uid,
         username: localStorage.getItem("username"),
         communityName: communityName,
         ...data,

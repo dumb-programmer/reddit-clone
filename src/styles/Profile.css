@@ -10,3 +10,16 @@
     border: 1px solid #0079d3;
     margin-right: 10px;
 }
+
+.profile-sidebar {
+    background-color: #fff;
+    padding-bottom: 20px;
+    width: 300px;
+    border-radius: 0.5rem;
+}
+
+@media only screen and (max-width: 500px) {
+    .profile-sidebar {
+        display: none;
+    }
+}

@@ -1,3 +1,13 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-top: 30px;
+    margin-left: 100px;
+    margin-right: 100px;
+}
+
 .posts-container {
     flex: 1;
     display: flex;
@@ -54,7 +64,8 @@
 }
 
 .primary-btn, .secondary-btn {
-    all: unset;
+    background-color: unset;
+    border: none;
     cursor: pointer;
     border-radius: 15px;
     font-weight: bolder;
@@ -150,4 +161,15 @@
     gap: 7px;
     padding: 10px 10px;
     width: 100%;
+}
+
+@media only screen and (max-width: 500px) {
+    .main-btns {
+        display: none;
+    }
+
+    .container {
+        margin-left: 10px;
+        margin-right: 10px;
+    }
 }

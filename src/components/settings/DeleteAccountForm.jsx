@@ -135,7 +135,7 @@ const DeleteAccountForm = ({ onCancel }) => {
         <button
           data-testid="cancel-btn"
           className="secondary-btn"
-          style={{ height: 20, width: 60 }}
+          style={{ width: 80 }}
           onClick={onCancel}
         >
           Cancel
@@ -144,8 +144,7 @@ const DeleteAccountForm = ({ onCancel }) => {
           data-testid="delete-btn"
           className="primary-btn"
           style={{
-            height: 20,
-            width: 60,
+            width: 80,
             display: "flex",
             justifyContent: "center",
             alignItems: "center",

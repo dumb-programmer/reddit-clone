@@ -103,3 +103,9 @@ button {
     color: #3394dc;
     text-decoration: none;
 }
+
+@media only screen and (max-width: 500px) {
+    .artwork {
+        display: none;
+    }
+}

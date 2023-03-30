@@ -116,8 +116,7 @@ const ChangeEmailForm = ({ onFinish }) => {
         <button
           className="primary-btn"
           style={{
-            height: 20,
-            width: 80,
+            padding: "7px 10px",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",

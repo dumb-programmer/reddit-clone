@@ -196,7 +196,7 @@ const Comment = ({ comment, saved, setToastText, showToast }) => {
               confirmationHeader="Delete comment"
               onEdit={() => setEdit(true)}
               isSaved={saved && saved.includes(data.id)}
-              isOwner={auth?.uid === comment?.authorId}
+              isOwner={auth?.uid === data?.authorId}
               handleDelete={async () => {
                 await deleteComment(comment.ref);
               }}

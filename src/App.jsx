@@ -22,10 +22,8 @@ function App() {
 
   useEffect(() => {
     const unsub = registerAuthObserver((auth) => {
-      if (auth) {
-        setUser(auth);
-        localStorage.setItem("user", JSON.stringify(auth));
-      }
+      setUser(auth);
+      localStorage.setItem("user", JSON.stringify(auth));
     });
 
     return () => {

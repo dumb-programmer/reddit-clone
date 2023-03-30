@@ -11,7 +11,7 @@
 }
 
 .media-carousal-btn {
-    all: unset;
+    border: none;
     background-color: #fff;
     border-radius: 50%;
     box-shadow: 0 4px 14px rgba(0, 0, 0, .1);

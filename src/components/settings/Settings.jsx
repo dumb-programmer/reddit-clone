@@ -16,15 +16,7 @@ const Settings = () => {
   const [toastText, setToastText] = useState("");
 
   return (
-    <div
-      style={{
-        height: "100%",
-        backgroundColor: "#fff",
-        paddingLeft: 100,
-        paddingTop: 33,
-        paddingBottom: 33,
-      }}
-    >
+    <div className="settings-container">
       <h2>User Settings</h2>
       <section className="settings-section">
         <div className="section-header">
@@ -45,7 +37,7 @@ const Settings = () => {
             <button
               data-testid="change-email-btn"
               className="secondary-btn"
-              style={{ height: 20, width: 80 }}
+              style={{ width: 80 }}
               onClick={() => setModal(0)}
             >
               Change
@@ -67,7 +59,7 @@ const Settings = () => {
             <button
               data-testid="change-password-btn"
               className="secondary-btn"
-              style={{ height: 20, width: 80 }}
+              style={{ width: 80 }}
               onClick={() => setModal(1)}
             >
               Change

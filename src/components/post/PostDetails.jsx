@@ -265,7 +265,7 @@ const PostDetails = () => {
                     showToast={() => setShowToast(true)}
                     setToastText={setToastText}
                     isOwner={auth?.uid === data?.authorId}
-                    isMedia={post?.data().media.length > 0 || false}
+                    isMedia={data?.media?.length > 0 || false}
                   />
                 </div>
               </div>
@@ -282,7 +282,7 @@ const PostDetails = () => {
                   comment,
                   localStorage.getItem("username"),
                   auth.uid,
-                  data?.data().id
+                  data?.id
                 );
               }}
             />

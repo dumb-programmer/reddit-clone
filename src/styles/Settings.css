@@ -1,3 +1,11 @@
+.settings-container {
+    height: 100%;
+    background-color: #fff;
+    padding-left: 100px;
+    padding-top: 33px;
+    padding-bottom: 33px;
+}
+
 .settings-section {
     max-width: 667px;
 }
@@ -29,4 +37,11 @@
     color: #ff585b;
     text-transform: uppercase;
     font-weight: 800;
+}
+
+@media only screen and (max-width: 500px) {
+    .settings-container {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
 }

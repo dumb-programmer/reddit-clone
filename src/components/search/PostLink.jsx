@@ -6,7 +6,7 @@ const PostLink = ({ post }) => {
   const navigateToPost = useRedirect(`/r/${communityName}/${id}`);
 
   return (
-    <div key={post.id} className="post" onClick={() => navigateToPost()}>
+    <div className="post" onClick={() => navigateToPost()}>
       <div className="post-main">
         <div className="post-header">
           <p>

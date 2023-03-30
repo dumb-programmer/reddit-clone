@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import CreateCommunityModal from "./community/CreateCommunityModal";
 import { getAllPosts, getUserHome } from "../firebase";
 import Posts from "./post/Posts";
@@ -37,16 +37,7 @@ const Home = () => {
   }, [auth]);
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        gap: "1rem",
-        marginTop: 30,
-        marginLeft: 100,
-        marginRight: 100,
-      }}
-    >
+    <div className="container">
       {showModal && (
         <CreateCommunityModal
           username={username}

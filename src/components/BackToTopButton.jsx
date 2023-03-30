@@ -1,17 +1,9 @@
 const BackToTopButton = ({ visible }) => {
   return (
     <button
-      className="primary-btn"
+      className="primary-btn back-to-top-btn"
       style={{
         display: visible ? "block" : "none",
-        position: "fixed",
-        bottom: 15,
-        right: 150,
-        minWidth: 100,
-        padding: 10,
-        fontWeight: "bold",
-        fontSize: 16,
-        borderRadius: 25,
       }}
       onClick={() => {
         window.scroll(0, 0);

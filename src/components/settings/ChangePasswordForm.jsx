@@ -114,7 +114,6 @@ const ChangePassword = ({ onFinish }) => {
         <button
           className="primary-btn"
           style={{
-            height: 20,
             width: 80,
             display: "flex",
             justifyContent: "center",
