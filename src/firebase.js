@@ -100,9 +100,9 @@ const setProfilePicture = async (userRef, existingProfilePicture, newProfilePict
     setProgress(100);
 };
 
-const updateUserProfilePicture = (userRef, existingProfilePicture, setProgress, file, onSuccess, onError) => {
+const updateUserProfilePicture = (uid, userRef, existingProfilePicture, setProgress, file, onSuccess, onError) => {
     const storageRef = ref(storage, "Users/" + uuidv4());
-    uploadFileWithProgess(storageRef, file, setProgress, (url) =>
+    uploadFileWithProgess(uid, storageRef, file, setProgress, (url) =>
         setProfilePicture(userRef, existingProfilePicture, url, setProgress, onSuccess, onError),
         (error) => onError(error));
 }
@@ -124,9 +124,9 @@ const setUserBanner = async (userRef, existingBannerUrl, newBannerUrl, setProgre
     setProgress(100);
 };
 
-const updateUserBanner = async (userRef, existingBannerUrl, setProgress, file, onSuccess, onError) => {
+const updateUserBanner = async (uid, userRef, existingBannerUrl, setProgress, file, onSuccess, onError) => {
     const storageRef = ref(storage, "Users/" + uuidv4());
-    uploadFileWithProgess(storageRef, file, setProgress, (url) =>
+    uploadFileWithProgess(uid, storageRef, file, setProgress, (url) =>
         setUserBanner(userRef, existingBannerUrl, url, setProgress, onSuccess, onError),
         (error) => onError(error));
 };
@@ -188,21 +188,27 @@ const createCommunity = async (communityName, communityType, moderator, moderato
     await setDoc(communityRef, { name: communityName, type: communityType, members: 0, moderator, moderatorId, createdOn: serverTimestamp() });
 };
 
-const uploadFileWithProgess = (storageRef, file, setProgress, onSuccess, onError) => {
-    const uploadTask = uploadBytesResumable(storageRef, file);
+const uploadFileWithProgess = (uid, storageRef, file, setProgress, onSuccess, onError) => {
+    const metadata = {
+        customMetadata: {
+            owner: uid
+        }
+    };
+    const uploadTask = uploadBytesResumable(storageRef, file, metadata);
     uploadTask.on("state_changed", (snapshot) => {
         const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         setProgress(progress > 30 ? progress - 30 : progress);
     }, (error) => {
+        console.log("Error occurred");
         onError(error);
     }, () => {
         getDownloadURL(uploadTask.snapshot.ref).then((url) => onSuccess(url)).catch(error => onError(error));
     });
 };
 
-const updateCommunityIcon = async (communityRef, existingIcon, file, setProgress, onSuccess, onError) => {
+const updateCommunityIcon = async (uid, communityRef, existingIcon, file, setProgress, onSuccess, onError) => {
     const storageRef = ref(storage, "Communities/" + uuidv4());
-    uploadFileWithProgess(storageRef, file, setProgress, (url) =>
+    uploadFileWithProgess(uid, storageRef, file, setProgress, (url) =>
         setCommunityIcon(communityRef, existingIcon, url, setProgress, onSuccess, onError),
         (error) => onError(error));
 }
@@ -223,9 +229,9 @@ const setCommunityIcon = async (communityRef, existingIcon, iconUrl, setProgress
     setProgress(100);
 };
 
-const updateCommunityBanner = async (communityRef, existingBanner, file, setProgress, onSuccess, onError) => {
+const updateCommunityBanner = async (uid, communityRef, existingBanner, file, setProgress, onSuccess, onError) => {
     const storageRef = ref(storage, "Communities/" + uuidv4());
-    uploadFileWithProgess(storageRef, file, setProgress, (url) =>
+    uploadFileWithProgess(uid, storageRef, file, setProgress, (url) =>
         setCommunityBanner(communityRef, existingBanner, url, setProgress, onSuccess, onError),
         (error) => onError(error));
 }
@@ -319,10 +325,15 @@ const getCommunityDoc = async (communityName) => {
     return community;
 };
 
-const uploadMedia = async (mediaList) => {
+const uploadMedia = async (uid, mediaList) => {
     const paths = [];
+    const metadata = {
+        customMetadata: {
+            owner: uid
+        }
+    };
     for (const media of mediaList) {
-        const snap = await uploadBytes(ref(storage, uuidv4()), media);
+        const snap = await uploadBytes(ref(storage, uuidv4()), media, metadata);
         paths.push(snap.ref.fullPath);
     }
     return paths;
@@ -341,7 +352,7 @@ const getMedia = async (path) => {
 const createPost = async ({ authorId, username, communityName, ...data }) => {
     let paths = null;
     if (data.media) {
-        paths = await uploadMedia(data.media);
+        paths = await uploadMedia(authorId, data.media);
     }
     const id = uuidv4();
     await setDoc(doc(db, "Posts", id), { id, title: data.title, content: data.content, link: data.link, media: paths || "", votes: 0, createdOn: serverTimestamp(), author: username, authorId, communityName: communityName, upvotes: [], downvotes: [] });

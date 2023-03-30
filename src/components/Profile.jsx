@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {
   getProfileByUsername,
   getUserPosts,
@@ -11,8 +11,8 @@ import AddPhotoIcon from "./icons/AddPhotoIcon";
 import CakeIcon from "./icons/CakeIcon";
 import Posts from "./post/Posts";
 import useAuthContext from "../hooks/useAuthContext";
-import "../styles/Profile.css";
 import ProgressToast from "./ProgressToast";
+import "../styles/Profile.css";
 
 const Profile = () => {
   const { username } = useParams();
@@ -35,7 +35,10 @@ const Profile = () => {
   }, []);
 
   const onError = useCallback((error) => {
-    console.log(error);
+    console.log("error");
+    setUploadStatus("error");
+    setProgressText(error.message + " error occurred");
+    setTimeout(() => setProgress(null), 1800);
   }, []);
 
   useEffect(() => {
@@ -61,28 +64,13 @@ const Profile = () => {
   }, [username, auth?.uid]);
 
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "flex-start",
-        justifyContent: "center",
-        gap: "1rem",
-        margin: "30px 100px 0 100px",
-      }}
-    >
+    <div className="container">
       <Posts
         data={posts}
         setData={setPosts}
         fetchPosts={(cursorDoc) => getUserPosts(username, cursorDoc)}
       />
-      <aside
-        style={{
-          backgroundColor: "#fff",
-          paddingBottom: 20,
-          width: 300,
-          borderRadius: "0.5rem",
-        }}
-      >
+      <aside className="profile-sidebar">
         {isOwner && (
           <>
             <input
@@ -95,6 +83,7 @@ const Profile = () => {
                 setProgressText("Uploading profile picture");
                 setUploadStatus("uploading");
                 updateUserProfilePicture(
+                  auth?.uid,
                   userDoc.ref,
                   userProfile?.profilePicture,
                   setProgress,
@@ -114,6 +103,7 @@ const Profile = () => {
                 setProgressText("Uploading banner");
                 setUploadStatus("uploading");
                 updateUserBanner(
+                  auth?.uid,
                   userDoc.ref,
                   userProfile?.banner,
                   setProgress,

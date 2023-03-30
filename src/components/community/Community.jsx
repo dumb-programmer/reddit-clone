@@ -99,7 +99,7 @@ const Community = () => {
   }
 
   const loading = !community && !posts;
-  const isModerator = community?.moderatorId === auth?.uid;
+  const isModerator = auth && community?.moderatorId === auth?.uid;
 
   return (
     <div>
@@ -118,7 +118,7 @@ const Community = () => {
               : null
           }
         ></div>
-        <div className="community-info" style={{ marginLeft: 90 }}>
+        <div className="community-info">
           <input
             ref={iconInput}
             type="file"
@@ -130,6 +130,7 @@ const Community = () => {
                 setProgressText("Uploading icon");
                 setUploadStatus("uploading");
                 updateCommunityIcon(
+                  auth?.uid,
                   communityDoc.ref,
                   community?.icon,
                   e.target.files[0],
@@ -151,6 +152,7 @@ const Community = () => {
                 setProgressText("Uploading banner");
                 setUploadStatus("uploading");
                 updateCommunityBanner(
+                  auth?.uid,
                   communityDoc.ref,
                   community?.banner,
                   e.target.files[0],
@@ -242,17 +244,7 @@ const Community = () => {
           />
         </div>
       </div>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "flex-start",
-          justifyContent: "center",
-          gap: "1rem",
-          marginTop: 20,
-          marginLeft: 100,
-          marginRight: 100,
-        }}
-      >
+      <div className="container">
         <Posts
           data={posts}
           setData={setPosts}
