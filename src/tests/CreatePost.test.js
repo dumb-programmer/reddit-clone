@@ -4,6 +4,7 @@ import '@testing-library/jest-dom';
 import * as Firebase from "../firebase";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useNavigate } from "react-router-dom";
+import AuthContext from "../context/AuthContext";
 
 jest.mock("../firebase.js");
 jest.mock("react-router-dom", () => {
@@ -21,6 +22,7 @@ Firebase.createPost = jest.fn(async () => newPostId);
 describe("CreatePost", () => {
     const communityName = "test";
     const user = userEvent.setup();
+    const auth = { uid: "jfkalsdkfjsldf" };
 
     test("Renders", () => {
         render(<MemoryRouter initialEntries={[`/r/${communityName}/submit`]}>
@@ -94,9 +96,11 @@ describe("CreatePost", () => {
         beforeEach(() => {
             localStorage.setItem("username", "test");
             render(<MemoryRouter initialEntries={[`/r/${communityName}/submit`]}>
-                <Routes>
-                    <Route path="/r/:communityName/submit" element={<CreatePost />} />
-                </Routes>
+                <AuthContext.Provider value={auth}>
+                    <Routes>
+                        <Route path="/r/:communityName/submit" element={<CreatePost />} />
+                    </Routes>
+                </AuthContext.Provider>
             </MemoryRouter>);
             titleInput = screen.getByPlaceholderText(/title/i);
             textInput = screen.getByPlaceholderText(/text/i);
@@ -115,7 +119,7 @@ describe("CreatePost", () => {
             await user.type(textInput, text);
             await user.click(screen.getByTestId("post-btn"));
             expect(Firebase.createPost).toBeCalled();
-            expect(Firebase.createPost).toBeCalledWith({ communityName, title, content: text, link: "", media: [], username: "test" });
+            expect(Firebase.createPost).toBeCalledWith({ authorId: auth.uid, communityName, title, content: text, link: "", media: [], username: "test" });
             expect(useNavigate()).toBeCalled();
             expect(useNavigate()).toBeCalledWith(`/r/${communityName}/${newPostId}`);
         });
@@ -127,9 +131,11 @@ describe("CreatePost", () => {
         beforeEach(async () => {
             localStorage.setItem("username", "test");
             render(<MemoryRouter initialEntries={[`/r/${communityName}/submit`]}>
-                <Routes>
-                    <Route path="/r/:communityName/submit" element={<CreatePost />} />
-                </Routes>
+                <AuthContext.Provider value={auth}>
+                    <Routes>
+                        <Route path="/r/:communityName/submit" element={<CreatePost />} />
+                    </Routes>
+                </AuthContext.Provider>
             </MemoryRouter>);
             await user.click(screen.getByTestId("images-tab"));
             titleInput = screen.getByPlaceholderText(/title/i);
@@ -164,7 +170,7 @@ describe("CreatePost", () => {
             });
             await user.click(screen.getByTestId("post-btn"));
             expect(Firebase.createPost).toBeCalled();
-            expect(Firebase.createPost).toBeCalledWith({ communityName, title, content: "", link: "", media: files, username: "test" });
+            expect(Firebase.createPost).toBeCalledWith({ authorId: auth.uid, communityName, title, content: "", link: "", media: files, username: "test" });
         });
     })
 
@@ -174,9 +180,11 @@ describe("CreatePost", () => {
         beforeEach(async () => {
             localStorage.setItem("username", "test");
             render(<MemoryRouter initialEntries={[`/r/${communityName}/submit`]}>
-                <Routes>
-                    <Route path="/r/:communityName/submit" element={<CreatePost />} />
-                </Routes>
+                <AuthContext.Provider value={auth}>
+                    <Routes>
+                        <Route path="/r/:communityName/submit" element={<CreatePost />} />
+                    </Routes>
+                </AuthContext.Provider>
             </MemoryRouter>);
             await user.click(screen.getByTestId("link-tab"));
             titleInput = screen.getByPlaceholderText(/title/i);
@@ -196,7 +204,7 @@ describe("CreatePost", () => {
             await user.type(urlInput, url);
             await user.click(screen.getByTestId("post-btn"));
             expect(Firebase.createPost).toBeCalled();
-            expect(Firebase.createPost).toBeCalledWith({ communityName, title, content: "", link: url, media: [], username: "test" });
+            expect(Firebase.createPost).toBeCalledWith({ authorId: auth.uid, communityName, title, content: "", link: url, media: [], username: "test" });
         });
     });
 });
