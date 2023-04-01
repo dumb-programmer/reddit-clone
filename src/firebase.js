@@ -345,8 +345,12 @@ const deleteMedia = async (mediaList) => {
     }
 }
 
-const getMedia = async (path) => {
-    return await getBlob(ref(storage, path));
+const getMedia = async (paths) => {
+    const blobs = [];
+    for (const path of paths) {
+        blobs.push(await getBlob(ref(storage, path)));
+    }
+    return blobs;
 };
 
 const createPost = async ({ authorId, username, communityName, ...data }) => {

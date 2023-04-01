@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getMedia } from "../../firebase";
 import ChevronLeft from "../icons/ChevronLeft";
 import ChevronRight from "../icons/ChevronRight";
@@ -9,18 +9,18 @@ const MediaCarousal = ({ paths }) => {
   const [media, setMedia] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const fetchMedia = useCallback(async () => {
-    const blobUrls = [];
-    for (const path of paths) {
-      const blob = await getMedia(path);
-      blobUrls.push(window.URL.createObjectURL(blob));
-    }
-    setMedia(blobUrls);
-  }, [paths]);
-
   useEffect(() => {
-    fetchMedia();
-  }, [fetchMedia]);
+    let ignore = false;
+    getMedia(paths).then((blobUrls) => {
+      if (!ignore) {
+        const urls = blobUrls.map((url) => window.URL.createObjectURL(url));
+        setMedia(urls);
+      }
+    });
+    return () => {
+      ignore = true;
+    };
+  }, [paths]);
 
   if (!media) {
     return (
