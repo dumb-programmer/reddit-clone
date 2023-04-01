@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    background-color: #ffffff;
+    background-color: var(--clr-white);
     flex: 1;
 }
 
@@ -25,7 +25,7 @@
 }
 
 .username-suggestion {
-    color: #0079d3;
+    color: var(--clr-primary);
     font-size: 14px;
     margin-right: 20px;
     font-weight: bold;
@@ -63,7 +63,7 @@
 }
 
 .form-input:hover, .form-input:active {
-    background-color: #ffffff;
+    background-color: var(--clr-white);
 }
 
 .form-input:active, .form-input:focus {
@@ -106,8 +106,8 @@
     background: none;
     border: none;
     border-radius: 5px;
-    background-color: #0079d3;
-    color: #fff;
+    background-color: var(--clr-primary);
+    color: var(--clr-white);
     padding: 10px;
     font-weight: bolder;
     height: 35px;
@@ -137,8 +137,8 @@
 }
 
 #generate-usernames-btn {
-    all: unset;
-    cursor: pointer;
+    background-color: unset;
+    border: none;
     float: right;
     margin-left: 10px;
 }

@@ -24,11 +24,11 @@
 }
 
 .post-creator-tab__active {
-    color: #0079d3;
-    border-bottom: 2px solid #0079d3;
+    color: var(--clr-primary);
+    border-bottom: 2px solid var(--clr-primary);
     margin-bottom: -2px;
 }
 
 .post-creator-tab__active svg {
-    stroke: #0079d3 !important;
+    stroke: var(--clr-primary) !important;
 }

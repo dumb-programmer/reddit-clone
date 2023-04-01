@@ -1,5 +1,5 @@
 .progress-container {
-    background-color: #fff;
+    background-color: var(--clr-white);
     position: fixed;
     bottom: 10px;
     min-width: 380px;
@@ -21,5 +21,5 @@
 
 .progress-bar {
     height: 5px;
-    background: #0079d3;
+    background: var(--clr-primary);
 }

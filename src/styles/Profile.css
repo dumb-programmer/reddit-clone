@@ -2,17 +2,17 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #fff;
+    background-color: var(--clr-white);
     border: none;
     border-radius: 50%;
     height: 35px;
     width: 35px;
-    border: 1px solid #0079d3;
+    border: 1px solid var(--clr-primary);
     margin-right: 10px;
 }
 
 .profile-sidebar {
-    background-color: #fff;
+    background-color: var(--clr-white);
     padding-bottom: 20px;
     width: 300px;
     border-radius: 0.5rem;

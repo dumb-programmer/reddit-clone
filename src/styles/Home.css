@@ -20,7 +20,7 @@
 }
 
 .post {
-    background-color: #ffffff;
+    background-color: var(--clr-white);
     display: flex;
     margin-bottom: 15px;
     cursor: pointer;
@@ -50,7 +50,7 @@
 }
 
 .main-btns {
-    background-color: #fff;
+    background-color: var(--clr-white);
     height: 280px;
     width: 300px;
     display: flex;
@@ -74,8 +74,8 @@
 }
 
 .primary-btn {
-    background-color: #0079d3;
-    color: #fff;
+    background-color: var(--clr-primary);
+    color: var(--clr-white);
     padding: 6px;
 }
 
@@ -88,13 +88,14 @@
 }
 
 .primary-btn:disabled {
-    background-color: #7c7c7c;
+    background-color: #838383;
+    color: #bcbcbc;
     cursor: not-allowed;
 }
 
 .secondary-btn {
-    border: 1px solid #0079d3;
-    color: #0079d3;
+    border: 1px solid var(--clr-primary);
+    color: var(--clr-primary);
     padding: 5px;
 }
 
@@ -123,7 +124,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    background-color: #fff;
+    background-color: var(--clr-white);
     max-width: 500px;
     border-radius: 5px;
     position: relative;
@@ -137,7 +138,8 @@
 }
 
 .close-modal-btn {
-    all: unset;
+    background-color: unset;
+    border: none;
     cursor: pointer;
 }
 
@@ -148,10 +150,6 @@
 
 .modal-header, .modal-footer, .modal-body {
     padding: 5px 10px;
-}
-
-.modal-footer button {
-    padding: 9px 20px;
 }
 
 .modal-footer {

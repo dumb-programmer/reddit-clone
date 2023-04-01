@@ -1,5 +1,5 @@
 .link-preview {
-    outline: 1px solid #0079d3;
+    outline: 1px solid var(--clr-primary);
     border-radius: 5px;
     min-height: 120px;
     min-width: 150px;

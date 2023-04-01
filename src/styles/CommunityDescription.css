@@ -9,7 +9,7 @@
 }
 
 .add-description:hover {
-    border: 2px solid #0079d3;
+    border: 2px solid var(--clr-primary);
 }
 
 .add-description textarea {
@@ -46,7 +46,7 @@
 }
 
 .community-description:hover {
-    outline: 2px solid #0079d3;
+    outline: 2px solid var(--clr-primary);
     padding-left: 5px;
 }
 

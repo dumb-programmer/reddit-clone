@@ -1,0 +1,22 @@
+:root {
+    --clr-primary: #0079d3;
+    --clr-white: #fff;
+}
+
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-family: Roboto;
+}
+
+button {
+    cursor: pointer;
+}
+
+#root {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}

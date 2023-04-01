@@ -1,7 +1,7 @@
 .notification-container {
     position: fixed;
     bottom: 10px;
-    background-color: #fff;
+    background-color: var(--clr-white);
     min-width: 600px;
     border: 1px solid #8a8d8f;
     display: flex;

@@ -63,7 +63,7 @@
 }
 
 .comment-dropdown {
-    background-color: #fff;
+    background-color: var(--clr-white);
     position: absolute;
     list-style: none;
     top: 20px;
@@ -104,5 +104,5 @@
 }
 
 .thread-line:hover {
-    background-color: #0079d3;
+    background-color: var(--clr-primary);
 }

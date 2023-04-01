@@ -1,5 +1,5 @@
 .community-header {
-    background-color: #fff;
+    background-color: var(--clr-white);
 }
 
 .community-banner {
@@ -18,7 +18,7 @@
 }
 
 .community-sidebar {
-    background-color: #ffff;
+    background-color: var(--clr-white);
     min-height: 250px;
     width: 312px;
     display: flex;
@@ -29,7 +29,7 @@
 .community-sidebar-header {
     text-align: center;
     background-color: #33a8ff;
-    color: #fff;
+    color: var(--clr-white);
     padding: 10px;
 }
 

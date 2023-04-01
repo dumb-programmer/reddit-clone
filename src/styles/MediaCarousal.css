@@ -12,7 +12,7 @@
 
 .media-carousal-btn {
     border: none;
-    background-color: #fff;
+    background-color: var(--clr-white);
     border-radius: 50%;
     box-shadow: 0 4px 14px rgba(0, 0, 0, .1);
     padding: 5px;
@@ -27,7 +27,7 @@
     top: 0;
     right: 0;
     background-color: #7f7f7f;
-    color: #fff;
+    color: var(--clr-white);
     border-radius: 15px;
     min-width: 35px;
     max-height: 25px;

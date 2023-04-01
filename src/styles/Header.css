@@ -7,7 +7,7 @@
     position: fixed;
     top: 0;
     width: 100%;
-    background-color: #fff;
+    background-color: var(--clr-white);
     z-index: 5;
 }
 
@@ -21,7 +21,7 @@
 }
 
 #search-bar:focus, #search-bar:hover {
-    outline: 1px solid #0079d3;
+    outline: 1px solid var(--clr-primary);
 }
 
 .user-controls {
@@ -41,10 +41,10 @@
 }
 
 #sign-up-btn {
-    color: #0079d3;
+    color: var(--clr-primary);
     background-color: white;
     border: 0.5px solid;
-    border-color: #0079d3;
+    border-color: var(--clr-primary);
 }
 
 #sign-up-btn:hover {
@@ -52,7 +52,7 @@
 }
 
 #login-btn {
-    background-color: #0079d3;
+    background-color: var(--clr-primary);
     color: #eee;
     padding: 7px;
 }
@@ -74,7 +74,7 @@
     border-radius: 5px;
     top: 35px;
     width: 100%;
-    background-color: #fff;
+    background-color: var(--clr-white);
 }
 
 .dropdown>ul {
