@@ -31,20 +31,17 @@ const Comment = ({ comment, saved, setToastText, showToast }) => {
 
   useEffect(() => {
     let ignore = false;
-    getComments(data?.id).then((snap) => {
-      if (!ignore) {
-        setReplies(snap);
-      }
-    });
 
     getProfileByUserId(data?.authorId).then((snap) =>
       setProfile(snap?.data().profilePicture)
     );
 
     const unsubComments = subscribeToComments(data?.id, (doc) => {
-      const items = [];
-      doc.forEach((snap) => items.push(snap));
-      setReplies(items);
+      if (!ignore && !doc.empty) {
+        const items = [];
+        doc.forEach((snap) => items.push(snap));
+        setReplies(items);
+      }
     });
 
     return () => {

@@ -7,6 +7,7 @@ import Vote from "../Vote";
 
 const Post = ({ data, id }) => {
   const [post, setPost] = useState(data);
+  const [media, setMedia] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,6 +22,30 @@ const Post = ({ data, id }) => {
       unsub();
     };
   }, [id]);
+
+  useEffect(() => {
+    let ignore = false;
+    if (!ignore && post?.media) {
+      setMedia((prev) => {
+        if (prev && prev.length === post?.media.length) {
+          const isEqual = prev.map(
+            (item, index) => item === post?.media[index]
+          );
+          if (!isEqual.every((item) => item)) {
+            return post?.media;
+          } else {
+            return prev;
+          }
+        } else {
+          return post?.media;
+        }
+      });
+    }
+
+    return () => {
+      ignore = true;
+    };
+  }, [post?.media]);
 
   return (
     <div
@@ -64,7 +89,7 @@ const Post = ({ data, id }) => {
               {post.link}
             </a>
           )}
-          {post?.media?.length > 0 && <MediaCarousal paths={post.media} />}
+          {media && <MediaCarousal paths={media} />}
         </div>
       </div>
     </div>

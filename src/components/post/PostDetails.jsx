@@ -4,9 +4,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   createComment,
   deletePost,
-  getComments,
   getCommunityInfo,
-  getPostById,
   subscribeToComments,
   subscribeToPost,
   subscribeToUserDoc,
@@ -36,6 +34,7 @@ const PostDetails = () => {
   const [showToast, setShowToast] = useState(false);
   const [toastText, setToastText] = useState("");
   const [editPost, setEditPost] = useState(false);
+  const [media, setMedia] = useState(null);
   const auth = useAuthContext();
   const { communityName, postId } = useParams();
   const navigate = useNavigate();
@@ -51,26 +50,22 @@ const PostDetails = () => {
     }
 
     let ignore = false;
-    let docId;
-    let unsubPost;
-    getPostById(postId).then((snap) => {
-      if (!ignore) {
-        docId = snap?.id;
-        unsubPost = subscribeToPost(docId, (doc) => setPost(doc));
-        setPost(snap);
-      }
-    });
-
-    getComments(postId).then((data) => {
-      if (!ignore) {
-        setComments(data);
+    const unsubPost = subscribeToPost(postId, (doc) => {
+      if (doc.exists()) {
+        if (!ignore) {
+          setPost(doc);
+        }
       }
     });
 
     const unsubComments = subscribeToComments(postId, (doc) => {
-      const items = [];
-      doc.forEach((snap) => items.push(snap));
-      setComments(items);
+      if (!doc.empty) {
+        const items = [];
+        doc.forEach((snap) => items.push(snap));
+        setComments(items);
+      } else {
+        setComments([]);
+      }
     });
 
     getCommunityInfo(communityName).then((data) => {
@@ -92,6 +87,31 @@ const PostDetails = () => {
   }, [postId, communityName, auth]);
 
   const data = post?.data();
+
+  //TODO: rethink this solution
+  useEffect(() => {
+    let ignore = false;
+    if (!ignore && data?.media) {
+      setMedia((prev) => {
+        if (prev && prev.length === data?.media.length) {
+          const isEqual = prev.map(
+            (item, index) => item === data?.media[index]
+          );
+          if (!isEqual.every((item) => item)) {
+            return data?.media;
+          } else {
+            return prev;
+          }
+        } else {
+          return data?.media;
+        }
+      });
+    }
+
+    return () => {
+      ignore = true;
+    };
+  }, [data?.media]);
 
   return (
     <div className="content-container">
@@ -177,7 +197,7 @@ const PostDetails = () => {
                         {data?.link && <LinkPreview link={data.link} />}
                       </div>
                     )) ||
-                    (data?.media && <MediaCarousal paths={data.media} />)
+                    (media && <MediaCarousal paths={media} />)
                   ) : (
                     <ContentLoader
                       speed={2}
