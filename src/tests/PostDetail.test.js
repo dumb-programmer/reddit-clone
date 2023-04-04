@@ -69,6 +69,27 @@ posts.forEach(post => {
 
 });
 
+const userData = {
+    "displayName": "Jester",
+    "joined_communities": [
+        "test",
+        "NewCommunity",
+        "odin project",
+        "The Last of Us"
+    ],
+    "saved": [
+    ],
+    "id": "asdfkjklr23432adfs",
+    "joined_on": {
+        "seconds": 1669797903,
+        "nanoseconds": 758000000
+    },
+    "about": "This is a test to see if I can change about, and sure enough I can do it.",
+    "profilePicture": "https://firebasestorage.googleapis.com/v0/b/reddit-clone-555f5.appspot.com/o/Users%2F07086149-c69b-46b1-8eee-0a28a70431c9?alt=media&token=32c207f4-ba89-4701-9d45-dadbf407d3e0",
+    "banner": "https://firebasestorage.googleapis.com/v0/b/reddit-clone-555f5.appspot.com/o/Users%2Fd56aaf66-1575-4fa3-ae8e-731af19b4aee?alt=media&token=397793d6-d5cd-4e78-b988-f361404041da",
+    "username": "test",
+    "email": "test@test.com"
+};
 
 const unsubComments = jest.fn();
 Firebase.subscribeToComments = jest.fn(() => unsubComments);
@@ -81,10 +102,16 @@ jest.mock("../hooks/useRedirect", () => {
     const useRedirect = jest.fn(() => redirect);
     return useRedirect;
 });
+const unsub = jest.fn();
+let doc = jest.fn(() => posts[0]);
+Firebase.subscribeToPost = jest.fn((postId, cb) => {
+    cb(doc);
+    return unsub;
+});
 
 describe("PostDetails", () => {
     test("Skeleton is shown while data is loading", async () => {
-        Firebase.getPostById = jest.fn(async () => null);
+        doc.exists = jest.fn(() => false);
         Firebase.getComments = jest.fn(async () => null);
         Firebase.getCommunityInfo = jest.fn(async () => null);
         render(<MemoryRouter>
@@ -97,7 +124,8 @@ describe("PostDetails", () => {
     describe("Data renders", () => {
         test("Content", async () => {
             const contentPost = posts[0];
-            Firebase.getPostById = jest.fn(async () => contentPost);
+            doc = jest.fn(() => contentPost);
+            doc.exists = jest.fn(() => true);
             await waitFor(() => {
                 render(<MemoryRouter>
                     <PostDetails />
@@ -111,7 +139,8 @@ describe("PostDetails", () => {
 
         test("Link", async () => {
             const linkPost = posts[1];
-            Firebase.getPostById = jest.fn(async () => linkPost);
+            doc = jest.fn(() => linkPost);
+            doc.exists = jest.fn(() => true);
             await waitFor(() => {
                 render(<MemoryRouter>
                     <PostDetails />
@@ -132,7 +161,8 @@ describe("PostDetails", () => {
 
         test("Media", async () => {
             const mediaPost = posts[2];
-            Firebase.getPostById = jest.fn(async () => mediaPost);
+            doc = jest.fn(() => mediaPost);
+            doc.exists = jest.fn(() => true);
             await waitFor(() => {
                 render(<MemoryRouter>
                     <PostDetails />
@@ -143,7 +173,7 @@ describe("PostDetails", () => {
             expect(await screen.findByTestId("carousal-img")).toBeInTheDocument();
             expect(await screen.findByTestId("carousal-img")).toHaveAttribute("src", mediaPost.media[0]);
             expect(Firebase.getMedia).toBeCalled();
-            expect(Firebase.getMedia).toBeCalledWith(mediaPost.media[0]);
+            expect(Firebase.getMedia).toBeCalledWith(mediaPost.media);
             expect(window.URL.createObjectURL).toBeCalled();
             expect(window.URL.createObjectURL).toBeCalledWith(mediaPost.media[0]);
             expect(screen.getByText(`u/${mediaPost.author}`)).toBeInTheDocument();
@@ -152,9 +182,14 @@ describe("PostDetails", () => {
     });
 
     describe("ShowMore works in the context of a post", () => {
+        const auth = { uid: "fjaksldfj34fasd" };
+        const post = posts[0];
+        beforeAll(() => {
+            doc = jest.fn(() => post);
+            doc.exists = jest.fn(() => true);
+        });
+
         test("Dropdown opens on click", async () => {
-            const post = posts[0];
-            Firebase.getPostById = jest.fn(async () => post);
             await waitFor(() => {
                 render(<MemoryRouter>
                     <PostDetails />
@@ -170,8 +205,6 @@ describe("PostDetails", () => {
         });
 
         test("Unauthenticated users are redirect to /login when save is clicked", async () => {
-            const post = posts[0];
-            Firebase.getPostById = jest.fn(async () => post);
             await waitFor(() => {
                 render(<MemoryRouter>
                     <PostDetails />
@@ -188,10 +221,16 @@ describe("PostDetails", () => {
 
         });
 
-        test("Authenticated user can save/unsave the post", async () => {
-            const post = posts[0];
-            Firebase.getPostById = jest.fn(async () => post);
-            const auth = { uid: "fjaksldfj34fasd" };
+        test("Authenticated user can save a post", async () => {
+            const unsub = jest.fn();
+            const doc = jest.fn(() => userData);
+            doc.data = () => userData;
+            doc.exists = jest.fn(() => true);
+            Firebase.subscribeToUserDoc = jest.fn((userId, cb) => {
+                cb(doc);
+                return unsub;
+            });
+
             await waitFor(() => {
                 render(<MemoryRouter>
                     <AuthContext.Provider value={auth}>
@@ -201,27 +240,48 @@ describe("PostDetails", () => {
             });
             const user = userEvent.setup();
 
-            // TODO: Mock subscribeToUser
 
-            // Save
+            // Unsave
             await user.click(screen.getByTestId("show-more"));
             await user.click(screen.getByTestId("save"));
             expect(Firebase.saveContent).toBeCalled();
             expect(Firebase.saveContent).toBeCalledWith(auth.uid, post.id);
             expect(screen.getByText(/post saved successfully/i)).toBeInTheDocument();
-
-            // Unsave
-            // await user.click(screen.getByTestId("show-more"));
-            // await user.click(screen.getByTestId("save"));
-            // expect(Firebase.unsaveContent).toBeCalled();
-            // expect(Firebase.unsaveContent).toBeCalledWith(auth.uid, post.id);
-            // expect(screen.getByText(/post unsaved successfully/i)).toBeInTheDocument();
         });
+
+        test("Authenticated user can save a post", async () => {
+            const unsub = jest.fn();
+            const doc = jest.fn(() => userData);
+            doc.data = () => ({ ...userData, saved: [post.id] });
+            doc.exists = jest.fn(() => true);
+            Firebase.subscribeToUserDoc = jest.fn((userId, cb) => {
+                cb(doc);
+                return unsub;
+            });
+
+            await waitFor(() => {
+                render(<MemoryRouter>
+                    <AuthContext.Provider value={auth}>
+                        <PostDetails />
+                    </AuthContext.Provider>
+                </MemoryRouter>);
+            });
+            const user = userEvent.setup();
+
+
+            // Save
+            await user.click(screen.getByTestId("show-more"));
+            await user.click(screen.getByText(/unsave/i));
+            expect(Firebase.unsaveContent).toBeCalled();
+            expect(Firebase.unsaveContent).toBeCalledWith(auth.uid, post.id);
+            expect(screen.getByText(/post unsaved successfully/i)).toBeInTheDocument();
+        })
 
         describe("Post can be edited by the owner", () => {
             test("Content", async () => {
                 const post = posts[0];
-                Firebase.getPostById = jest.fn(async () => post);
+                doc = jest.fn(() => post);
+                doc.exists = jest.fn(() => true);
                 const auth = { uid: post.authorId };
                 await waitFor(() => {
                     render(<MemoryRouter>
@@ -260,7 +320,8 @@ describe("PostDetails", () => {
 
             test("Link", async () => {
                 const post = posts[1];
-                Firebase.getPostById = jest.fn(async () => post);
+                doc = jest.fn(() => post);
+                doc.exists = jest.fn(() => true);
                 const auth = { uid: post.authorId };
                 await waitFor(() => {
                     render(<MemoryRouter>
@@ -301,7 +362,8 @@ describe("PostDetails", () => {
 
     test("Owner can delete a post", async () => {
         const post = posts[0];
-        Firebase.getPostById = jest.fn(async () => post);
+        doc = jest.fn(() => post);
+        doc.exists = jest.fn(() => true);
         const auth = { uid: post.authorId };
         await waitFor(() => {
             render(<MemoryRouter>
@@ -334,7 +396,8 @@ describe("PostDetails", () => {
 
     test("Authenticated users can comment under the post", async () => {
         const post = posts[0];
-        Firebase.getPostById = jest.fn(async () => post);
+        doc = jest.fn(() => post);
+        doc.exists = jest.fn(() => true);
         const auth = { uid: post.authorId, username: "test" };
         localStorage.setItem('username', auth.username);
         await waitFor(() => {
@@ -358,7 +421,8 @@ describe("PostDetails", () => {
 
     test("Unauthenticated users are redirect to /login on comment", async () => {
         const post = posts[0];
-        Firebase.getPostById = jest.fn(async () => post);
+        doc = jest.fn(() => post);
+        doc.exists = jest.fn(() => true);
 
         await waitFor(() => {
             render(<MemoryRouter>

@@ -109,7 +109,7 @@ describe("Post", () => {
         expect(screen.getByText(`u/${dataMedia.author}`)).toBeInTheDocument();
         expect(screen.getByText(`r/${dataMedia.communityName}`)).toBeInTheDocument();
         expect(Firebase.getMedia).toBeCalled();
-        expect(Firebase.getMedia).toBeCalledWith(dataMedia.media[0])
+        expect(Firebase.getMedia).toBeCalledWith(dataMedia.media);
         expect(await Firebase.getMedia(dataMedia.media[0])).toEqual(dataMedia.media[0])
         expect(window.URL.createObjectURL(dataMedia.media[0])).toEqual(dataMedia.media[0])
         expect(screen.getByRole("img")).toBeInTheDocument();

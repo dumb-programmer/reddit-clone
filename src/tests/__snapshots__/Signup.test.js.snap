@@ -22,8 +22,8 @@ exports[`Signup works Render 1`] = `
         >
           By continuing, you are setting up a Reddit account and agree to our User Agreement and Privacy Policy.
         </p>
-        <div
-          class="login-provider-btn-container"
+        <button
+          class="login-provider-btn"
         >
           <span
             class="provider-logo"
@@ -57,14 +57,12 @@ exports[`Signup works Render 1`] = `
               </g>
             </svg>
           </span>
-          <button
-            class="login-provider-btn"
-          >
-            Continue With Google
-          </button>
-        </div>
-        <div
-          class="login-provider-btn-container"
+          <p>
+            Continue with google
+          </p>
+        </button>
+        <button
+          class="login-provider-btn"
         >
           <span
             class="provider-logo"
@@ -86,12 +84,10 @@ exports[`Signup works Render 1`] = `
               </g>
             </svg>
           </span>
-          <button
-            class="login-provider-btn"
-          >
+          <p>
             Continue With Apple
-          </button>
-        </div>
+          </p>
+        </button>
         <input
           class="form-input "
           name="email"

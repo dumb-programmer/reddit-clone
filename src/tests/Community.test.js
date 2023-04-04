@@ -65,6 +65,7 @@ const unsubFromPost = jest.fn();
 Firebase.subscribeToPost = jest.fn(() => unsubFromPost);
 Firebase.subscribeToCommunity = jest.fn(() => unsubFromCommunity);
 Firebase.hasJoinedCommunity = jest.fn(async () => true);
+Firebase.getMedia = jest.fn((path) => new Promise((resolve, reject) => resolve(path)));
 
 const setData = jest.fn();
 const fetchPosts = jest.fn();
