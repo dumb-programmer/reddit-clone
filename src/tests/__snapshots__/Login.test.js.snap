@@ -107,6 +107,7 @@ exports[`Login works Render 1`] = `
         <button
           class="submit-btn "
           data-testid="login-btn"
+          type="submit"
         >
           Log In
         </button>

@@ -9,11 +9,14 @@ import UserIcon from "./icons/UserIcon";
 import SearchBar from "./SearchBar";
 import useAuthContext from "../hooks/useAuthContext";
 import "../styles/Header.css";
+import UsernameConfirmationDropdown from "./UsernameConfirmationDropdown";
 
 const Header = () => {
   const [logoutDisabled, setLogoutDisabled] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [profilePicture, setProfilePicture] = useState(null);
+  const [username, setUsername] = useState(null);
+  const [showUsernameChangeForm, setShowUsernameChangeForm] = useState(null);
   const redirectToHome = useRedirect("/");
   const auth = useAuthContext();
 
@@ -32,7 +35,12 @@ const Header = () => {
     let unsubUser = null;
     if (auth) {
       unsubUser = subscribeToUserDoc(auth.uid, (snap) => {
-        setProfilePicture(snap.data().profilePicture);
+        const data = snap.data();
+        setProfilePicture(data.profilePicture);
+        if ("usernameConfirmed" in data) {
+          setShowUsernameChangeForm(data.usernameConfirmed === false);
+        }
+        setUsername(data.username);
       });
     }
     return () => {
@@ -58,8 +66,11 @@ const Header = () => {
         <RedditIcon height={35} width={35} />
       </div>
       <SearchBar />
-      <div className="user-controls">
-        {localStorage.getItem("username") ? (
+      {showUsernameChangeForm && (
+        <UsernameConfirmationDropdown username={username} />
+      )}
+      {auth ? (
+        <div className="user-controls">
           <>
             <div
               className="user-info"
@@ -75,9 +86,7 @@ const Header = () => {
                 width="30px"
                 alt="user-avatar"
               />
-              <span className="username">
-                {localStorage.getItem("username")}
-              </span>
+              <span className="username">{username}</span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -96,10 +105,7 @@ const Header = () => {
             {showDropdown && (
               <div className="dropdown">
                 <ul>
-                  <Link
-                    to={`/user/${localStorage.getItem("username")}`}
-                    className="dropdown-link"
-                  >
+                  <Link to={`/user/${username}`} className="dropdown-link">
                     <UserIcon height={20} width={20} />
                     Profile
                   </Link>
@@ -118,25 +124,26 @@ const Header = () => {
               </div>
             )}
           </>
-        ) : (
-          <>
-            <button
-              className="btn"
-              id="sign-up-btn"
-              onClick={() => navigate("/signup")}
-            >
-              Sign Up
-            </button>
-            <button
-              className="btn"
-              id="login-btn"
-              onClick={() => navigate("/login")}
-            >
-              Log In
-            </button>
-          </>
-        )}
-      </div>
+        </div>
+      ) : (
+        <div>
+          {" "}
+          <button
+            className="btn"
+            id="sign-up-btn"
+            onClick={() => navigate("/signup")}
+          >
+            Sign Up
+          </button>
+          <button
+            className="btn"
+            id="login-btn"
+            onClick={() => navigate("/login")}
+          >
+            Log In
+          </button>
+        </div>
+      )}
     </header>
   );
 };

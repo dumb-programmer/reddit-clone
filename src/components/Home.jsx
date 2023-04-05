@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import CreateCommunityModal from "./community/CreateCommunityModal";
 import { getAllPosts, getUserHome } from "../firebase";
 import Posts from "./post/Posts";

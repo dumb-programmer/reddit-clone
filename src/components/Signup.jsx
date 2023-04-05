@@ -29,7 +29,7 @@ const Signup = () => {
     passwordTooShort: false,
     emailAlreadyRegistered: false,
   });
-  const [suggestedUsername, setSuggestedUsernames] = useState(
+  const [suggestedUsernames, setSuggestedUsernames] = useState(
     generateUsernames()
   );
   const [loading, setLoading] = useState(false);
@@ -269,7 +269,7 @@ const Signup = () => {
               />
             </button>
           </p>
-          {suggestedUsername.map((suggestion, idx) => (
+          {suggestedUsernames.map((suggestion, idx) => (
             <p
               key={idx}
               className="username-suggestion"

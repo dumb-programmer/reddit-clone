@@ -89,7 +89,7 @@ const Post = ({ data, id }) => {
               {post.link}
             </a>
           )}
-          {media && <MediaCarousal paths={media} />}
+          {media && media?.length !== 0 && <MediaCarousal paths={media} />}
         </div>
       </div>
     </div>

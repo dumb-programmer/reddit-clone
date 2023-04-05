@@ -12,7 +12,7 @@ const firebaseConfig = {
     storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
     messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
     appId: process.env.REACT_APP_FIREBASE_APP_ID,
-};
+}
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -52,6 +52,15 @@ const continueWithGoogle = async (redirect) => {
     }
 }
 
+const keepUsername = async (uid) => {
+    const user = await getDoc(doc(db, "Users", uid));
+    await updateDoc(user.ref, { usernameConfirmed: true });
+};
+
+const changeUsername = async (uid, username) => {
+    const user = await getDoc(doc(db, "Users", uid));
+    await updateDoc(user.ref, { username, usernameConfirmed: true });
+}
 
 const updateUserEmail = async (newEmail) => {
     try {
@@ -684,4 +693,4 @@ const unsaveContent = async (userId, contentId) => {
     return updateDoc(userRef, { saved: user.data().saved.filter(id => id !== contentId) });
 }
 
-export { createAccountUsingEmail, usernameAvailable, isEmailAvailable, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunityInfo, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, hasJoinedCommunity, leaveCommunity, getProfileByUsername, getPostById, createComment, getComments, subscribeToComments, subscribeToPost, deleteComment, editComment, subscribeToUserDoc, saveContent, unsaveContent, deletePost, editPostContent, getMedia, getUserPosts, updateUserBanner, getProfileByUserId, setCommunityIcon, setCommunityBanner, subscribeToCommunity, deleteAccount, reauthenticate, isUsernameCorrect, updateUserEmail, updateUserPassword, updateDisplayName, updateAbout, searchPosts, searchCommunities, searchUsers, searchComments, editPostLink, getUserHome, updateCommunityDescription, uploadFileWithProgess, getCommunityDoc, updateCommunityIcon, updateCommunityBanner, updateUserProfilePicture, continueWithGoogle };
+export { createAccountUsingEmail, usernameAvailable, isEmailAvailable, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunityInfo, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, hasJoinedCommunity, leaveCommunity, getProfileByUsername, getPostById, createComment, getComments, subscribeToComments, subscribeToPost, deleteComment, editComment, subscribeToUserDoc, saveContent, unsaveContent, deletePost, editPostContent, getMedia, getUserPosts, updateUserBanner, getProfileByUserId, setCommunityIcon, setCommunityBanner, subscribeToCommunity, deleteAccount, reauthenticate, isUsernameCorrect, updateUserEmail, updateUserPassword, updateDisplayName, updateAbout, searchPosts, searchCommunities, searchUsers, searchComments, editPostLink, getUserHome, updateCommunityDescription, uploadFileWithProgess, getCommunityDoc, updateCommunityIcon, updateCommunityBanner, updateUserProfilePicture, continueWithGoogle, keepUsername, changeUsername };

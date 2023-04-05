@@ -101,6 +101,23 @@
     background-color: #ebebeb;
 }
 
+.change-username-dropdown {
+    box-shadow: 3px 3px 5px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Reference: https://stackoverflow.com/questions/20589780/css-triangle-before-element */
+.change-username-dropdown:before {
+    content: "";
+    /* border-style: solid;
+    border-width: 10px; */
+    border: 10px solid;
+    border-color: transparent var(--clr-primary) transparent transparent;
+    position: absolute;
+    top: -28px;
+    right: 55px;
+    rotate: 90deg;
+}
+
 @media only screen and (max-width: 500px) {
     .username {
         display: none;

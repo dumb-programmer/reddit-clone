@@ -1,7 +1,7 @@
 import randomWords from "random-words";
 
-const generateUsernames = () => {
-    return Array.from({ length: 5 }).map(
+const generateUsernames = (length = 5) => {
+    return Array.from({ length }).map(
         () => randomWords() + "_" + randomWords() + Math.ceil(Math.random() * 1000)
     );
 };

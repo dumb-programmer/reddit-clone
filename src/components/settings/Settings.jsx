@@ -18,55 +18,57 @@ const Settings = () => {
   return (
     <div className="settings-container">
       <h2>User Settings</h2>
-      <section className="settings-section">
-        <div className="section-header">
-          <p>Account Preferences</p>
-        </div>
-        <div className="section-body">
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <div>
-              <h4>Email Address</h4>
-              <p className="small-text">{auth?.email}</p>
-            </div>
-            <button
-              data-testid="change-email-btn"
-              className="secondary-btn"
-              style={{ width: 80 }}
-              onClick={() => setModal(0)}
-            >
-              Change
-            </button>
+      {auth?.email && (
+        <section className="settings-section">
+          <div className="section-header">
+            <p>Account Preferences</p>
           </div>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <div>
-              <h4>Change Password</h4>
-              <p className="small-text">
-                Password must be at least 8 characters long
-              </p>
-            </div>
-            <button
-              data-testid="change-password-btn"
-              className="secondary-btn"
-              style={{ width: 80 }}
-              onClick={() => setModal(1)}
+          <div className="section-body">
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
             >
-              Change
-            </button>
+              <div>
+                <h4>Email Address</h4>
+                <p className="small-text">{auth?.email}</p>
+              </div>
+              <button
+                data-testid="change-email-btn"
+                className="secondary-btn"
+                style={{ width: 80 }}
+                onClick={() => setModal(0)}
+              >
+                Change
+              </button>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <div>
+                <h4>Change Password</h4>
+                <p className="small-text">
+                  Password must be at least 8 characters long
+                </p>
+              </div>
+              <button
+                data-testid="change-password-btn"
+                className="secondary-btn"
+                style={{ width: 80 }}
+                onClick={() => setModal(1)}
+              >
+                Change
+              </button>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
       <section className="settings-section">
         <div className="section-header">
           <p>Profile Information</p>
