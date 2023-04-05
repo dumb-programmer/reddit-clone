@@ -1,8 +1,9 @@
 import { uuidv4 } from "@firebase/util";
 import { initializeApp } from "firebase/app";
-import { createUserWithEmailAndPassword, deleteUser, EmailAuthProvider, getAuth, onAuthStateChanged, reauthenticateWithCredential, signInWithEmailAndPassword, signOut, updateEmail, updatePassword, } from "firebase/auth";
+import { createUserWithEmailAndPassword, deleteUser, EmailAuthProvider, getAuth, onAuthStateChanged, reauthenticateWithCredential, signInWithEmailAndPassword, signOut, updateEmail, updatePassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { collection, deleteDoc, doc, getDoc, getDocs, getFirestore, limit, onSnapshot, orderBy, query, serverTimestamp, setDoc, startAfter, updateDoc, where } from "firebase/firestore";
 import { getStorage, uploadBytes, ref, getDownloadURL, deleteObject, getBlob, uploadBytesResumable, } from "firebase/storage";
+import generateUsernames from "./utils/generateUsernames";
 
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -11,7 +12,7 @@ const firebaseConfig = {
     storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
     messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
     appId: process.env.REACT_APP_FIREBASE_APP_ID,
-}
+};
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -29,6 +30,28 @@ const createAccountUsingEmail = async ({ email, password, username }) => {
         console.log(error);
     }
 };
+
+const continueWithGoogle = async (redirect) => {
+    try {
+        const provider = new GoogleAuthProvider();
+        const result = await signInWithPopup(auth, provider);
+        redirect();
+        const profilePicture = await getDownloadURL(ref(storage, "Users/default_avatar.png"));
+        const username = generateUsernames()[0];
+        const user = await getDoc(doc(db, "Users", result.user.uid));
+        if (user.exists()) {
+            localStorage.setItem("username", user.data().username);
+        }
+        else {
+            await setDoc(doc(db, "Users", result.user.uid), { id: result.user.uid, username: username, profilePicture, displayName: "", about: "", usernameConfirmed: false })
+            localStorage.setItem("username", username);
+        }
+    }
+    catch (error) {
+        console.log(error);
+    }
+}
+
 
 const updateUserEmail = async (newEmail) => {
     try {
@@ -661,4 +684,4 @@ const unsaveContent = async (userId, contentId) => {
     return updateDoc(userRef, { saved: user.data().saved.filter(id => id !== contentId) });
 }
 
-export { createAccountUsingEmail, usernameAvailable, isEmailAvailable, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunityInfo, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, hasJoinedCommunity, leaveCommunity, getProfileByUsername, getPostById, createComment, getComments, subscribeToComments, subscribeToPost, deleteComment, editComment, subscribeToUserDoc, saveContent, unsaveContent, deletePost, editPostContent, getMedia, getUserPosts, updateUserBanner, getProfileByUserId, setCommunityIcon, setCommunityBanner, subscribeToCommunity, deleteAccount, reauthenticate, isUsernameCorrect, updateUserEmail, updateUserPassword, updateDisplayName, updateAbout, searchPosts, searchCommunities, searchUsers, searchComments, editPostLink, getUserHome, updateCommunityDescription, uploadFileWithProgess, getCommunityDoc, updateCommunityIcon, updateCommunityBanner, updateUserProfilePicture };
+export { createAccountUsingEmail, usernameAvailable, isEmailAvailable, loginUsingUsernameAndPassword, isLoggedIn, logout, registerAuthObserver, createCommunity, communityNameAvailable, getUsername, getCommunityInfo, createPost, getPostsByCommunity, getAllPosts, upvote, removeUpvote, downvote, removeDownvote, joinCommunity, hasJoinedCommunity, leaveCommunity, getProfileByUsername, getPostById, createComment, getComments, subscribeToComments, subscribeToPost, deleteComment, editComment, subscribeToUserDoc, saveContent, unsaveContent, deletePost, editPostContent, getMedia, getUserPosts, updateUserBanner, getProfileByUserId, setCommunityIcon, setCommunityBanner, subscribeToCommunity, deleteAccount, reauthenticate, isUsernameCorrect, updateUserEmail, updateUserPassword, updateDisplayName, updateAbout, searchPosts, searchCommunities, searchUsers, searchComments, editPostLink, getUserHome, updateCommunityDescription, uploadFileWithProgess, getCommunityDoc, updateCommunityIcon, updateCommunityBanner, updateUserProfilePicture, continueWithGoogle };

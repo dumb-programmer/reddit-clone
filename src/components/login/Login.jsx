@@ -127,6 +127,7 @@ const Login = () => {
           <div className="error-message">Incorrect password</div>
         )}
         <button
+          type="submit"
           data-testid="login-btn"
           className={`submit-btn ${loading ? "btn__loading" : ""}`}
           disabled={error.emailAlreadyRegistered}
