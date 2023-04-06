@@ -20,7 +20,13 @@ const UsernameChangeConfirmationForm = ({ username, onBack, onSuccess }) => {
         >
           Save username
         </button>
-        <button className="tertiary-btn" onClick={onBack}>
+        <button
+          className="tertiary-btn"
+          onClick={(e) => {
+            e.preventDefault();
+            onBack();
+          }}
+        >
           Go back
         </button>
       </div>

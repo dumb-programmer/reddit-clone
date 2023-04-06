@@ -39,7 +39,6 @@ const ChangeUsernameForm = ({ onSuccess }) => {
         gap: "1rem",
         padding: 10,
       }}
-      onSubmit={(e) => e.preventDefault()}
     >
       <div style={{ position: "relative" }}>
         <span
@@ -48,9 +47,10 @@ const ChangeUsernameForm = ({ onSuccess }) => {
           u/
         </span>
         <input
+          data-testid="username-input"
           style={{ width: "100%", paddingLeft: 27 }}
-          className={`form-input ${
-            usernameNotAvailable ? "form-input__error" : ""
+          className={`form-input${
+            usernameNotAvailable ? " form-input__error" : ""
           }`}
           value={username}
           onChange={handleInput}
@@ -93,7 +93,8 @@ const ChangeUsernameForm = ({ onSuccess }) => {
       </div>
       <button
         className="primary-btn"
-        onClick={async () => {
+        onClick={async (e) => {
+          e.preventDefault();
           setLoading(true);
           const isUsernameAvailable = await usernameAvailable(username);
           setUsernameNotAvailable(!isUsernameAvailable);

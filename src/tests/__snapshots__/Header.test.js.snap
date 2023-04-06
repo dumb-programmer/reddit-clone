@@ -1,0 +1,218 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Header Authenticated users Renders 1`] = `
+<div>
+  <header
+    class="nav-bar"
+  >
+    <div
+      class="logo"
+      style="cursor: pointer;"
+    >
+      <svg
+        class="SVG-icon SnooIcon"
+        style="height: 35px; width: 35px;"
+        version="1.1"
+        viewBox="0 0 20 20"
+        x="0px"
+        xmlns="http://www.w3.org/2000/svg"
+        y="0px"
+      >
+        <g>
+          <circle
+            cx="10"
+            cy="10"
+            fill="#ff4500"
+            r="10"
+          />
+          <path
+            d="M16.67,10A1.46,1.46,0,0,0,14.2,9a7.12,7.12,0,0,0-3.85-1.23L11,4.65,13.14,5.1a1,1,0,1,0,.13-0.61L10.82,4a0.31,0.31,0,0,0-.37.24L9.71,7.71a7.14,7.14,0,0,0-3.9,1.23A1.46,1.46,0,1,0,4.2,11.33a2.87,2.87,0,0,0,0,.44c0,2.24,2.61,4.06,5.83,4.06s5.83-1.82,5.83-4.06a2.87,2.87,0,0,0,0-.44A1.46,1.46,0,0,0,16.67,10Zm-10,1a1,1,0,1,1,1,1A1,1,0,0,1,6.67,11Zm5.81,2.75a3.84,3.84,0,0,1-2.47.77,3.84,3.84,0,0,1-2.47-.77,0.27,0.27,0,0,1,.38-0.38A3.27,3.27,0,0,0,10,14a3.28,3.28,0,0,0,2.09-.61A0.27,0.27,0,1,1,12.48,13.79Zm-0.18-1.71a1,1,0,1,1,1-1A1,1,0,0,1,12.29,12.08Z"
+            fill="#fff"
+          />
+        </g>
+      </svg>
+    </div>
+    <div
+      style="min-width: 50%; position: relative; display: flex;"
+    >
+      <svg
+        fill="none"
+        height="24"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        style="height: 20px; width: 20px; stroke: #898c8e; position: absolute; top: 8px; left: 10px;"
+        viewBox="0 0 24 24"
+        width="24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <circle
+          cx="11"
+          cy="11"
+          r="8"
+        />
+        <line
+          x1="21"
+          x2="16.65"
+          y1="21"
+          y2="16.65"
+        />
+      </svg>
+      <input
+        id="search-bar"
+        placeholder="Search Reddit"
+        type="text"
+        value=""
+      />
+    </div>
+    <div
+      class="change-username-dropdown"
+      style="position: absolute; top: 60px; right: 5px; background-color: rgb(255, 255, 255); z-index: 2; padding: 20px; text-align: center; max-width: 350px; border-radius: 5px;"
+    >
+      <p>
+        Do you want to change or keep this user name?
+      </p>
+      <h2>
+        u/
+        test
+      </h2>
+      <div
+        style="display: flex; flex-direction: column; gap: 1rem; padding: 0px 20px;"
+      >
+        <button
+          class="primary-btn"
+        >
+          Change Username
+        </button>
+        <button
+          class="tertiary-btn"
+        >
+          Keep Username
+        </button>
+      </div>
+    </div>
+    <div
+      class="user-controls"
+      data-testid="user-controls"
+    >
+      <div
+        class="user-info"
+        styles="[object Object]"
+      >
+        <img
+          alt="user-avatar"
+          height="30px"
+          width="30px"
+        />
+        <span
+          class="username"
+        >
+          test
+        </span>
+        <svg
+          class="feather feather-chevron-down"
+          fill="none"
+          height="24"
+          stroke="#888b8d"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="1.25"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <polyline
+            points="6 9 12 15 18 9"
+          />
+        </svg>
+      </div>
+    </div>
+  </header>
+</div>
+`;
+
+exports[`Header Unauthenticated users 1`] = `
+<div>
+  <header
+    class="nav-bar"
+  >
+    <div
+      class="logo"
+      style="cursor: pointer;"
+    >
+      <svg
+        class="SVG-icon SnooIcon"
+        style="height: 35px; width: 35px;"
+        version="1.1"
+        viewBox="0 0 20 20"
+        x="0px"
+        xmlns="http://www.w3.org/2000/svg"
+        y="0px"
+      >
+        <g>
+          <circle
+            cx="10"
+            cy="10"
+            fill="#ff4500"
+            r="10"
+          />
+          <path
+            d="M16.67,10A1.46,1.46,0,0,0,14.2,9a7.12,7.12,0,0,0-3.85-1.23L11,4.65,13.14,5.1a1,1,0,1,0,.13-0.61L10.82,4a0.31,0.31,0,0,0-.37.24L9.71,7.71a7.14,7.14,0,0,0-3.9,1.23A1.46,1.46,0,1,0,4.2,11.33a2.87,2.87,0,0,0,0,.44c0,2.24,2.61,4.06,5.83,4.06s5.83-1.82,5.83-4.06a2.87,2.87,0,0,0,0-.44A1.46,1.46,0,0,0,16.67,10Zm-10,1a1,1,0,1,1,1,1A1,1,0,0,1,6.67,11Zm5.81,2.75a3.84,3.84,0,0,1-2.47.77,3.84,3.84,0,0,1-2.47-.77,0.27,0.27,0,0,1,.38-0.38A3.27,3.27,0,0,0,10,14a3.28,3.28,0,0,0,2.09-.61A0.27,0.27,0,1,1,12.48,13.79Zm-0.18-1.71a1,1,0,1,1,1-1A1,1,0,0,1,12.29,12.08Z"
+            fill="#fff"
+          />
+        </g>
+      </svg>
+    </div>
+    <div
+      style="min-width: 50%; position: relative; display: flex;"
+    >
+      <svg
+        fill="none"
+        height="24"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        style="height: 20px; width: 20px; stroke: #898c8e; position: absolute; top: 8px; left: 10px;"
+        viewBox="0 0 24 24"
+        width="24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <circle
+          cx="11"
+          cy="11"
+          r="8"
+        />
+        <line
+          x1="21"
+          x2="16.65"
+          y1="21"
+          y2="16.65"
+        />
+      </svg>
+      <input
+        id="search-bar"
+        placeholder="Search Reddit"
+        type="text"
+        value=""
+      />
+    </div>
+    <div>
+       
+      <button
+        class="btn"
+        id="sign-up-btn"
+      >
+        Sign Up
+      </button>
+      <button
+        class="btn"
+        id="login-btn"
+      >
+        Log In
+      </button>
+    </div>
+  </header>
+</div>
+`;

@@ -70,16 +70,16 @@ const Header = () => {
         <UsernameConfirmationDropdown username={username} />
       )}
       {auth ? (
-        <div className="user-controls">
+        <div
+          className="user-controls"
+          data-testid="user-controls"
+          onClick={(e) => {
+            e.stopPropagation();
+            setShowDropdown((prev) => !prev);
+          }}
+        >
           <>
-            <div
-              className="user-info"
-              styles={{ marginRight: "5px" }}
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowDropdown((prev) => !prev);
-              }}
-            >
+            <div className="user-info" styles={{ marginRight: "5px" }}>
               <img
                 src={profilePicture}
                 height="30px"

@@ -13,6 +13,7 @@ const KeepUsernameForm = ({ username, onChange, onSuccess }) => {
       <h2>u/{username}</h2>
       <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
         <button
+          data-testid="keep-username-btn-final"
           className="primary-btn"
           onClick={async (e) => {
             e.preventDefault();
@@ -22,7 +23,14 @@ const KeepUsernameForm = ({ username, onChange, onSuccess }) => {
         >
           Keep Username
         </button>
-        <button className="tertiary-btn" onClick={onChange}>
+        <button
+          data-testid="change-username-btn-final"
+          className="tertiary-btn"
+          onClick={(e) => {
+            e.preventDefault();
+            onChange();
+          }}
+        >
           Change Username
         </button>
       </div>
