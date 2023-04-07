@@ -1,11 +1,18 @@
-import DeleteAccountForm from "./DeleteAccountForm";
+import DeleteEmailAccountForm from "./DeleteEmailAccountForm";
 import Modal from "../Modal";
+import DeleteProviderAccountForm from "./DeleteProviderAccountForm";
 
-const DeleteAccountModal = ({ onClose }) => {
+const DeleteAccountModal = ({ type, onClose }) => {
   return (
     <Modal
       headerText="Delete Account"
-      Body={<DeleteAccountForm onCancel={onClose} />}
+      Body={
+        type === "password" ? (
+          <DeleteEmailAccountForm onCancel={onClose} />
+        ) : (
+          <DeleteProviderAccountForm provider={type} onCancel={onClose} />
+        )
+      }
       onClose={onClose}
     />
   );

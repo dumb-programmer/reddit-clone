@@ -86,10 +86,11 @@
     background-color: #3d99dd;
 }
 
-.primary-btn:disabled {
+.primary-btn:disabled, .secondary-btn:disabled {
     background-color: #838383;
     color: #bcbcbc;
     cursor: not-allowed;
+    border: none;
 }
 
 .secondary-btn {

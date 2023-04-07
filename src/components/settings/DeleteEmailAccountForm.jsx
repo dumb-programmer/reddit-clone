@@ -7,7 +7,7 @@ import {
 import LoadingSVG from "../LoadingSVG";
 import useRedirect from "../../hooks/useRedirect";
 
-const DeleteAccountForm = ({ onCancel }) => {
+const DeleteEmailAccountForm = ({ onCancel }) => {
   const [data, setData] = useState({
     username: "",
     password: "",
@@ -68,7 +68,12 @@ const DeleteAccountForm = ({ onCancel }) => {
     });
   };
 
-  const disabled = errors.username || errors.password || !data.checkbox;
+  const disabled =
+    errors.username ||
+    errors.password ||
+    !data.checkbox ||
+    !data.username ||
+    !data.password;
 
   return (
     <form onSubmit={!loading ? handleSubmit : (e) => e.preventDefault()}>
@@ -158,4 +163,4 @@ const DeleteAccountForm = ({ onCancel }) => {
   );
 };
 
-export default DeleteAccountForm;
+export default DeleteEmailAccountForm;

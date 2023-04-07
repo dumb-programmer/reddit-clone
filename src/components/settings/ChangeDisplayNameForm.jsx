@@ -10,7 +10,7 @@ const ChangeDisplayNameForm = ({ onSuccess }) => {
 
   const hasChanged =
     localStorage.getItem("displayName") !== displayName &&
-    displayName.length > 0;
+    displayName?.length > 0;
 
   const handleBlur = async () => {
     if (hasChanged) {
@@ -25,7 +25,7 @@ const ChangeDisplayNameForm = ({ onSuccess }) => {
 
     if (auth) {
       unsubUser = subscribeToUserDoc(auth?.uid, (doc) => {
-        setDisplayName(doc.data().displayName);
+        setDisplayName(doc?.data()?.displayName || "");
       });
     }
 
@@ -63,7 +63,7 @@ const ChangeDisplayNameForm = ({ onSuccess }) => {
           data-testid="displayName-remaining-characters"
           className="small-text"
         >
-          {30 - displayName.length} characters remaining
+          {30 - displayName?.length} characters remaining
         </p>
       </div>
     </>

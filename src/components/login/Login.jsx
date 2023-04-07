@@ -106,6 +106,7 @@ const Login = () => {
           value={data.username}
           onChange={handleInput}
           onBlur={handleUsernameBlur}
+          autoComplete="off"
           required
         />
         {error.usernameNotFound && (

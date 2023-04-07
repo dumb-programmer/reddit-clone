@@ -35,12 +35,12 @@ const Header = () => {
     let unsubUser = null;
     if (auth) {
       unsubUser = subscribeToUserDoc(auth.uid, (snap) => {
-        const data = snap.data();
-        setProfilePicture(data.profilePicture);
-        if ("usernameConfirmed" in data) {
-          setShowUsernameChangeForm(data.usernameConfirmed === false);
+        const data = snap?.data();
+        setProfilePicture(data?.profilePicture);
+        if (data && "usernameConfirmed" in data) {
+          setShowUsernameChangeForm(data?.usernameConfirmed === false);
         }
-        setUsername(data.username);
+        setUsername(data?.username);
       });
     }
     return () => {

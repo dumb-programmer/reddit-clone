@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   getProfileByUsername,
   getUserPosts,
@@ -24,6 +24,7 @@ const Profile = () => {
   const auth = useAuthContext();
   const profilePictureInput = useRef();
   const bannerInput = useRef();
+  // const location = useLocation();
 
   const userProfile = userDoc?.data();
   const isOwner = auth && userProfile?.id === `${auth.uid}`;
@@ -62,6 +63,27 @@ const Profile = () => {
       unsubUser && unsubUser();
     };
   }, [username, auth?.uid]);
+
+  // const beforeUnload = useCallback((e) => {
+  //   e.preventDefault();
+  //   return (e.returnValue = "");
+  // }, []);
+
+  // useEffect(() => {
+  //   if (uploadStatus === "uploading") {
+  //     console.log("adding event listener");
+  //     window.addEventListener("beforeunload", beforeUnload);
+  //     window.addEventListener("pagehide", beforeUnload);
+  //   }
+  //   if (uploadStatus === "success") {
+  //     console.log("removing event listener");
+  //     window.removeEventListener("beforeunload", beforeUnload);
+  //   }
+  // }, [uploadStatus, beforeUnload]);
+
+  // useEffect(() => {
+  //   // TODO: Prompt the user for confirmation on location change
+  // }, [location, uploadStatus]);
 
   return (
     <div className="container">

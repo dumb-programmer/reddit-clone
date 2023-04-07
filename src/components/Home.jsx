@@ -25,6 +25,7 @@ const Home = () => {
       });
     } else {
       getUserHome(auth.uid).then((snapshot) => {
+        console.log(snapshot);
         if (!ignore) {
           setData(snapshot);
         }
@@ -48,7 +49,9 @@ const Home = () => {
         data={data}
         setData={setData}
         fetchPosts={
-          auth ? (cursorDoc) => getUserHome(auth.uid, cursorDoc) : getAllPosts
+          auth !== null
+            ? (cursorDoc) => getUserHome(auth.uid, cursorDoc)
+            : (cursorDoc) => getAllPosts(cursorDoc)
         }
       />
       {auth && (

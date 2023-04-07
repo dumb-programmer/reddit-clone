@@ -69,7 +69,8 @@ const ChangeUsernameForm = ({ onSuccess }) => {
           Can't think of one use one of these{" "}
           <button
             id="generate-usernames-btn"
-            onClick={() => {
+            onClick={(e) => {
+              e.preventDefault();
               setSuggestedUsernames(generateUsernames(3));
             }}
           >

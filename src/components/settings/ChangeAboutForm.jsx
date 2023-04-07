@@ -7,7 +7,7 @@ const ChangeAboutForm = ({ onSuccess }) => {
   const auth = useAuthContext();
 
   const hasChanged =
-    localStorage.getItem("about") !== about && about.length > 0;
+    localStorage.getItem("about") !== about && about?.length > 0;
 
   const handleBlur = async () => {
     if (hasChanged) {
@@ -22,7 +22,7 @@ const ChangeAboutForm = ({ onSuccess }) => {
 
     if (auth) {
       unsubUser = subscribeToUserDoc(auth?.uid, (doc) => {
-        setAbout(doc.data().about);
+        setAbout(doc?.data()?.about);
       });
     }
 
@@ -57,7 +57,7 @@ const ChangeAboutForm = ({ onSuccess }) => {
           onBlur={handleBlur}
         />
         <p data-testid="about-remaining-characters" className="small-text">
-          {200 - about.length} characters remaining
+          {200 - about?.length} characters remaining
         </p>
       </div>
     </>

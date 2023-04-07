@@ -14,7 +14,6 @@ const Settings = () => {
   const [modal, setModal] = useState(null);
   const [showToast, setShowToast] = useState(false);
   const [toastText, setToastText] = useState("");
-
   return (
     <div className="settings-container">
       <h2>User Settings</h2>
@@ -129,7 +128,12 @@ const Settings = () => {
           onClose={() => setModal(null)}
         />
       )}
-      {modal === 2 && <DeleteAccountModal onClose={() => setModal(null)} />}
+      {modal === 2 && (
+        <DeleteAccountModal
+          type={auth.providerData[0].providerId}
+          onClose={() => setModal(null)}
+        />
+      )}
       {showToast && (
         <ToastNotification
           text={toastText}

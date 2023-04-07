@@ -40,16 +40,20 @@ const CommunityInfo = ({
         ) : (
           <ContentLoader
             speed={2}
-            width={300}
-            height={76}
-            viewBox="0 0 421 76"
+            width={800}
+            height={200}
+            viewBox="0 0 800 200"
             backgroundColor="#f3f3f3"
             foregroundColor="#ecebeb"
           >
-            <rect x="2" y="0" rx="0" ry="0" width="300" height="10" />
-            <rect x="2" y="18" rx="0" ry="0" width="290" height="10" />
-            <rect x="2" y="40" rx="0" ry="0" width="310" height="10" />
-            <rect x="2" y="58" rx="0" ry="0" width="279" height="10" />
+            <rect x="279" y="87" rx="0" ry="0" width="2" height="0" />
+            <rect x="104" y="31" rx="0" ry="0" width="0" height="1" />
+            <circle cx="145" cy="83" r="3" />
+            <rect x="3" y="103" rx="0" ry="0" width="106" height="23" />
+            <rect x="-2" y="68" rx="0" ry="0" width="255" height="23" />
+            <rect x="3" y="145" rx="0" ry="0" width="285" height="27" />
+            <rect x="0" y="1" rx="0" ry="0" width="234" height="23" />
+            <rect x="-2" y="34" rx="0" ry="0" width="286" height="23" />
           </ContentLoader>
         )}
         {data && (
