@@ -1,6 +1,6 @@
 const AppleButton = () => {
   return (
-    <button className="login-provider-btn">
+    <button type="button" className="login-provider-btn">
       <span className="provider-logo" id="apple-logo">
         <svg
           width="18px"

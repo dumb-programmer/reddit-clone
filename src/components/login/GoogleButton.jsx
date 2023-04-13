@@ -8,7 +8,7 @@ const GoogleButton = () => {
     await continueWithGoogle(redirectToHome);
   };
   return (
-    <button className="login-provider-btn" onClick={handleSubmit}>
+    <button type="button" className="login-provider-btn" onClick={handleSubmit}>
       <span className="provider-logo" id="google-logo">
         <svg
           width="18px"

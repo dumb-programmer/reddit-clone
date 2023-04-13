@@ -15,9 +15,9 @@ const Login = () => {
   });
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState({
-    usernameNotFound: false,
-    incorrectPassword: false,
+  const [errors, setErrors] = useState({
+    username: false,
+    password: false,
   });
   const navigate = useNavigate();
   const authenticated = useAuthContext();
@@ -27,6 +27,9 @@ const Login = () => {
       ...data,
       [e.target.name]: e.target.value,
     });
+    setErrors({
+      [e.target.name]: false,
+    });
   };
 
   const handleFormSubmit = async (e) => {
@@ -34,14 +37,14 @@ const Login = () => {
     setLoading(true);
     const val = await loginUsingUsernameAndPassword(data);
     if (val === -1) {
-      setError({
-        ...error,
-        usernameNotFound: true,
+      setErrors({
+        ...errors,
+        username: true,
       });
     } else if (val === -2) {
-      setError({
-        ...error,
-        incorrectPassword: true,
+      setErrors({
+        ...errors,
+        password: true,
       });
     } else {
       navigate("/");
@@ -50,15 +53,15 @@ const Login = () => {
   };
 
   const handleUsernameBlur = (e) => {
-    setError({
-      ...error,
-      usernameNotFound: false,
+    setErrors({
+      ...errors,
+      username: false,
     });
   };
 
   const handlePasswordBlur = (e) => {
-    setError({
-      incorrectPassword: false,
+    setErrors({
+      password: false,
     });
   };
 
@@ -68,7 +71,7 @@ const Login = () => {
     }
   }, [authenticated, navigate]);
 
-  const disableLoginBtn = Object.values(error).some((error) => error);
+  const disableLoginBtn = Object.values(errors).some((error) => error);
 
   if (authenticated) {
     return (
@@ -97,9 +100,7 @@ const Login = () => {
         <GoogleButton />
         <AppleButton />
         <input
-          className={`form-input ${
-            error.usernameNotFound ? "form-input__error" : ""
-          }`}
+          className={`form-input ${errors.username ? "form-input__error" : ""}`}
           type="text"
           name="username"
           placeholder="Username"
@@ -109,13 +110,11 @@ const Login = () => {
           autoComplete="off"
           required
         />
-        {error.usernameNotFound && (
+        {errors.username && (
           <div className="error-message">Incorrect username</div>
         )}
         <input
-          className={`form-input ${
-            error.incorrectPassword ? "form-input__error" : ""
-          }`}
+          className={`form-input ${errors.password ? "form-input__error" : ""}`}
           type="password"
           name="password"
           placeholder="Password"
@@ -124,14 +123,14 @@ const Login = () => {
           onBlur={handlePasswordBlur}
           required
         />
-        {error.incorrectPassword && (
+        {errors.password && (
           <div className="error-message">Incorrect password</div>
         )}
         <button
           type="submit"
           data-testid="login-btn"
           className={`submit-btn ${loading ? "btn__loading" : ""}`}
-          disabled={error.emailAlreadyRegistered}
+          disabled={errors.emailAlreadyRegistered}
         >
           {!loading ? "Log In" : <LoadingSVG height={35} width={35} />}
         </button>
